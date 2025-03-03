@@ -1,13 +1,14 @@
 [versions]
 agp = "8.8.2"
-kotlin = "1.9.24"
+kotlin = "2.0.0"
 coreKtx = "1.15.0"
 appcompat = "1.7.0"
 
 material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
-fluentuiandroid = "0.3.6"
+blurLayout = "1.1.1"
+blurview = "version-2.0.6"
 
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -20,7 +21,8 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-fluentuiandroid = { module = "com.microsoft.fluentui:FluentUIAndroid", version.ref = "fluentuiandroid" }
+blur-layout = { module = "com.avito.android:blur-layout", version.ref = "blurLayout" }
+blurview = { module = "com.github.Dimezis:BlurView", version.ref = "blurview" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -29,4 +31,3 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-

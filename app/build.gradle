@@ -19,14 +19,23 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
         }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4G"
     }
 
     kotlinOptions {
@@ -47,7 +56,10 @@ dependencies {
     implementation libs.material
     implementation libs.androidx.activity
     implementation libs.androidx.constraintlayout
-    implementation libs.fluentuiandroid
+    /*implementation libs.blur.layout*/
+    implementation libs.blurview
+    implementation 'com.github.wonderkiln:blurkit-android:1.1.1'
+    implementation 'com.github.veeyaarVR:SuperGradientTextView:1.1'
 
     // Test
     testImplementation libs.junit
