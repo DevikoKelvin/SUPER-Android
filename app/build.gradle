@@ -74,8 +74,13 @@ dependencies {
     implementation libs.androidx.activity
     implementation libs.androidx.constraintlayout
     implementation libs.blurview
-    implementation 'com.github.wonderkiln:blurkit-android:1.1.1'
-    implementation 'com.github.veeyaarVR:SuperGradientTextView:1.1'
+    implementation libs.blurkit.android
+    implementation libs.supergradienttextview
+
+    implementation libs.retrofit
+    implementation libs.okhttp3
+    implementation libs.converter.gson
+    implementation libs.logging.interceptor
 
     // Test
     testImplementation libs.junit
