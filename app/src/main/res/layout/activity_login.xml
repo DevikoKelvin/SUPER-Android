@@ -14,7 +14,7 @@
         android:layout_marginTop="-50dp"
         android:layout_marginEnd="-250dp"
         android:layout_marginBottom="-250dp"
-        android:rotation="15"
+        android:rotation="23"
         android:scaleType="centerCrop"
         android:src="@drawable/curved2"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,8 +73,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/nucleo"
-                        android:text="SUPER"
-                        android:textColor="@color/black"
+                        android:text="@string/app_name"
+                        android:textColor="@color/text_primary_color"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -85,7 +85,9 @@
                         android:layout_marginStart="4dp"
                         android:layout_marginBottom="1dp"
                         android:fontFamily="@font/nucleo"
-                        android:text="by Erela" />
+                        android:textColor="@color/text_primary_color"
+                        android:text="by Erela"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
                 <com.veeyaar.supergradienttextview.GradientTextView
@@ -95,12 +97,12 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="24dp"
                     android:gravity="center"
-                    android:text="Welcome back!"
-                    android:textSize="20sp"
+                    android:text="@string/welcome_login"
+                    android:textSize="26sp"
                     android:textStyle="bold"
-                    app:endColor="#2152ff"
+                    app:endColor="@color/dark_blue_accent"
                     app:isVertical="true"
-                    app:startColor="#21d4fd" />
+                    app:startColor="@color/light_blue_accent" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/usernameFieldLayout"
@@ -109,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="Username"
+                    android:hint="@string/username"
                     app:boxCornerRadiusBottomEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
                     app:boxCornerRadiusTopEnd="8dp"
@@ -135,7 +137,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="16dp"
-                    android:hint="Password"
+                    android:hint="@string/password"
                     app:boxCornerRadiusBottomEnd="8dp"
                     app:boxCornerRadiusBottomStart="8dp"
                     app:boxCornerRadiusTopEnd="8dp"
