@@ -6,4 +6,19 @@
     <color name="text_primary_color">#344767</color>
     <color name="light_blue_accent">#21D4FD</color>
     <color name="dark_blue_accent">#2152FF</color>
+
+    <color name="custom_toast_background_success">#CBCEF2E8</color>
+    <color name="custom_toast_background_normal">#CBF2F2F2</color>
+    <color name="custom_toast_background_normal_dark_gray">#CD5C5C5C</color>
+    <color name="custom_toast_background_soft_blue">#CED5E6FB</color>
+    <color name="custom_toast_background_failed">#CDFFD8CC</color>
+    <color name="custom_toast_background_warning">#CBFFF0E3</color>
+
+    <color name="custom_toast_font_success">#087D5D</color>
+    <color name="custom_toast_font_normal_gray">#959595</color>
+    <color name="custom_toast_font_blue">#5899EF</color>
+    <color name="custom_toast_font_normal_soft_gray">#CACACA</color>
+    <color name="custom_toast_font_failed">#FF3D00</color>
+    <color name="custom_toast_font_warning">#FFB573</color>
+    <color name="custom_toast_default_background">#CC000000</color>
 </resources>

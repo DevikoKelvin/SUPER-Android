@@ -170,19 +170,31 @@
                     app:cardElevation="8dp"
                     app:strokeWidth="0dp">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@drawable/primary_gradient_blue">
 
+                        <ProgressBar
+                            android:id="@+id/loadingBar"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:indeterminate="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="8dp"
+                            android:layout_centerVertical="true"
+                            android:indeterminateTint="@color/white"
+                            android:visibility="gone" />
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_centerInParent="true"
                             android:gravity="center"
                             android:text="@string/sign_in"
                             android:textColor="@color/white"
                             android:textStyle="bold" />
-                    </LinearLayout>
+                    </RelativeLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </FrameLayout>

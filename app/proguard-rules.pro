@@ -21,15 +21,15 @@
 #-renamesourcefileattribute SourceFile
 
 # Retrofit
--keep class retrofit.** { *; }
--keepclassmembers class * {
-    @retrofit2.http.* <methods>;
-}
--keepattributes Signature
--keepattributes Exceptions
+#-keep class retrofit.** { *; }
+#-keepclassmembers class * {
+#    @retrofit2.http.* <methods>;
+#}
+#-keepattributes Signature
+#-keepattributes Exceptions
 
 # GSON specific classes
--dontwarn sun.misc.**
+#-dontwarn sun.misc.**
 -keep class com.google.gson.stream.** { *; }
 -keep class com.google.gson.examples.android.model.** { <fields>; }
 -keep class * implements com.google.gson.TypeAdapter
@@ -41,16 +41,16 @@
 }
 
 # Retrofit specific classes
--keep interface retrofit2.** { *; }
--keepclasseswithmembers class * {
-    @retrofit2.http.* <methods>;
-}
--keepclasseswithmembers interface * {
-    @retrofit2.* <methods>;
-}
--keep class okhttp3.** { *; }
--dontwarn retrofit2.**
--dontwarn okhttp3.**
--keep,allowobfuscation,allowshrinking interface retrofit2.Call
--keep,allowobfuscation,allowshrinking class retrofit2.Response
--keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+#-keep interface retrofit2.** { *; }
+#-keepclasseswithmembers class * {
+#    @retrofit2.http.* <methods>;
+#}
+#-keepclasseswithmembers interface * {
+#    @retrofit2.* <methods>;
+#}
+#-keep class okhttp3.** { *; }
+#-dontwarn retrofit2.**
+#-dontwarn okhttp3.**
+#-keep,allowobfuscation,allowshrinking interface retrofit2.Call
+#-keep,allowobfuscation,allowshrinking class retrofit2.Response
+#-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation

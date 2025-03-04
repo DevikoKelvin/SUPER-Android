@@ -12,6 +12,10 @@
 
     <style name="Theme.SUPERMobile" parent="Base.Theme.SUPERMobile" />
 
+    <style name="Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/text_primary_color</item>
+    </style>
+
     <style name="AppBottomSheetDialogTheme"
         parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>

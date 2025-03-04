@@ -19,8 +19,8 @@ android {
 
     signingConfigs {
         release {
-            /*storeFile file('D:\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore.jks')*/
-            storeFile file('D:\\Coding\\Android_Studio_Projects\\ERELA\\SUPER-Android\\keystore.jks')
+            storeFile file('D:\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore.jks')
+            /*storeFile file('D:\\Coding\\Android_Studio_Projects\\ERELA\\SUPER-Android\\keystore.jks')*/
             storePassword "erelasuper"
             keyAlias "supererela"
             keyPassword "erelasuper"
@@ -35,12 +35,15 @@ android {
 
     buildTypes {
         release {
+            buildConfigField 'String', 'BASE_URL', "\"http://192.168.3.245:81/super/api/\""
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
+            debuggable true
         }
         debug {
+            buildConfigField 'String', 'BASE_URL', "\"http://192.168.3.245:81/super/api/\""
             minifyEnabled false
             shrinkResources false
         }
@@ -77,11 +80,13 @@ dependencies {
     implementation libs.blurview
     implementation libs.blurkit.android
     implementation libs.supergradienttextview
+    implementation libs.lottie
 
     implementation libs.retrofit
     implementation libs.okhttp3
     implementation libs.converter.gson
     implementation libs.logging.interceptor
+    implementation "at.favre.lib:bcrypt:0.10.2"
 
     // Test
     testImplementation libs.junit

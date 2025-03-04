@@ -7,4 +7,60 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
+    <FrameLayout
+        android:id="@+id/fragmentsContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-8dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeWidth="0dp">
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <io.alterac.blurkit.BlurLayout
+                android:id="@+id/blurLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:blk_blurRadius="25"
+                app:blk_fps="60" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bottom_navigation_background_color">
+
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                    android:id="@+id/bottomNavMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@android:color/transparent"
+                    app:itemActiveIndicatorStyle="@style/Custom.Indicator"
+                    app:itemBackground="@android:color/transparent"
+                    app:itemIconTint="@drawable/bottom_navigation_color_selector"
+                    app:itemTextAppearanceActiveBoldEnabled="true"
+                    app:itemTextColor="@color/text_primary_color"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:menu="@menu/bottom_nav_menu" />
+            </RelativeLayout>
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
