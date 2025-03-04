@@ -10,5 +10,6 @@
     <string name="survey">Survey</string>
     <string name="home">Home</string>
     <string name="users">Users</string>
-    <string name="profile">Your Profile</string>
+    <string name="profile">Profile</string>
+
 </resources>

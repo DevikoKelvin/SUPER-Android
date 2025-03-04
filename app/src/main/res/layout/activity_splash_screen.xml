@@ -7,6 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".activities.SplashScreenActivity">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:alpha="0.2"
+        android:src="@drawable/app_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
     <LinearLayout
         android:id="@+id/mainSplashContainer"
         android:layout_width="match_parent"

@@ -11,7 +11,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityLoginBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
@@ -51,7 +50,32 @@ class LoginActivity : AppCompatActivity() {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
 
-                if (usernameField.text.isNullOrEmpty() || passwordField.text.isNullOrEmpty()) {
+                CustomToast.getInstance(applicationContext)
+                    .setMessage("Login Successful!")
+                    .setFontColor(
+                        ContextCompat.getColor(
+                            this@LoginActivity,
+                            R.color.custom_toast_font_success
+                        )
+                    )
+                    .setBackgroundColor(
+                        ContextCompat.getColor(
+                            this@LoginActivity,
+                            R.color.custom_toast_background_success
+                        )
+                    ).show()
+                Handler(mainLooper).postDelayed({
+                    startActivity(
+                        Intent(
+                            this@LoginActivity,
+                            MainActivity::class.java
+                        )
+                    ).also {
+                        finish()
+                    }
+                }, 2000)
+
+                /*if (usernameField.text.isNullOrEmpty() || passwordField.text.isNullOrEmpty()) {
                     loadingBar.visibility = View.GONE
                     CustomToast.getInstance(applicationContext)
                         .setMessage("Please fill in all fields.")
@@ -70,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 } else {
                     checkLogin(usernameField.text.toString(), passwordField.text.toString())
-                }
+                }*/
             }
         }
     }
