@@ -1,45 +1,56 @@
 package id.erela.surveyproduct.helpers
 
 import android.content.Context
-import id.erela.surveyproduct.objects.UserData
+import androidx.core.content.edit
+import id.erela.surveyproduct.objects.Users
 
 class UserDataHelper(private val context: Context) {
     private val keyId = "key.id"
-    private val keyName = "key.name"
+    private val keyFullName = "key.full_name"
+    private val keyEmail = "key.email"
     private val keyUsername = "key.username"
-    private val keyPhone = "key.phone"
-    private val keyPhotoProfile = "key.photo_profile"
-    private val keyPrivilege = "key.privilege"
+    private val keyCode = "key.code"
+    private val keyType = "key.type"
+    private val keyTeam = "key.team"
+    private val keyBranch = "key.branch"
 
     fun storeData(
         id: Int,
-        name: String,
-        username: String,
-        phone: String?,
-        photoProfile: String?,
-        privilege: Int
+        fullName: String?,
+        email: String?,
+        username: String?,
+        code: String?,
+        type: String?,
+        team: String?,
+        branch: String?
     ) {
-        SharedPreferencesHelper.getSharedPreferences(context).edit().also {
-            it.apply {
-                putInt(keyId, id)
-                putString(keyName, name)
-                putString(keyUsername, username)
-                putString(keyPhone, phone)
-                putString(keyPhotoProfile, photoProfile)
-                putInt(keyPrivilege, privilege)
+        SharedPreferencesHelper.getSharedPreferences(context).edit {
+            also {
+                it.apply {
+                    putInt(keyId, id)
+                    putString(keyFullName, fullName)
+                    putString(keyEmail, email)
+                    putString(keyUsername, username)
+                    putString(keyCode, code)
+                    putString(keyType, type)
+                    putString(keyTeam, team)
+                    putString(keyBranch, branch)
+                }
             }
-        }.apply()
+        }
     }
 
-    fun getData(): UserData {
+    fun getData(): Users {
         SharedPreferencesHelper.getSharedPreferences(context).also {
-            return UserData(
-                id = it.getInt(keyId, 0),
-                name = it.getString(keyName, "") ?: "",
-                username = it.getString(keyUsername, "") ?: "",
-                phone = it.getString(keyPhone, "") ?: "",
-                photoProfile = it.getString(keyPhotoProfile, "") ?: "",
-                privilege = it.getInt(keyPrivilege, 0)
+            return Users(
+                it.getString(keyTeam, ""),
+                it.getString(keyType, ""),
+                it.getInt(keyId, 0),
+                it.getString(keyFullName, ""),
+                it.getString(keyEmail, ""),
+                it.getString(keyCode, ""),
+                it.getString(keyBranch, ""),
+                it.getString(keyUsername, "")
             )
         }
     }
@@ -51,6 +62,6 @@ class UserDataHelper(private val context: Context) {
     }
 
     fun purgeUserData() {
-        SharedPreferencesHelper.getSharedPreferences(context).edit().clear().apply()
+        SharedPreferencesHelper.getSharedPreferences(context).edit { clear() }
     }
 }

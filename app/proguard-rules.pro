@@ -40,6 +40,9 @@
     @com.google.gson.annotations.SerializedName <fields>;
 }
 
+-keep class android.support.v8.renderscript.** { *; }
+-keep class androidx.renderscript.** { *; }
+
 # Retrofit specific classes
 #-keep interface retrofit2.** { *; }
 #-keepclasseswithmembers class * {

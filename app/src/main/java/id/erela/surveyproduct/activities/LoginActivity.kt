@@ -14,9 +14,9 @@ import com.google.android.material.snackbar.Snackbar
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityLoginBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
-import id.erela.surveyproduct.helpers.api.InitAPI
+import id.erela.surveyproduct.helpers.api.InitErelaAppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
-import id.erela.surveyproduct.objects.models.LoginResponse
+import id.erela.surveyproduct.objects.LoginResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,14 +43,13 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
 
-            usernameField.setText("devikokelvin")
-            passwordField.setText("dev123")
+            usernameField.setText("yeni.g")
+            passwordField.setText("123456")
 
             signInButton.setOnClickListener {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-
-                CustomToast.getInstance(applicationContext)
+                /*CustomToast.getInstance(applicationContext)
                     .setMessage("Login Successful!")
                     .setFontColor(
                         ContextCompat.getColor(
@@ -73,9 +72,9 @@ class LoginActivity : AppCompatActivity() {
                     ).also {
                         finish()
                     }
-                }, 2000)
+                }, 2000)*/
 
-                /*if (usernameField.text.isNullOrEmpty() || passwordField.text.isNullOrEmpty()) {
+                if (usernameField.text.isNullOrEmpty() || passwordField.text.isNullOrEmpty()) {
                     loadingBar.visibility = View.GONE
                     CustomToast.getInstance(applicationContext)
                         .setMessage("Please fill in all fields.")
@@ -94,7 +93,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 } else {
                     checkLogin(usernameField.text.toString(), passwordField.text.toString())
-                }*/
+                }
             }
         }
     }
@@ -106,7 +105,7 @@ class LoginActivity : AppCompatActivity() {
             loadingBar.visibility = View.VISIBLE
 
             try {
-                InitAPI.endpoint.login(username, password)
+                InitErelaAppAPI.endpoint.login(username, password)
                     .enqueue(object : Callback<LoginResponse> {
                         override fun onResponse(
                             call: Call<LoginResponse>,
@@ -116,8 +115,8 @@ class LoginActivity : AppCompatActivity() {
                             if (response.isSuccessful) {
                                 if (response.body() != null) {
                                     val result = response.body()
-                                    when (result?.code) {
-                                        -1 -> {
+                                    when (result?.error) {
+                                        1 -> {
                                             CustomToast.getInstance(applicationContext)
                                                 .setMessage(result.message!!)
                                                 .setFontColor(
@@ -135,24 +134,8 @@ class LoginActivity : AppCompatActivity() {
                                             usernameField.setText("")
                                             passwordField.setText("")
                                         }
+
                                         0 -> {
-                                            CustomToast.getInstance(applicationContext)
-                                                .setMessage(result.message!!)
-                                                .setFontColor(
-                                                    ContextCompat.getColor(
-                                                        this@LoginActivity,
-                                                        R.color.custom_toast_font_failed
-                                                    )
-                                                )
-                                                .setBackgroundColor(
-                                                    ContextCompat.getColor(
-                                                        this@LoginActivity,
-                                                        R.color.custom_toast_background_failed
-                                                    )
-                                                ).show()
-                                            passwordFieldLayout.error = "Wrong password"
-                                        }
-                                        1 -> {
                                             CustomToast.getInstance(applicationContext)
                                                 .setMessage("Login Successful!")
                                                 .setFontColor(
@@ -169,12 +152,14 @@ class LoginActivity : AppCompatActivity() {
                                                 ).show()
                                             UserDataHelper(this@LoginActivity)
                                                 .storeData(
-                                                    result.data?.id!!,
-                                                    result.data.name!!,
-                                                    result.data.username!!,
-                                                    result.data.phone,
-                                                    result.data.photoProfile,
-                                                    result.data.privilege!!
+                                                    result.users?.id ?: 0,
+                                                    result.users?.fullname,
+                                                    result.users?.usermail,
+                                                    result.users?.username,
+                                                    result.users?.usercode,
+                                                    result.users?.usertype,
+                                                    result.users?.userteam,
+                                                    result.users?.branch
                                                 )
                                             Handler(mainLooper).postDelayed({
                                                 startActivity(
@@ -190,6 +175,7 @@ class LoginActivity : AppCompatActivity() {
                                     }
                                 } else {
                                     Log.e("ERROR", "Response body is null")
+                                    Log.e("Response", response.toString())
                                     CustomToast.getInstance(applicationContext)
                                         .setMessage("Something went wrong, please try again.")
                                         .setFontColor(
@@ -207,6 +193,7 @@ class LoginActivity : AppCompatActivity() {
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
+                                Log.e("Response", response.toString())
                                 CustomToast.getInstance(applicationContext)
                                     .setMessage("Something went wrong, please try again.")
                                     .setFontColor(
