@@ -43,36 +43,12 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
 
-            usernameField.setText("yeni.g")
-            passwordField.setText("123456")
+            usernameField.setText("igun.cantik")
+            passwordField.setText("putrikecilayah")
 
             signInButton.setOnClickListener {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-                /*CustomToast.getInstance(applicationContext)
-                    .setMessage("Login Successful!")
-                    .setFontColor(
-                        ContextCompat.getColor(
-                            this@LoginActivity,
-                            R.color.custom_toast_font_success
-                        )
-                    )
-                    .setBackgroundColor(
-                        ContextCompat.getColor(
-                            this@LoginActivity,
-                            R.color.custom_toast_background_success
-                        )
-                    ).show()
-                Handler(mainLooper).postDelayed({
-                    startActivity(
-                        Intent(
-                            this@LoginActivity,
-                            MainActivity::class.java
-                        )
-                    ).also {
-                        finish()
-                    }
-                }, 2000)*/
 
                 if (usernameField.text.isNullOrEmpty() || passwordField.text.isNullOrEmpty()) {
                     loadingBar.visibility = View.GONE

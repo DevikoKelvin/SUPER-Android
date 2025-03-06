@@ -85,7 +85,7 @@ dependencies {
     implementation libs.androidx.constraintlayout
     implementation libs.blurview
     implementation libs.blurkit.android
-    implementation 'com.github.mmin18:RealtimeBlurView:-SNAPSHOT'
+    implementation libs.realtimeblurview
     implementation libs.supergradienttextview
     implementation libs.lottie
 
