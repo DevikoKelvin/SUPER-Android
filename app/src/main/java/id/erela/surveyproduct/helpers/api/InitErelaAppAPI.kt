@@ -29,7 +29,7 @@ object InitErelaAppAPI {
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
         .build()
 
-    val endpoint: Endpoint = getInstance().create(Endpoint::class.java)
+    val erelaEndpoint: ErelaEndpoint = getInstance().create(ErelaEndpoint::class.java)
 
     class ApiKeyInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {

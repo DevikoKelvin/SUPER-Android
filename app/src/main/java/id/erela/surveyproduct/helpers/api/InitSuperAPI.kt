@@ -26,5 +26,5 @@ object InitSuperAPI {
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
         .build()
 
-    val endpoint: Endpoint = getInstance().create(Endpoint::class.java)
+    val superEndpoint: SuperEndpoint = getInstance().create(SuperEndpoint::class.java)
 }

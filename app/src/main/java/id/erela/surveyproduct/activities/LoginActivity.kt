@@ -15,8 +15,10 @@ import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityLoginBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.InitErelaAppAPI
+import id.erela.surveyproduct.helpers.api.InitSuperAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.LoginResponse
+import id.erela.surveyproduct.objects.UserDetailResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -81,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
             loadingBar.visibility = View.VISIBLE
 
             try {
-                InitErelaAppAPI.endpoint.login(username, password)
+                InitErelaAppAPI.erelaEndpoint.login(username, password)
                     .enqueue(object : Callback<LoginResponse> {
                         override fun onResponse(
                             call: Call<LoginResponse>,
@@ -107,46 +109,107 @@ class LoginActivity : AppCompatActivity() {
                                                         R.color.custom_toast_background_failed
                                                     )
                                                 ).show()
-                                            usernameField.setText("")
-                                            passwordField.setText("")
                                         }
 
                                         0 -> {
-                                            CustomToast.getInstance(applicationContext)
-                                                .setMessage("Login Successful!")
-                                                .setFontColor(
-                                                    ContextCompat.getColor(
-                                                        this@LoginActivity,
-                                                        R.color.custom_toast_font_success
-                                                    )
-                                                )
-                                                .setBackgroundColor(
-                                                    ContextCompat.getColor(
-                                                        this@LoginActivity,
-                                                        R.color.custom_toast_background_success
-                                                    )
-                                                ).show()
-                                            UserDataHelper(this@LoginActivity)
-                                                .storeData(
-                                                    result.users?.id ?: 0,
-                                                    result.users?.fullname,
-                                                    result.users?.usermail,
-                                                    result.users?.username,
-                                                    result.users?.usercode,
-                                                    result.users?.usertype,
-                                                    result.users?.userteam,
-                                                    result.users?.branch
-                                                )
-                                            Handler(mainLooper).postDelayed({
-                                                startActivity(
-                                                    Intent(
-                                                        this@LoginActivity,
-                                                        MainActivity::class.java
-                                                    )
-                                                ).also {
-                                                    finish()
+                                            loadingBar.visibility = View.VISIBLE
+                                            InitSuperAPI.superEndpoint.getUserByUsername(
+                                                result.users?.username
+                                            ).enqueue(object : Callback<UserDetailResponse> {
+                                                override fun onResponse(
+                                                    call1: Call<UserDetailResponse>,
+                                                    response1: Response<UserDetailResponse>
+                                                ) {
+                                                    loadingBar.visibility = View.GONE
+                                                    if (response1.isSuccessful) {
+                                                        if (response1.body() != null) {
+                                                            val result1 = response1.body()
+                                                            when (result1?.code) {
+                                                                1 -> {
+                                                                    CustomToast.getInstance(applicationContext)
+                                                                        .setMessage("Login Successful!")
+                                                                        .setFontColor(
+                                                                            ContextCompat.getColor(
+                                                                                this@LoginActivity,
+                                                                                R.color.custom_toast_font_success
+                                                                            )
+                                                                        )
+                                                                        .setBackgroundColor(
+                                                                            ContextCompat.getColor(
+                                                                                this@LoginActivity,
+                                                                                R.color.custom_toast_background_success
+                                                                            )
+                                                                        ).show()
+                                                                    UserDataHelper(this@LoginActivity)
+                                                                        .storeData(
+                                                                            result1.data?.id,
+                                                                            result1.data?.fullname,
+                                                                            result1.data?.usermail,
+                                                                            result1.data?.username,
+                                                                            result1.data?.photoProfile,
+                                                                            result1.data?.usercode,
+                                                                            result1.data?.typeId,
+                                                                            result1.data?.typeName,
+                                                                            result1.data?.teamId,
+                                                                            result1.data?.teamName,
+                                                                            result1.data?.branchId,
+                                                                            result1.data?.branchName,
+                                                                            result1.data?.createdAt,
+                                                                            result1.data?.updatedAt
+                                                                        )
+                                                                    Handler(mainLooper).postDelayed({
+                                                                        startActivity(
+                                                                            Intent(
+                                                                                this@LoginActivity,
+                                                                                MainActivity::class.java
+                                                                            )
+                                                                        ).also {
+                                                                            finish()
+                                                                        }
+                                                                    }, 2000)
+                                                                }
+                                                                0 -> {
+                                                                    CustomToast.getInstance(applicationContext)
+                                                                        .setMessage(result1.message!!)
+                                                                        .setFontColor(
+                                                                            ContextCompat.getColor(
+                                                                                this@LoginActivity,
+                                                                                R.color.custom_toast_font_failed
+                                                                            )
+                                                                        )
+                                                                        .setBackgroundColor(
+                                                                            ContextCompat.getColor(
+                                                                                this@LoginActivity,
+                                                                                R.color.custom_toast_background_failed
+                                                                            )
+                                                                        ).show()
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 }
-                                            }, 2000)
+
+                                                override fun onFailure(
+                                                    call1: Call<UserDetailResponse>,
+                                                    throwable: Throwable
+                                                ) {
+                                                    loadingBar.visibility = View.GONE
+                                                    Log.e("ERROR", "Super API Error Get User Detail")
+                                                    Log.e("ERROR", throwable.toString())
+                                                    throwable.printStackTrace()
+                                                    Snackbar.make(
+                                                        binding.root,
+                                                        "Something went wrong. Please try again!",
+                                                        Snackbar.LENGTH_SHORT
+                                                    ).also {
+                                                        with(it) {
+                                                            setAction("Retry") {
+                                                                checkLogin(username, password)
+                                                            }
+                                                        }
+                                                    }.show()
+                                                }
+                                            })
                                         }
                                     }
                                 } else {

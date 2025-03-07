@@ -37,6 +37,7 @@ android {
         release {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""
             buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""
+            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""
             buildConfigField 'String', 'KEY', "\"x-superapp-authorized\""
             buildConfigField 'String', 'VALUE', "\"2025::Er3L@n2e1pZVYgz8\""
             minifyEnabled true
@@ -48,6 +49,7 @@ android {
         debug {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""
             buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""
+            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""
             buildConfigField 'String', 'KEY', "\"x-superapp-authorized\""
             buildConfigField 'String', 'VALUE', "\"2025::Er3L@n2e1pZVYgz8\""
             minifyEnabled false
@@ -88,6 +90,7 @@ dependencies {
     implementation libs.realtimeblurview
     implementation libs.supergradienttextview
     implementation libs.lottie
+    implementation libs.glide
 
     implementation libs.retrofit
     implementation libs.okhttp3

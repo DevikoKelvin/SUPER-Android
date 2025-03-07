@@ -12,6 +12,7 @@ blurkitAndroid = "1.1.1"
 realtimeblurview = "-SNAPSHOT"
 supergradienttextview = "1.1"
 lottie = "6.6.3"
+glide = "4.16.0"
 
 retrofit = "2.11.0"
 okhttp3 = "5.0.0-alpha.14"
@@ -34,6 +35,7 @@ blurkit-android = { module = "com.github.wonderkiln:blurkit-android", version.re
 realtimeblurview = { module = "com.github.mmin18:RealtimeBlurView", version.ref = "realtimeblurview" }
 supergradienttextview = { module = "com.github.veeyaarVR:SuperGradientTextView", version.ref = "supergradienttextview" }
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
