@@ -15,10 +15,10 @@ interface ErelaEndpoint {
        @Field("password") password: String
     ): Call<LoginResponse>
 
-    @POST("users/list")
+    /*@POST("users/list")
     @FormUrlEncoded
     fun getUserList(
         @Field("rowstart") rowStart: Int,
         @Field("rowdatas") rowDatas: Int
-    ): Call<UserListResponse>
+    ): Call<UserListResponse>*/
 }

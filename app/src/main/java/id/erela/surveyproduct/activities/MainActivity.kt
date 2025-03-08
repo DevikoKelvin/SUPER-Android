@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         binding.apply {
             Log.e("UserData", UserDataHelper(this@MainActivity).getData().toString())
-            adapter = HomeNavPagerAdapter(supportFragmentManager)
+            adapter = HomeNavPagerAdapter(supportFragmentManager, this@MainActivity)
 
             /*loadFragments(HomeFragment())*/
             fragmentsContainer.adapter = adapter

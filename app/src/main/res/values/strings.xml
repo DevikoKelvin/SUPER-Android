@@ -11,4 +11,7 @@
     <string name="home">Home</string>
     <string name="users">Users</string>
     <string name="profile">Profile</string>
+
+    <!-- User List Menu -->
+    <string name="user_list_title">User List</string>
 </resources>

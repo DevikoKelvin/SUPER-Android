@@ -3,37 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="4dp"
         android:layout_marginHorizontal="8dp"
-        app:cardBackgroundColor="@android:color/transparent"
-        app:cardElevation="2dp"
+        android:layout_marginVertical="8dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="4dp"
         app:strokeWidth="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.github.mmin18.widget.RealtimeBlurView
-                android:id="@+id/realtimeBlurView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:realtimeBlurRadius="15dp"
-                app:realtimeOverlayColor="#65FFFFFF" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_margin="16dp"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -48,6 +37,7 @@
                     app:cardElevation="0dp">
 
                     <ImageView
+                        android:id="@+id/photoProfile"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
@@ -67,25 +57,33 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/fullName"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:fontFamily="@font/nucleo_icons"
                             tools:text="Fullname" />
 
                         <TextView
+                            android:id="@+id/userCode"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/nucleo_icons"
                             tools:text="Code" />
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/userType"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/nucleo_icons"
                         tools:text="Position" />
 
                     <TextView
+                        android:id="@+id/userTeamBranch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/nucleo_icons"
                         tools:text="Team of Branch" />
                 </LinearLayout>
             </LinearLayout>

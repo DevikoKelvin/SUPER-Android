@@ -114,7 +114,7 @@ class LoginActivity : AppCompatActivity() {
                                         0 -> {
                                             loadingBar.visibility = View.VISIBLE
                                             InitSuperAPI.superEndpoint.getUserByUsername(
-                                                result.users?.username
+                                                result.usersErela?.username
                                             ).enqueue(object : Callback<UserDetailResponse> {
                                                 override fun onResponse(
                                                     call1: Call<UserDetailResponse>,
@@ -142,20 +142,20 @@ class LoginActivity : AppCompatActivity() {
                                                                         ).show()
                                                                     UserDataHelper(this@LoginActivity)
                                                                         .storeData(
-                                                                            result1.data?.id,
-                                                                            result1.data?.fullname,
-                                                                            result1.data?.usermail,
-                                                                            result1.data?.username,
-                                                                            result1.data?.photoProfile,
-                                                                            result1.data?.usercode,
-                                                                            result1.data?.typeId,
-                                                                            result1.data?.typeName,
-                                                                            result1.data?.teamId,
-                                                                            result1.data?.teamName,
-                                                                            result1.data?.branchId,
-                                                                            result1.data?.branchName,
-                                                                            result1.data?.createdAt,
-                                                                            result1.data?.updatedAt
+                                                                            result1.usersSuper?.id,
+                                                                            result1.usersSuper?.fullname,
+                                                                            result1.usersSuper?.usermail,
+                                                                            result1.usersSuper?.username,
+                                                                            result1.usersSuper?.photoProfile,
+                                                                            result1.usersSuper?.usercode,
+                                                                            result1.usersSuper?.typeId,
+                                                                            result1.usersSuper?.typeName,
+                                                                            result1.usersSuper?.teamId,
+                                                                            result1.usersSuper?.teamName,
+                                                                            result1.usersSuper?.branchId,
+                                                                            result1.usersSuper?.branchName,
+                                                                            result1.usersSuper?.createdAt,
+                                                                            result1.usersSuper?.updatedAt
                                                                         )
                                                                     Handler(mainLooper).postDelayed({
                                                                         startActivity(
@@ -185,7 +185,41 @@ class LoginActivity : AppCompatActivity() {
                                                                         ).show()
                                                                 }
                                                             }
+                                                        } else {
+                                                            Log.e("ERROR", "Response body is null")
+                                                            Log.e("Response", response.toString())
+                                                            CustomToast.getInstance(applicationContext)
+                                                                .setMessage("Something went wrong, please try again.")
+                                                                .setFontColor(
+                                                                    ContextCompat.getColor(
+                                                                        this@LoginActivity,
+                                                                        R.color.custom_toast_font_failed
+                                                                    )
+                                                                )
+                                                                .setBackgroundColor(
+                                                                    ContextCompat.getColor(
+                                                                        this@LoginActivity,
+                                                                        R.color.custom_toast_background_failed
+                                                                    )
+                                                                ).show()
                                                         }
+                                                    } else {
+                                                        Log.e("ERROR", "Response not successful")
+                                                        Log.e("Response", response.toString())
+                                                        CustomToast.getInstance(applicationContext)
+                                                            .setMessage("Something went wrong, please try again.")
+                                                            .setFontColor(
+                                                                ContextCompat.getColor(
+                                                                    this@LoginActivity,
+                                                                    R.color.custom_toast_font_failed
+                                                                )
+                                                            )
+                                                            .setBackgroundColor(
+                                                                ContextCompat.getColor(
+                                                                    this@LoginActivity,
+                                                                    R.color.custom_toast_background_failed
+                                                                )
+                                                            ).show()
                                                     }
                                                 }
 

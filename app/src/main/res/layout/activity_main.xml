@@ -7,6 +7,31 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/gradient_header_flat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0.2"
+        android:scaleType="centerCrop"
+        android:scaleX="-1"
+        android:src="@drawable/curved5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/fragmentsContainer"
         android:layout_width="0dp"
@@ -48,7 +73,7 @@
                 <com.google.android.material.bottomnavigation.BottomNavigationView
                     android:id="@+id/bottomNavMenu"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="100dp"
                     android:layout_centerInParent="true"
                     android:background="@android:color/transparent"
                     app:itemActiveIndicatorStyle="@style/Custom.Indicator"

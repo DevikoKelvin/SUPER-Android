@@ -8,5 +8,5 @@ data class LoginResponse(
     @field:SerializedName("message")
     val message: String? = null,
     @field:SerializedName("users")
-    val users: Users? = null
+    val usersErela: UsersErela? = null
 )

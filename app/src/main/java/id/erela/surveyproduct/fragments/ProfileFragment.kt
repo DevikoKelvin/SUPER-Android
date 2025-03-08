@@ -10,11 +10,11 @@ import com.bumptech.glide.Glide
 import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.databinding.FragmentProfileBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
-import id.erela.surveyproduct.objects.Data
+import id.erela.surveyproduct.objects.UsersSuper
 
 class ProfileFragment : Fragment() {
     private var binding: FragmentProfileBinding? = null
-    private val userData: Data by lazy {
+    private val userUsersSuper: UsersSuper by lazy {
         UserDataHelper(requireContext()).getData()
     }
 
@@ -31,18 +31,18 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
             Glide.with(requireContext())
-                .load(BuildConfig.IMAGE_URL + userData.photoProfile)
+                .load(BuildConfig.IMAGE_URL + userUsersSuper.photoProfile)
                 .into(profilePicture)
-            fullName.text = userData.fullname
-            userType.text = userData.typeName
-            userCode.text = userData.usercode
-            userName.text = userData.username
-            userMail.text = userData.usermail
+            fullName.text = userUsersSuper.fullname
+            userType.text = userUsersSuper.typeName
+            userCode.text = userUsersSuper.usercode
+            userName.text = userUsersSuper.username
+            userMail.text = userUsersSuper.usermail
             teamBranch.text =
-                if (userData.teamName == "" && userData.branchName == "") "-"
-                else if (userData.teamName == "" && userData.branchName != "") "Branch of ${userData.branchName}"
-                else if (userData.teamName != "" && userData.branchName == "") userData.teamName
-                else "${userData.teamName} of Branch ${userData.branchName}"
+                if (userUsersSuper.teamName == "" && userUsersSuper.branchName == "") "-"
+                else if (userUsersSuper.teamName == "" && userUsersSuper.branchName != "") "Branch of ${userUsersSuper.branchName}"
+                else if (userUsersSuper.teamName != "" && userUsersSuper.branchName == "") userUsersSuper.teamName
+                else "${userUsersSuper.teamName} of Branch ${userUsersSuper.branchName}"
         }
     }
 

@@ -13,6 +13,7 @@ realtimeblurview = "-SNAPSHOT"
 supergradienttextview = "1.1"
 lottie = "6.6.3"
 glide = "4.16.0"
+swipeRefreshLayout = "1.1.0"
 
 retrofit = "2.11.0"
 okhttp3 = "5.0.0-alpha.14"
@@ -20,6 +21,7 @@ converterGson = "2.11.0"
 loggingInterceptor = "5.0.0-alpha.14"
 
 junit = "4.13.2"
+
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 
@@ -36,6 +38,7 @@ realtimeblurview = { module = "com.github.mmin18:RealtimeBlurView", version.ref 
 supergradienttextview = { module = "com.github.veeyaarVR:SuperGradientTextView", version.ref = "supergradienttextview" }
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+swipeRefreshLayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swipeRefreshLayout" }
 
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }

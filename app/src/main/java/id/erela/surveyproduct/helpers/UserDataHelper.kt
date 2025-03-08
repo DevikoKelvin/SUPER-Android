@@ -2,8 +2,7 @@ package id.erela.surveyproduct.helpers
 
 import android.content.Context
 import androidx.core.content.edit
-import id.erela.surveyproduct.objects.Data
-import id.erela.surveyproduct.objects.Users
+import id.erela.surveyproduct.objects.UsersSuper
 
 class UserDataHelper(private val context: Context) {
     private val keyId = "key.id"
@@ -59,10 +58,10 @@ class UserDataHelper(private val context: Context) {
         }
     }
 
-    fun getData(): Data {
+    fun getData(): UsersSuper {
         SharedPreferencesHelper.getSharedPreferences(context).also {
             with(it) {
-                return Data(
+                return UsersSuper(
                     getString(keyType, ""),
                     getString(keyPhotoProfile, ""),
                     getInt(keyTypeId, 0),
