@@ -3,6 +3,7 @@ package id.erela.surveyproduct.activities
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
@@ -22,21 +23,13 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
-        /*ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }*/
-
         init()
     }
 
     private fun init() {
         binding.apply {
-            Log.e("UserData", UserDataHelper(this@MainActivity).getData().toString())
             adapter = HomeNavPagerAdapter(supportFragmentManager, this@MainActivity)
 
-            /*loadFragments(HomeFragment())*/
             fragmentsContainer.adapter = adapter
 
             fragmentsContainer.currentItem = 2
@@ -47,7 +40,23 @@ class MainActivity : AppCompatActivity() {
                     position: Int,
                     positionOffset: Float,
                     positionOffsetPixels: Int
-                ) {}
+                ) {
+                    when (position) {
+                        3 -> {
+                            titleBar.alpha = 1 - positionOffset
+                            Log.e("MainActivity", "Position Offset: $positionOffset")
+                            Log.e("MainActivity", "Position Offset Px: $positionOffsetPixels")
+                        }
+
+                        4 -> {
+                            titleBar.alpha = 0f
+                        }
+
+                        else -> {
+                            titleBar.alpha = 1f
+                        }
+                    }
+                }
 
                 override fun onPageSelected(position: Int) {
                     when (position) {
@@ -68,22 +77,27 @@ class MainActivity : AppCompatActivity() {
                         fragmentsContainer.currentItem = 0
                         true
                     }
+
                     R.id.survey -> {
                         fragmentsContainer.currentItem = 1
                         true
                     }
+
                     R.id.home -> {
                         fragmentsContainer.currentItem = 2
                         true
                     }
+
                     R.id.users -> {
                         fragmentsContainer.currentItem = 3
                         true
                     }
+
                     R.id.your_profile -> {
                         fragmentsContainer.currentItem = 4
                         true
                     }
+
                     else -> {
                         false
                     }

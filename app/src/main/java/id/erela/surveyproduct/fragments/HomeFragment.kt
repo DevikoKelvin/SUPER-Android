@@ -47,8 +47,8 @@ class HomeFragment(private val context: Context) : Fragment() {
             val currentDateTime = LocalDateTime.now()
             greetings.text = "Good ${
                 when (currentDateTime.hour) {
-                    in 0 .. 11 -> "morning,"
-                    in 12 .. 18 -> "afternoon,"
+                    in 0..11 -> "morning,"
+                    in 12..18 -> "afternoon,"
                     else -> "evening,"
                 }
             }"

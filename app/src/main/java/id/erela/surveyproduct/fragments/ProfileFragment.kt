@@ -30,6 +30,8 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
+            signOutButton.setOnClickListener {
+            }
             Glide.with(requireContext())
                 .load(BuildConfig.IMAGE_URL + userUsersSuper.photoProfile)
                 .into(profilePicture)
