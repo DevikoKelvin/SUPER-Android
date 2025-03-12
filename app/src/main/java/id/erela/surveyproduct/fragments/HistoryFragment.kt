@@ -1,37 +1,35 @@
 package id.erela.surveyproduct.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.adapters.recycler_view.OutletAdapter
-import id.erela.surveyproduct.databinding.FragmentOutletBinding
+import id.erela.surveyproduct.databinding.FragmentHistoryBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
-import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
-import id.erela.surveyproduct.objects.OutletItem
-import id.erela.surveyproduct.objects.OutletListResponse
+import id.erela.surveyproduct.objects.UsersSuper
 import org.json.JSONException
 
 @SuppressLint("NotifyDataSetChanged")
-class OutletFragment : Fragment() {
-    private var binding: FragmentOutletBinding? = null
+class HistoryFragment(private val context: Context) : Fragment() {
+    private var binding: FragmentHistoryBinding? = null
     private lateinit var adapter: OutletAdapter
-    private var outletList = ArrayList<OutletItem>()
     private var isInitialized = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentOutletBinding.inflate(inflater, container, false)
-        return binding!!.root
+    ): View? {
+        binding = FragmentHistoryBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onDestroyView() {
@@ -47,11 +45,6 @@ class OutletFragment : Fragment() {
                 /*callNetwork()*/
                 mainContainerRefresh.isRefreshing = false
             }
-
-            outletListRv.layoutManager = LinearLayoutManager(context)
-            adapter = OutletAdapter(context, outletList)
-            outletListRv.adapter = adapter
-            adapter.notifyDataSetChanged()
         }
     }
 
@@ -78,10 +71,9 @@ class OutletFragment : Fragment() {
         val loadingDialog = LoadingDialog(context)
         if (loadingDialog.window != null)
             loadingDialog.show()
-        outletList.clear()
+        users.clear()
         binding?.apply {
             try {
-                AppAPI.superEndpoint
             } catch (jsonException: JSONException) {
                 isInitialized = true
                 loadingDialog.dismiss()

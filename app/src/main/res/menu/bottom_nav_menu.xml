@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/outlet"
-        android:icon="@drawable/outlet_icon"
-        android:title="@string/list_outlet" />
-
-    <item
-        android:id="@+id/survey"
-        android:icon="@drawable/survey_icon"
-        android:title="@string/survey" />
-
-    <item
         android:id="@+id/home"
         android:checked="true"
         android:icon="@drawable/home_icon"
         android:title="@string/home" />
 
     <item
-        android:id="@+id/users"
-        android:icon="@drawable/list_icon"
-        android:title="@string/users" />
+        android:id="@+id/customers"
+        android:icon="@drawable/outlet_icon"
+        android:title="@string/list_customer" />
+
+    <item
+        android:id="@+id/survey"
+        android:icon="@drawable/survey_icon"
+        android:title="@string/survey_add" />
+
+    <item
+        android:id="@+id/history"
+        android:icon="@drawable/history_icon"
+        android:title="@string/history" />
 
     <item
         android:id="@+id/your_profile"

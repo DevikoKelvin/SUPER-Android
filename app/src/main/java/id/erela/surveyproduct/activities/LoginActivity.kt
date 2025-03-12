@@ -14,8 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityLoginBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
-import id.erela.surveyproduct.helpers.api.InitErelaAppAPI
-import id.erela.surveyproduct.helpers.api.InitSuperAPI
+import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.LoginResponse
 import id.erela.surveyproduct.objects.UserDetailResponse
@@ -83,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
             loadingBar.visibility = View.VISIBLE
 
             try {
-                InitErelaAppAPI.erelaEndpoint.login(username, password)
+                AppAPI.erelaEndpoint.login(username, password)
                     .enqueue(object : Callback<LoginResponse> {
                         override fun onResponse(
                             call: Call<LoginResponse>,
@@ -113,7 +112,7 @@ class LoginActivity : AppCompatActivity() {
 
                                         0 -> {
                                             loadingBar.visibility = View.VISIBLE
-                                            InitSuperAPI.superEndpoint.getUserByUsername(
+                                            AppAPI.superEndpoint.getUserByUsername(
                                                 result.usersErela?.username
                                             ).enqueue(object : Callback<UserDetailResponse> {
                                                 override fun onResponse(

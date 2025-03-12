@@ -14,10 +14,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.UsersFragment">
+        tools:context=".fragments.HistoryFragment">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView3"
+            android:id="@+id/titleContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
@@ -49,7 +49,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginVertical="8dp"
                     android:fontFamily="@font/nucleo"
-                    android:text="@string/user_list_title"
+                    android:text="@string/history_survey"
                     android:textColor="@color/text_primary_color"
                     android:textSize="26sp"
                     android:textStyle="bold"
@@ -61,14 +61,14 @@
         </com.google.android.material.card.MaterialCardView>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/userListRv"
+            android:id="@+id/surveyHistoryListRv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="16dp"
             android:paddingBottom="90dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView3"
-            tools:listitem="@layout/list_item_user" />
+            app:layout_constraintTop_toBottomOf="@+id/titleContainer"
+            tools:listitem="@layout/list_item_outlet" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

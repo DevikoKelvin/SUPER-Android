@@ -10,26 +10,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
-import id.erela.surveyproduct.databinding.ListItemUserBinding
+import id.erela.surveyproduct.databinding.ListItemOutletBinding
+import id.erela.surveyproduct.objects.OutletItem
 import id.erela.surveyproduct.objects.UsersSuper
 
-class UserListAdapter(private val context: Context, private val users: ArrayList<UsersSuper>) :
-    RecyclerView.Adapter<UserListAdapter.ViewHolder>() {
+class OutletAdapter(private val context: Context, private val outlets: ArrayList<OutletItem>) :
+    RecyclerView.Adapter<OutletAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val binding = ListItemUserBinding.bind(view)
+        val binding = ListItemOutletBinding.bind(view)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        ListItemUserBinding.inflate(
+        ListItemOutletBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         ).root
     )
 
-    override fun getItemCount(): Int = users.size
+    override fun getItemCount(): Int = outlets.size
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = users[position]
+        val item = outlets[position]
 
         with(holder) {
             binding.apply {

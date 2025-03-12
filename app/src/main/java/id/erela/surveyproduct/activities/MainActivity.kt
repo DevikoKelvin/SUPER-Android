@@ -1,18 +1,19 @@
 package id.erela.surveyproduct.activities
 
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import id.erela.surveyproduct.R
-import id.erela.surveyproduct.adapters.view_pager.HomeNavPagerAdapter
+import id.erela.surveyproduct.adapters.home_nav.HomeNavPagerAdapter
 import id.erela.surveyproduct.databinding.ActivityMainBinding
+import id.erela.surveyproduct.dialogs.ConfirmationDialog
 import id.erela.surveyproduct.helpers.UserDataHelper
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionListener {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -28,11 +29,43 @@ class MainActivity : AppCompatActivity() {
 
     private fun init() {
         binding.apply {
-            adapter = HomeNavPagerAdapter(supportFragmentManager, this@MainActivity)
+            onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    binding.apply {
+                        if (bottomNavMenu.selectedItemId == R.id.home) {
+                            val dialog = ConfirmationDialog(
+                                this@MainActivity,
+                                "Are you sure want to quit?",
+                                "Yes"
+                            ).also {
+                                with(it) {
+                                    setConfirmationDialogListener(object :
+                                        ConfirmationDialog.ConfirmationDialogListener {
+                                        override fun onConfirm() {
+                                            finish()
+                                        }
+                                    })
+                                }
+                            }
+
+                            if (dialog.window != null)
+                                dialog.show()
+                        } else {
+                            bottomNavMenu.selectedItemId = R.id.home
+                        }
+                    }
+                }
+            })
+
+            adapter = HomeNavPagerAdapter(supportFragmentManager, this@MainActivity).also {
+                with(it) {
+                    onFragmentActionListener(this@MainActivity)
+                }
+            }
 
             fragmentsContainer.adapter = adapter
 
-            fragmentsContainer.currentItem = 2
+            fragmentsContainer.currentItem = 0
             bottomNavMenu.selectedItemId = R.id.home
 
             fragmentsContainer.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -60,10 +93,10 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onPageSelected(position: Int) {
                     when (position) {
-                        0 -> bottomNavMenu.selectedItemId = R.id.outlet
-                        1 -> bottomNavMenu.selectedItemId = R.id.survey
-                        2 -> bottomNavMenu.selectedItemId = R.id.home
-                        3 -> bottomNavMenu.selectedItemId = R.id.users
+                        0 -> bottomNavMenu.selectedItemId = R.id.home
+                        1 -> bottomNavMenu.selectedItemId = R.id.customers
+                        2 -> bottomNavMenu.selectedItemId = R.id.survey
+                        3 -> bottomNavMenu.selectedItemId = R.id.history
                         4 -> bottomNavMenu.selectedItemId = R.id.your_profile
                     }
                 }
@@ -73,22 +106,22 @@ class MainActivity : AppCompatActivity() {
 
             bottomNavMenu.setOnNavigationItemSelectedListener {
                 when (it.itemId) {
-                    R.id.outlet -> {
+                    R.id.home -> {
                         fragmentsContainer.currentItem = 0
                         true
                     }
 
-                    R.id.survey -> {
+                    R.id.customers -> {
                         fragmentsContainer.currentItem = 1
                         true
                     }
 
-                    R.id.home -> {
+                    R.id.survey -> {
                         fragmentsContainer.currentItem = 2
                         true
                     }
 
-                    R.id.users -> {
+                    R.id.history -> {
                         fragmentsContainer.currentItem = 3
                         true
                     }
@@ -106,21 +139,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("MissingSuperCall")
-    @Deprecated(
-        "This method has been deprecated in favor of using the\n" +
-                "{@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n" +
-                "The OnBackPressedDispatcher controls how back button events are dispatched\n" +
-                "to one or more {@link OnBackPressedCallback} objects."
-    )
-    override fun onBackPressed() {
-        binding.apply {
-            if (bottomNavMenu.selectedItemId == R.id.home) {
-                finish()
-                UserDataHelper(this@MainActivity).purgeUserData()
-            } else {
-                bottomNavMenu.selectedItemId = R.id.home
+    override fun onProfileSignOut() {
+        val dialog = ConfirmationDialog(
+            this@MainActivity,
+            "Are you sure you want to sign out?",
+            "Yes"
+        ).also {
+            with(it) {
+                setConfirmationDialogListener(object :
+                    ConfirmationDialog.ConfirmationDialogListener {
+                    override fun onConfirm() {
+                        UserDataHelper(this@MainActivity).purgeUserData()
+                        startActivity(
+                            Intent(
+                                this@MainActivity,
+                                LoginActivity::class.java
+                            )
+                        )
+                        finish()
+                    }
+                })
             }
         }
+
+        if (dialog.window != null)
+            dialog.show()
     }
 }

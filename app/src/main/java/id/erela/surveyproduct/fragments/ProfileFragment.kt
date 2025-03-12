@@ -17,6 +17,7 @@ class ProfileFragment : Fragment() {
     private val userUsersSuper: UsersSuper by lazy {
         UserDataHelper(requireContext()).getData()
     }
+    private lateinit var onProfileButtonActionListener: OnProfileButtonActionListener
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +32,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
             signOutButton.setOnClickListener {
+                onProfileButtonActionListener.onSignOut()
             }
             Glide.with(requireContext())
                 .load(BuildConfig.IMAGE_URL + userUsersSuper.photoProfile)
@@ -51,5 +53,13 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    fun setOnProfileButtonActionListener(onProfileButtonActionListener: OnProfileButtonActionListener) {
+        this.onProfileButtonActionListener = onProfileButtonActionListener
+    }
+
+    interface OnProfileButtonActionListener {
+        fun onSignOut()
     }
 }

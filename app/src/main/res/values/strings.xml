@@ -6,12 +6,21 @@
     <string name="sign_in">SIGN IN</string>
 
     <!-- Menu -->
-    <string name="list_outlet">Outlet</string>
-    <string name="survey">Survey</string>
     <string name="home">Home</string>
-    <string name="users">Users</string>
+    <string name="list_customer">Customers</string>
+    <string name="survey_add">Start</string>
+    <string name="history">History</string>
     <string name="profile">Profile</string>
 
-    <!-- User List Menu -->
-    <string name="user_list_title">User List</string>
+    <!-- Outlets Menu -->
+    <string name="outlet">Outlets/Customers</string>
+
+    <!-- Survey History Menu -->
+    <string name="history_survey">Survey History</string>
+
+    <!-- Profile Menu -->
+    <string name="signout_text">Sign Out</string>
+    <string name="cancel_confirmation">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="ok">OK</string>
 </resources>
