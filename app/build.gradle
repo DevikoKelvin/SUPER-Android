@@ -38,8 +38,10 @@ android {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""
             buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""
             buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""
+            buildConfigField 'String', 'MAP_URL', "\"https://api.maptiler.com/maps/streets-v2/style.json?key=\""
             buildConfigField 'String', 'KEY', "\"x-superapp-authorized\""
             buildConfigField 'String', 'VALUE', "\"2025::Er3L@n2e1pZVYgz8\""
+            buildConfigField 'String', 'MAP_API_KEY', "\"hqBlKgEYA5AHUcrsp4iT\""
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -50,8 +52,10 @@ android {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""
             buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""
             buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""
+            buildConfigField 'String', 'MAP_URL', "\"https://api.maptiler.com/maps/streets-v2/style.json?key=\""
             buildConfigField 'String', 'KEY', "\"x-superapp-authorized\""
             buildConfigField 'String', 'VALUE', "\"2025::Er3L@n2e1pZVYgz8\""
+            buildConfigField 'String', 'MAP_API_KEY', "\"hqBlKgEYA5AHUcrsp4iT\""
             minifyEnabled false
             shrinkResources false
         }
@@ -92,12 +96,14 @@ dependencies {
     implementation libs.lottie
     implementation libs.glide
     implementation libs.swipeRefreshLayout
+    implementation libs.shimmer
 
     implementation libs.retrofit
     implementation libs.okhttp3
     implementation libs.converter.gson
     implementation libs.logging.interceptor
-    implementation 'at.favre.lib:bcrypt:0.10.2'
+    implementation libs.play.services.maps
+    implementation libs.map.libre
 
     // Test
     testImplementation libs.junit

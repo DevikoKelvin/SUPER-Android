@@ -221,6 +221,7 @@
                         app:realtimeOverlayColor="#66FFFFFF" />
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/erelaRedirect"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="8dp"
@@ -281,12 +282,15 @@
                                     android:textSize="16sp" />
 
                                 <TextView
-                                    android:layout_width="match_parent"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/nucleo"
+                                    android:gravity="center"
+                                    android:layout_marginTop="8dp"
                                     android:text="Read more"
                                     android:textColor="@color/white"
-                                    android:textSize="16sp" />
+                                    android:textSize="14sp"
+                                    app:drawableEndCompat="@drawable/baseline_keyboard_arrow_right_24" />
                             </LinearLayout>
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.google.android.material.card.MaterialCardView>

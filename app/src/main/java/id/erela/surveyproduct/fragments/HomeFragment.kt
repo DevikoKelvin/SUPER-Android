@@ -3,11 +3,11 @@ package id.erela.surveyproduct.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
@@ -53,6 +53,8 @@ class HomeFragment(private val context: Context) : Fragment() {
                 }
             }"
             fullName.text = "${userData.fullname}!"
+
+            erelaRedirect.setOnClickListener {  }
         }
     }
 

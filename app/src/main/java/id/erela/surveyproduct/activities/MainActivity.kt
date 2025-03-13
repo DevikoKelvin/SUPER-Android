@@ -3,6 +3,7 @@ package id.erela.surveyproduct.activities
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -75,6 +76,26 @@ class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionLi
                     positionOffsetPixels: Int
                 ) {
                     when (position) {
+                        0 -> {
+                            addNewOutletButton.alpha = positionOffset
+                            if (positionOffset == 0f)
+                                addNewOutletButton.visibility = View.GONE
+                            else
+                                addNewOutletButton.visibility = View.VISIBLE
+                            addNewOutletButton.isEnabled = positionOffset >= 0.90f
+                        }
+
+                        1 -> {
+                            addNewOutletButton.alpha = 1 - positionOffset
+                            addNewOutletButton.visibility = View.VISIBLE
+                            addNewOutletButton.isEnabled = positionOffset <= 0.1f
+                        }
+
+                        2 -> {
+                            addNewOutletButton.alpha = 0f
+                            addNewOutletButton.visibility = View.GONE
+                        }
+
                         3 -> {
                             titleBar.alpha = 1 - positionOffset
                             Log.e("MainActivity", "Position Offset: $positionOffset")
@@ -83,10 +104,12 @@ class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionLi
 
                         4 -> {
                             titleBar.alpha = 0f
+                            addNewOutletButton.visibility = View.GONE
                         }
 
                         else -> {
                             titleBar.alpha = 1f
+                            addNewOutletButton.visibility = View.GONE
                         }
                     }
                 }
@@ -135,6 +158,10 @@ class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionLi
                         false
                     }
                 }
+            }
+
+            addNewOutletButton.setOnClickListener {
+                Log.e("Add New Outlet Button", "Clicked!")
             }
         }
     }

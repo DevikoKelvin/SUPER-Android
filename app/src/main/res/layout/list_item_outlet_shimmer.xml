@@ -36,19 +36,21 @@
                     <TextView
                         android:id="@+id/outletName"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:layout_marginEnd="16dp"
+                        android:background="@color/custom_toast_font_normal_soft_gray"
                         android:fontFamily="@font/nucleo_icons"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        tools:text="Pharmacy" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/outletID"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:fontFamily="@font/nucleo_icons"
-                        android:textColor="@color/custom_toast_font_success"
+                        android:textColor="@android:color/transparent"
+                        android:background="@color/custom_toast_font_normal_soft_gray"
                         android:textStyle="bold"
                         tools:text="00.XX-00000" />
                 </LinearLayout>
@@ -59,14 +61,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="4dp"
                     android:fontFamily="@font/nucleo_icons"
-                    tools:text="Lorem Ipsum St." />
+                    android:background="@color/custom_toast_font_normal_soft_gray" />
 
                 <TextView
                     android:id="@+id/cityName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nucleo_icons"
-                    tools:text="JAKARTA" />
+                    android:background="@color/custom_toast_font_normal_soft_gray" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

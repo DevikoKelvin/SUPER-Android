@@ -4,7 +4,7 @@ kotlin = "2.1.0"
 coreKtx = "1.15.0"
 appcompat = "1.7.0"
 
-material = "1.11.0"
+material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
 blurview = "version-2.0.6"
@@ -14,14 +14,16 @@ supergradienttextview = "1.1"
 lottie = "6.6.3"
 glide = "4.16.0"
 swipeRefreshLayout = "1.1.0"
+shimmer = "0.5.0"
 
 retrofit = "2.11.0"
 okhttp3 = "5.0.0-alpha.14"
 converterGson = "2.11.0"
 loggingInterceptor = "5.0.0-alpha.14"
+playServicesMaps = "19.1.0"
+mapLibre = "10.0.2"
 
 junit = "4.13.2"
-
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 
@@ -39,11 +41,14 @@ supergradienttextview = { module = "com.github.veeyaarVR:SuperGradientTextView",
 lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 swipeRefreshLayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swipeRefreshLayout" }
+shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "converterGson" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+map-libre = { module = "org.maplibre.gl:android-sdk", version.ref = "mapLibre" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

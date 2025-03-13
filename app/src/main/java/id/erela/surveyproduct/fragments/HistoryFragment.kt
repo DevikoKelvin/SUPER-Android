@@ -9,19 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
-import id.erela.surveyproduct.adapters.recycler_view.OutletAdapter
 import id.erela.surveyproduct.databinding.FragmentHistoryBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
 import id.erela.surveyproduct.helpers.customs.CustomToast
-import id.erela.surveyproduct.objects.UsersSuper
 import org.json.JSONException
 
 @SuppressLint("NotifyDataSetChanged")
 class HistoryFragment(private val context: Context) : Fragment() {
     private var binding: FragmentHistoryBinding? = null
-    private lateinit var adapter: OutletAdapter
     private var isInitialized = false
 
     override fun onCreateView(
@@ -71,7 +67,6 @@ class HistoryFragment(private val context: Context) : Fragment() {
         val loadingDialog = LoadingDialog(context)
         if (loadingDialog.window != null)
             loadingDialog.show()
-        users.clear()
         binding?.apply {
             try {
             } catch (jsonException: JSONException) {

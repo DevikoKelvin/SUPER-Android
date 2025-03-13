@@ -1,6 +1,7 @@
 package id.erela.surveyproduct.objects
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class OutletListResponse(
     @field:SerializedName("code")
@@ -17,25 +18,25 @@ data class OutletItem(
     @field:SerializedName("Address")
     val address: String? = null,
     @field:SerializedName("Village")
-    val village: Long? = null,
-    @field:SerializedName("created_at")
+    val village: String? = null,
+    @field:SerializedName("CreatedAt")
     val createdAt: String? = null,
     @field:SerializedName("Latitude")
-    val latitude: String? = null,
+    val latitude: Double? = null,
     @field:SerializedName("Longitude")
-    val longitude: String? = null,
+    val longitude: Double? = null,
+    @field:SerializedName("UpdatedAt")
+    val updatedAt: String? = null,
     @field:SerializedName("Province")
-    val province: Int? = null,
+    val province: String? = null,
     @field:SerializedName("Name")
     val name: String? = null,
+    @field:SerializedName("Type")
+    val type: String? = null,
     @field:SerializedName("SubDistrict")
-    val subDistrict: Int? = null,
-    @field:SerializedName("updated_at")
-    val updatedAt: String? = null,
+    val subDistrict: String? = null,
     @field:SerializedName("CityRegency")
-    val cityRegency: Int? = null,
-    @field:SerializedName("OutletType")
-    val outletType: Int? = null,
+    val cityRegency: String? = null,
     @field:SerializedName("ID")
     val iD: Int? = null
-)
+): Serializable

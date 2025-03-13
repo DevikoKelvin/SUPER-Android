@@ -15,6 +15,19 @@
     <!-- Outlets Menu -->
     <string name="outlet">Outlets/Customers</string>
 
+    <!-- Outlet Detail -->
+    <string name="outlet_detail_title">Outlet Info</string>
+    <string name="outlet_detail_address">Address</string>
+    <string name="outlet_detail_village">Village</string>
+    <string name="outlet_detail_sub_district">Sub-District</string>
+    <string name="outlet_detail_city_regency">City/Regency</string>
+    <string name="outlet_detail_province">Province</string>
+    <string name="map_location">Maps</string>
+    <string name="map_click_caption">Tap on the map to open map details</string>
+
+    <!-- Add New Outlet -->
+    <string name="add_outlet_title">Add New Outlet</string>
+
     <!-- Survey History Menu -->
     <string name="history_survey">Survey History</string>
 
