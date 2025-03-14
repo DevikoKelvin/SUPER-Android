@@ -129,6 +129,7 @@
         android:layout_marginBottom="32dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="50dp"
+        app:cardElevation="4dp"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:strokeWidth="0dp">

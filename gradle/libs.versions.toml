@@ -22,6 +22,7 @@ converterGson = "2.11.0"
 loggingInterceptor = "5.0.0-alpha.14"
 playServicesMaps = "19.1.0"
 mapLibre = "10.0.2"
+playServicesLocation = "21.3.0"
 
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -49,6 +50,7 @@ converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", ve
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 map-libre = { module = "org.maplibre.gl:android-sdk", version.ref = "mapLibre" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

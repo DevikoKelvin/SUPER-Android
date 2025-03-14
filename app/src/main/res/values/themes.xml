@@ -28,4 +28,9 @@
         parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="android:background">@drawable/bottom_sheets_background</item>
     </style>
+
+    <style name="CustomSpinnerTheme" parent="Widget.AppCompat.Spinner">
+        <item name="background">@drawable/spinner_background</item>
+        <item name="android:background">@drawable/spinner_background</item>
+    </style>
 </resources>

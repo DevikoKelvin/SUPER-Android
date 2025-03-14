@@ -1,9 +1,21 @@
 <resources>
     <string name="app_name">SUPER Mobile</string>
+
+    <!-- Login Screen -->
     <string name="welcome_login">Welcome back!</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="sign_in">SIGN IN</string>
+
+    <!-- Generic String -->
+    <string name="cancel_confirmation">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="save">Save</string>
+    <string name="submit">Submit</string>
+    <string name="send">Send</string>
+    <string name="refresh">Refresh Location</string>
 
     <!-- Menu -->
     <string name="home">Home</string>
@@ -17,11 +29,14 @@
 
     <!-- Outlet Detail -->
     <string name="outlet_detail_title">Outlet Info</string>
+    <string name="outlet_detail_name">Outlet Name</string>
+    <string name="outlet_detail_type">Outlet Type</string>
     <string name="outlet_detail_address">Address</string>
     <string name="outlet_detail_village">Village</string>
     <string name="outlet_detail_sub_district">Sub-District</string>
     <string name="outlet_detail_city_regency">City/Regency</string>
     <string name="outlet_detail_province">Province</string>
+    <string name="outlet_detail_location">Location</string>
     <string name="map_location">Maps</string>
     <string name="map_click_caption">Tap on the map to open map details</string>
 
@@ -33,7 +48,4 @@
 
     <!-- Profile Menu -->
     <string name="signout_text">Sign Out</string>
-    <string name="cancel_confirmation">Cancel</string>
-    <string name="confirm">Confirm</string>
-    <string name="ok">OK</string>
 </resources>

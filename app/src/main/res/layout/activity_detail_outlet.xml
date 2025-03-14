@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="175dp"
         android:scaleType="center"
-        android:src="@drawable/curved2"
+        android:src="@drawable/primary_gradient_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,16 +41,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="90dp"
-            android:paddingBottom="56dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/outletName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="125dp"
                 android:textColor="@color/text_primary_color"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -210,6 +208,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginBottom="56dp"
                 android:text="@string/map_click_caption"
                 android:textAlignment="center"
                 android:textColor="@color/text_primary_color"
