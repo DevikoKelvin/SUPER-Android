@@ -6,12 +6,12 @@ data class SurveyListResponse(
     @field:SerializedName("code")
     val code: Int? = null,
     @field:SerializedName("data")
-    val data: List<DataItem?>? = null,
+    val data: List<QuestionsItem?>? = null,
     @field:SerializedName("message")
     val message: String? = null
 )
 
-data class DataItem(
+data class QuestionsItem(
     @field:SerializedName("QuestionType")
     val questionType: String? = null,
     @field:SerializedName("Question")

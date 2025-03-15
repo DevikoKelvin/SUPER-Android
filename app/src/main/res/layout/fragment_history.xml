@@ -25,7 +25,7 @@
             android:fontFamily="@font/nucleo"
             android:text="@string/history_survey"
             android:textColor="@color/text_primary_color"
-            android:textSize="26sp"
+            android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -1,7 +1,6 @@
 package id.erela.surveyproduct.activities
 
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -11,7 +10,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
@@ -27,11 +28,14 @@ import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityAddOutletBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
 import id.erela.surveyproduct.helpers.PermissionHelper
+import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.OutletCategoryResponse
+import id.erela.surveyproduct.objects.OutletCreationResponse
 import id.erela.surveyproduct.objects.ProvinceListResponse
 import id.erela.surveyproduct.objects.RegionListResponse
+import id.erela.surveyproduct.objects.UsersSuper
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
@@ -41,6 +45,9 @@ import java.util.Locale
 class AddOutletActivity : AppCompatActivity() {
     private val binding: ActivityAddOutletBinding by lazy {
         ActivityAddOutletBinding.inflate(layoutInflater)
+    }
+    private val userData: UsersSuper by lazy {
+        UserDataHelper(applicationContext).getData()
     }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var latitude: Double = 0.0
@@ -66,14 +73,6 @@ class AddOutletActivity : AppCompatActivity() {
         false
     )
     private lateinit var dialog: LoadingDialog
-
-    companion object {
-        fun start(context: Context) {
-            context.startActivity(
-                Intent(context, AddOutletActivity::class.java)
-            )
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,7 +120,220 @@ class AddOutletActivity : AppCompatActivity() {
             prepareFormInput()
             getOutletsCategory()
 
-            saveButton.setOnClickListener { }
+            saveButton.setOnClickListener {
+                loadingBar.visibility = View.VISIBLE
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+                if (!formCheck()) {
+                    loadingBar.visibility = View.GONE
+                    CustomToast.getInstance(applicationContext)
+                        .setMessage(
+                            "Please make sure all fields in the form are filled in."
+                        )
+                        .setBackgroundColor(
+                            ContextCompat.getColor(
+                                this@AddOutletActivity,
+                                R.color.custom_toast_background_failed
+                            )
+                        )
+                        .setFontColor(
+                            ContextCompat.getColor(
+                                this@AddOutletActivity,
+                                R.color.custom_toast_font_failed
+                            )
+                        ).show()
+                } else {
+                    try {
+                        AppAPI.superEndpoint.outletCreation(
+                            userData.branchId ?: 0,
+                            outletNameField.text.toString(),
+                            selectedType,
+                            addressField.text.toString(),
+                            selectedProvince,
+                            selectedCityRegency,
+                            selectedSubDistrict,
+                            selectedVillage,
+                            latitude,
+                            longitude
+                        ).enqueue(object : Callback<OutletCreationResponse> {
+                            override fun onResponse(
+                                call: Call<OutletCreationResponse>,
+                                response: Response<OutletCreationResponse>
+                            ) {
+                                loadingBar.visibility = View.GONE
+                                if (response.isSuccessful) {
+                                    if (response.body() != null) {
+                                        val result = response.body()
+                                        when (result?.code) {
+                                            1 -> {
+                                                CustomToast.getInstance(applicationContext)
+                                                    .setMessage("New outlet data has been created!")
+                                                    .setFontColor(
+                                                        ContextCompat.getColor(
+                                                            applicationContext,
+                                                            R.color.custom_toast_font_success
+                                                        )
+                                                    )
+                                                    .setBackgroundColor(
+                                                        ContextCompat.getColor(
+                                                            applicationContext,
+                                                            R.color.custom_toast_background_success
+                                                        )
+                                                    ).show()
+                                                setResult(RESULT_OK)
+                                                finish()
+                                            }
+
+                                            0 -> {
+                                                CustomToast.getInstance(applicationContext)
+                                                    .setMessage(result.message.toString())
+                                                    .setFontColor(
+                                                        ContextCompat.getColor(
+                                                            applicationContext,
+                                                            R.color.custom_toast_font_failed
+                                                        )
+                                                    )
+                                                    .setBackgroundColor(
+                                                        ContextCompat.getColor(
+                                                            applicationContext,
+                                                            R.color.custom_toast_background_failed
+                                                        )
+                                                    ).show()
+                                            }
+                                        }
+                                    } else {
+                                        Log.e("ERROR (Creation)", "Response body is null")
+                                        Log.e("Response", response.toString())
+                                        CustomToast.getInstance(applicationContext)
+                                            .setMessage("Something went wrong, please try again.")
+                                            .setFontColor(
+                                                ContextCompat.getColor(
+                                                    applicationContext,
+                                                    R.color.custom_toast_font_failed
+                                                )
+                                            )
+                                            .setBackgroundColor(
+                                                ContextCompat.getColor(
+                                                    applicationContext,
+                                                    R.color.custom_toast_background_failed
+                                                )
+                                            ).show()
+                                    }
+                                } else {
+                                    Log.e("ERROR (Creation)", "Response not successful")
+                                    Log.e("Response", response.toString())
+                                    CustomToast.getInstance(applicationContext)
+                                        .setMessage("Something went wrong, please try again.")
+                                        .setFontColor(
+                                            ContextCompat.getColor(
+                                                applicationContext,
+                                                R.color.custom_toast_font_failed
+                                            )
+                                        )
+                                        .setBackgroundColor(
+                                            ContextCompat.getColor(
+                                                applicationContext,
+                                                R.color.custom_toast_background_failed
+                                            )
+                                        ).show()
+                                }
+                            }
+
+                            override fun onFailure(
+                                call: Call<OutletCreationResponse>,
+                                throwable: Throwable
+                            ) {
+                                loadingBar.visibility = View.GONE
+                                throwable.printStackTrace()
+                                Log.e("ERROR (Creation)", throwable.toString())
+                                finish()
+                                CustomToast.getInstance(applicationContext)
+                                    .setMessage("Something went wrong, please try again.")
+                                    .setFontColor(
+                                        ContextCompat.getColor(
+                                            applicationContext,
+                                            R.color.custom_toast_font_failed
+                                        )
+                                    )
+                                    .setBackgroundColor(
+                                        ContextCompat.getColor(
+                                            applicationContext,
+                                            R.color.custom_toast_background_failed
+                                        )
+                                    ).show()
+                            }
+                        })
+                    } catch (jsonException: JSONException) {
+                        loadingBar.visibility = View.GONE
+                        jsonException.printStackTrace()
+                        Log.e("ERROR (Creation)", jsonException.toString())
+                        finish()
+                        CustomToast.getInstance(applicationContext)
+                            .setMessage("Something went wrong, please try again.")
+                            .setFontColor(
+                                ContextCompat.getColor(
+                                    applicationContext,
+                                    R.color.custom_toast_font_failed
+                                )
+                            )
+                            .setBackgroundColor(
+                                ContextCompat.getColor(
+                                    applicationContext,
+                                    R.color.custom_toast_background_failed
+                                )
+                            ).show()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (currentFocus != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
+    private fun formCheck(): Boolean {
+        binding.apply {
+            var validated = 0
+            for (i in isFormEmpty.indices) {
+                if (isFormEmpty[i]) {
+                    validated++
+                }
+            }
+            if (outletNameField.text!!.isEmpty())
+                outletNameFieldLayout.error = "Outlet name is required"
+            if (addressField.text!!.isEmpty())
+                addressFieldLayout.error = "Address is required"
+            if (selectedType == 0)
+                typeDropdownLayout.strokeColor = ContextCompat.getColor(
+                    this@AddOutletActivity,
+                    R.color.custom_toast_font_failed
+                )
+            if (selectedProvince == 0)
+                provinceDropdownLayout.strokeColor = ContextCompat.getColor(
+                    this@AddOutletActivity,
+                    R.color.custom_toast_font_failed
+                )
+            if (selectedCityRegency == 0)
+                cityRegencyDropdownLayout.strokeColor = ContextCompat.getColor(
+                    this@AddOutletActivity,
+                    R.color.custom_toast_font_failed
+                )
+            if (selectedSubDistrict == 0)
+                subDistrictDropdownLayout.strokeColor = ContextCompat.getColor(
+                    this@AddOutletActivity,
+                    R.color.custom_toast_font_failed
+                )
+            if (selectedVillage == 0L)
+                villageDropdownLayout.strokeColor = ContextCompat.getColor(
+                    this@AddOutletActivity,
+                    R.color.custom_toast_font_failed
+                )
+            return validated == isFormEmpty.size
         }
     }
 
@@ -256,7 +468,8 @@ class AddOutletActivity : AppCompatActivity() {
                 geocoder.getFromLocation(
                     latitude, longitude, 1
                 ) {
-                    addressField.setText(it[0].getAddressLine(0) ?: "")
+                    if (addressField.text!!.isEmpty())
+                        addressField.setText(it[0].getAddressLine(0) ?: "")
                 }
             } else {
                 val addresses: List<Address> = geocoder.getFromLocation(
@@ -464,10 +677,14 @@ class AddOutletActivity : AppCompatActivity() {
                                                     provinceItem?.name.toString().lowercase()
                                                         .split(" ")
                                                         .joinToString(" ") { joinedString ->
-                                                            joinedString.replaceFirstChar {
-                                                                if (it.isLowerCase()) it.titlecase(
-                                                                    Locale.ROOT
-                                                                ) else it.toString()
+                                                            if (joinedString == "dki") {
+                                                                joinedString.uppercase()
+                                                            } else {
+                                                                joinedString.replaceFirstChar {
+                                                                    if (it.isLowerCase()) it.titlecase(
+                                                                        Locale.ROOT
+                                                                    ) else it.toString()
+                                                                }
                                                             }
                                                         }
                                                 )
@@ -518,8 +735,27 @@ class AddOutletActivity : AppCompatActivity() {
                                                         position: Int,
                                                         id: Long
                                                     ) {
+                                                        if (selectedProvince != 0 && selectedProvince != result.data?.get(
+                                                                position - 1
+                                                            )?.id
+                                                        ) {
+                                                            cityRegencyList.clear()
+                                                            cityRegencyList.add("-")
+                                                            cityRegencyDropdownAdapter.notifyDataSetChanged()
+                                                            cityRegencyDropdown.setSelection(0)
+                                                            subDistrictList.clear()
+                                                            subDistrictList.add("-")
+                                                            subDistrictDropdownAdapter.notifyDataSetChanged()
+                                                            subDistrictDropdown.setSelection(0)
+                                                            villageList.clear()
+                                                            villageList.add("-")
+                                                            villageDropdownAdapter.notifyDataSetChanged()
+                                                            villageDropdown.setSelection(0)
+                                                        }
                                                         selectedProvince =
-                                                            if (position == 0) 0 else result.data!![position - 1]?.id!!.toInt()
+                                                            if (position == 0) 0 else result.data?.get(
+                                                                position - 1
+                                                            )?.id!!.toInt()
                                                         isFormEmpty[2] = selectedProvince != 0
                                                         if (selectedProvince != 0)
                                                             provinceDropdownLayout.strokeColor =
@@ -642,7 +878,7 @@ class AddOutletActivity : AppCompatActivity() {
                                     1 -> {
                                         cityRegencyList.clear()
                                         cityRegencyList.add("Select City/Regency")
-                                        result.data?.cities?.forEach { citiesItem ->
+                                        result.regionsData?.cities?.forEach { citiesItem ->
                                             cityRegencyList.add(
                                                 citiesItem?.name.toString().lowercase()
                                                     .split(" ")
@@ -657,11 +893,11 @@ class AddOutletActivity : AppCompatActivity() {
                                         }
                                         cityRegencyDropdownAdapter.notifyDataSetChanged()
                                         if (selectedCityRegency != 0) {
-                                            for (i in 0 until result.data!!.cities!!.size) {
-                                                if (result.data.cities?.get(i)?.id == selectedCityRegency)
+                                            for (i in 0 until result.regionsData!!.cities!!.size) {
+                                                if (result.regionsData.cities?.get(i)?.id == selectedCityRegency)
                                                     cityRegencyDropdown.setSelection(
                                                         cityRegencyDropdownAdapter.getPosition(
-                                                            result.data.cities[i]?.name
+                                                            result.regionsData.cities[i]?.name
                                                         )
                                                     )
                                             }
@@ -674,8 +910,23 @@ class AddOutletActivity : AppCompatActivity() {
                                                     position: Int,
                                                     id: Long
                                                 ) {
+                                                    if (selectedCityRegency != 0) {
+                                                        if (selectedCityRegency != result.regionsData?.cities?.get(
+                                                                position
+                                                            )?.id
+                                                        ) {
+                                                            subDistrictList.clear()
+                                                            subDistrictList.add("-")
+                                                            subDistrictDropdownAdapter.notifyDataSetChanged()
+                                                            subDistrictDropdown.setSelection(0)
+                                                            villageList.clear()
+                                                            villageList.add("-")
+                                                            villageDropdownAdapter.notifyDataSetChanged()
+                                                            villageDropdown.setSelection(0)
+                                                        }
+                                                    }
                                                     selectedCityRegency =
-                                                        if (position == 0) 0 else result.data?.cities!![position - 1]?.id!!.toInt()
+                                                        if (position == 0) 0 else result.regionsData?.cities!![position - 1]?.id!!.toInt()
                                                     isFormEmpty[3] = selectedCityRegency != 0
                                                     if (selectedCityRegency != 0)
                                                         cityRegencyDropdownLayout.strokeColor =
@@ -693,10 +944,10 @@ class AddOutletActivity : AppCompatActivity() {
                                                 override fun onNothingSelected(adapterView: AdapterView<*>?) {
                                                 }
                                             }
-                                        if (result.data?.districts != null) {
+                                        if (result.regionsData?.districts != null) {
                                             subDistrictList.clear()
                                             subDistrictList.add("Select Sub-District")
-                                            result.data.districts.forEach { districtsItem ->
+                                            result.regionsData.districts.forEach { districtsItem ->
                                                 subDistrictList.add(
                                                     districtsItem?.name.toString().lowercase()
                                                         .split(" ")
@@ -711,11 +962,11 @@ class AddOutletActivity : AppCompatActivity() {
                                             }
                                             subDistrictDropdownAdapter.notifyDataSetChanged()
                                             if (selectedSubDistrict != 0) {
-                                                for (i in 0 until result.data.districts.size) {
-                                                    if (result.data.districts[i]?.id == selectedSubDistrict)
+                                                for (i in 0 until result.regionsData.districts.size) {
+                                                    if (result.regionsData.districts[i]?.id == selectedSubDistrict)
                                                         subDistrictDropdown.setSelection(
                                                             subDistrictDropdownAdapter.getPosition(
-                                                                result.data.districts[i]?.name
+                                                                result.regionsData.districts[i]?.name
                                                             )
                                                         )
                                                 }
@@ -728,8 +979,17 @@ class AddOutletActivity : AppCompatActivity() {
                                                         position: Int,
                                                         id: Long
                                                     ) {
+                                                        if (selectedSubDistrict != 0 &&
+                                                            position != 0 &&
+                                                            selectedSubDistrict != result.regionsData.districts[position]?.id
+                                                        ) {
+                                                            villageList.clear()
+                                                            villageList.add("-")
+                                                            villageDropdownAdapter.notifyDataSetChanged()
+                                                            villageDropdown.setSelection(0)
+                                                        }
                                                         selectedSubDistrict =
-                                                            if (position == 0) 0 else result.data.districts[position - 1]?.id!!.toInt()
+                                                            if (position == 0) 0 else result.regionsData.districts[position - 1]?.id!!.toInt()
                                                         isFormEmpty[4] = selectedSubDistrict != 0
                                                         if (selectedSubDistrict != 0)
                                                             subDistrictDropdownLayout.strokeColor =
@@ -748,10 +1008,10 @@ class AddOutletActivity : AppCompatActivity() {
                                                     }
                                                 }
                                         }
-                                        if (result.data?.villages != null) {
+                                        if (result.regionsData?.villages != null) {
                                             villageList.clear()
                                             villageList.add("Select Village")
-                                            result.data.villages.forEach { villagesItem ->
+                                            result.regionsData.villages.forEach { villagesItem ->
                                                 villageList.add(
                                                     villagesItem?.name.toString().lowercase()
                                                         .split(" ")
@@ -766,36 +1026,37 @@ class AddOutletActivity : AppCompatActivity() {
                                             }
                                             villageDropdownAdapter.notifyDataSetChanged()
                                             if (selectedVillage != 0L) {
-                                                for (i in 0 until result.data.villages.size) {
-                                                    if (result.data.villages[i]?.id == selectedVillage)
+                                                for (i in 0 until result.regionsData.villages.size) {
+                                                    if (result.regionsData.villages[i]?.id == selectedVillage)
                                                         villageDropdown.setSelection(
                                                             villageDropdownAdapter.getPosition(
-                                                                result.data.villages[i]?.name
+                                                                result.regionsData.villages[i]?.name
                                                             )
                                                         )
                                                 }
                                             }
-                                            villageDropdown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                                                override fun onItemSelected(
-                                                    adapterView: AdapterView<*>?,
-                                                    view: View?,
-                                                    position: Int,
-                                                    id: Long
-                                                ) {
-                                                    selectedVillage =
-                                                        if (position == 0) 0 else result.data.villages[position - 1]?.id!!
-                                                    isFormEmpty[5] = selectedVillage != 0L
-                                                    if (selectedVillage != 0L)
-                                                        villageDropdownLayout.strokeColor =
-                                                            ContextCompat.getColor(
-                                                                this@AddOutletActivity,
-                                                                R.color.form_field_stroke
-                                                            )
-                                                }
+                                            villageDropdown.onItemSelectedListener =
+                                                object : AdapterView.OnItemSelectedListener {
+                                                    override fun onItemSelected(
+                                                        adapterView: AdapterView<*>?,
+                                                        view: View?,
+                                                        position: Int,
+                                                        id: Long
+                                                    ) {
+                                                        selectedVillage =
+                                                            if (position == 0) 0 else result.regionsData.villages[position - 1]?.id!!
+                                                        isFormEmpty[5] = selectedVillage != 0L
+                                                        if (selectedVillage != 0L)
+                                                            villageDropdownLayout.strokeColor =
+                                                                ContextCompat.getColor(
+                                                                    this@AddOutletActivity,
+                                                                    R.color.form_field_stroke
+                                                                )
+                                                    }
 
-                                                override fun onNothingSelected(adapterView: AdapterView<*>?) {
+                                                    override fun onNothingSelected(adapterView: AdapterView<*>?) {
+                                                    }
                                                 }
-                                            }
                                         }
                                     }
                                 }

@@ -1,22 +1,19 @@
 package id.erela.surveyproduct.activities
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.adapters.home_nav.HomeNavPagerAdapter
 import id.erela.surveyproduct.databinding.ActivityMainBinding
-import id.erela.surveyproduct.databinding.CustomToastBinding
 import id.erela.surveyproduct.dialogs.ConfirmationDialog
 import id.erela.surveyproduct.helpers.UserDataHelper
-import id.erela.surveyproduct.helpers.customs.CustomToast
 
 class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionListener {
     private val binding: ActivityMainBinding by lazy {
@@ -82,37 +79,37 @@ class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionLi
                     when (position) {
                         0 -> {
                             titleBar.alpha = 1f
-                            addNewOutletButton.alpha = positionOffset
+                            /*addNewOutletButton.alpha = positionOffset
                             if (positionOffset == 0f)
                                 addNewOutletButton.visibility = View.GONE
                             else
                                 addNewOutletButton.visibility = View.VISIBLE
-                            addNewOutletButton.isEnabled = positionOffset >= 0.90f
+                            addNewOutletButton.isEnabled = positionOffset >= 0.90f*/
                         }
 
                         1 -> {
                             titleBar.alpha = 1f
-                            addNewOutletButton.alpha = 1 - positionOffset
+                            /*addNewOutletButton.alpha = 1 - positionOffset
                             addNewOutletButton.visibility = View.VISIBLE
-                            addNewOutletButton.isEnabled = positionOffset <= 0.1f
+                            addNewOutletButton.isEnabled = positionOffset <= 0.1f*/
                         }
 
                         2 -> {
                             titleBar.alpha = 1f
-                            addNewOutletButton.alpha = 0f
-                            addNewOutletButton.visibility = View.GONE
+                            /*addNewOutletButton.alpha = 0f
+                            addNewOutletButton.visibility = View.GONE*/
                         }
 
                         3 -> {
                             titleBar.alpha = 1 - positionOffset
-                            addNewOutletButton.alpha = 0f
-                            addNewOutletButton.visibility = View.GONE
+                            /*addNewOutletButton.alpha = 0f
+                            addNewOutletButton.visibility = View.GONE*/
                         }
 
                         4 -> {
                             titleBar.alpha = 0f
-                            addNewOutletButton.alpha = 0f
-                            addNewOutletButton.visibility = View.GONE
+                            /*addNewOutletButton.alpha = 0f
+                            addNewOutletButton.visibility = View.GONE*/
                         }
                     }
                 }
@@ -162,11 +159,15 @@ class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionLi
                     }
                 }
             }
-
-            addNewOutletButton.setOnClickListener {
-                AddOutletActivity.start(this@MainActivity)
-            }
         }
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (currentFocus != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
     override fun onProfileSignOut() {

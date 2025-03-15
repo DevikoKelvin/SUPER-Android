@@ -6,12 +6,12 @@ data class RegionListResponse(
     @field:SerializedName("code")
     val code: Int? = null,
     @field:SerializedName("data")
-    val data: Data? = null,
+    val regionsData: RegionsData? = null,
     @field:SerializedName("message")
     val message: String? = null
 )
 
-data class Data(
+data class RegionsData(
     @field:SerializedName("cities")
     val cities: List<CitiesItem?>? = null,
     @field:SerializedName("villages")

@@ -8,7 +8,7 @@ import id.erela.surveyproduct.fragments.HistoryFragment
 import id.erela.surveyproduct.fragments.HomeFragment
 import id.erela.surveyproduct.fragments.OutletFragment
 import id.erela.surveyproduct.fragments.ProfileFragment
-import id.erela.surveyproduct.fragments.SurveyFragment
+import id.erela.surveyproduct.fragments.StartSurveyFragment
 
 class HomeNavPagerAdapter(fragmentManager: FragmentManager, private val context: Context) :
     FragmentPagerAdapter(fragmentManager) {
@@ -19,7 +19,7 @@ class HomeNavPagerAdapter(fragmentManager: FragmentManager, private val context:
     override fun getItem(position: Int): Fragment = when (position) {
         0 -> HomeFragment(context)
         1 -> OutletFragment(context)
-        2 -> SurveyFragment()
+        2 -> StartSurveyFragment(context)
         3 -> HistoryFragment(context)
         4 -> ProfileFragment().also {
             with(it) {
