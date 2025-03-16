@@ -41,7 +41,7 @@ class ProfileFragment : Fragment() {
             userType.text = userUsersSuper.typeName
             userCode.text = userUsersSuper.usercode
             userName.text = userUsersSuper.username
-            userMail.text = userUsersSuper.usermail
+            userMail.text = userUsersSuper.userMail
             teamBranch.text =
                 if (userUsersSuper.teamName == "" && userUsersSuper.branchName == "") "-"
                 else if (userUsersSuper.teamName == "" && userUsersSuper.branchName != "") "Branch of ${userUsersSuper.branchName}"

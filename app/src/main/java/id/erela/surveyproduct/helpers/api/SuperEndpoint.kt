@@ -1,8 +1,11 @@
 package id.erela.surveyproduct.helpers.api
 
+import id.erela.surveyproduct.objects.AnswerHistoryResponse
+import id.erela.surveyproduct.objects.CheckInOutTodayListResponse
 import id.erela.surveyproduct.objects.OutletCategoryResponse
 import id.erela.surveyproduct.objects.OutletCreationResponse
 import id.erela.surveyproduct.objects.OutletListResponse
+import id.erela.surveyproduct.objects.OutletResponse
 import id.erela.surveyproduct.objects.ProvinceListResponse
 import id.erela.surveyproduct.objects.RegionListResponse
 import id.erela.surveyproduct.objects.SurveyListResponse
@@ -13,17 +16,40 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 interface SuperEndpoint {
+    // Users
     @POST("user/getUserByUsername")
     @FormUrlEncoded
     fun getUserByUsername(
         @Field("username") username: String?
     ): Call<UserDetailResponse>
 
+
+    // Surveys
     @POST("survey/getActive")
     fun showAllSurveys(): Call<SurveyListResponse>
 
+    @POST("survey/getTodayCheckInOut")
+    @FormUrlEncoded
+    fun showTodayCheckInOut(
+        @Field("UserID") userID: Int
+    ): Call<CheckInOutTodayListResponse>
+
+    @POST("survey/getAnswerHistory")
+    @FormUrlEncoded
+    fun showAnswerHistory(
+        @Field("UserID") userID: Int
+    ): Call<AnswerHistoryResponse>
+
+
+    // Outlets
     @POST("outlet")
     fun showAllOutlets(): Call<OutletListResponse>
+
+    @POST("outlet/getOutletById")
+    @FormUrlEncoded
+    fun showOutletById(
+        @Field("id") id: Int
+    ): Call<OutletResponse>
 
     @POST("outlet/category")
     fun showAllOutletCategories(): Call<OutletCategoryResponse>

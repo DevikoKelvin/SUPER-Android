@@ -143,7 +143,7 @@ class LoginActivity : AppCompatActivity() {
                                                                         .storeData(
                                                                             result1.usersSuper?.id,
                                                                             result1.usersSuper?.fullname,
-                                                                            result1.usersSuper?.usermail,
+                                                                            result1.usersSuper?.userMail,
                                                                             result1.usersSuper?.username,
                                                                             result1.usersSuper?.photoProfile,
                                                                             result1.usersSuper?.usercode,

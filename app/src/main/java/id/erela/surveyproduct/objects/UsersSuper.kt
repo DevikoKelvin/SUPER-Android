@@ -12,7 +12,7 @@ data class UsersSuper(
     @field:SerializedName("created_at")
     val createdAt: String? = null,
     @field:SerializedName("usermail")
-    val usermail: String? = null,
+    val userMail: String? = null,
     @field:SerializedName("team_id")
     val teamId: Int? = null,
     @field:SerializedName("team_name")
