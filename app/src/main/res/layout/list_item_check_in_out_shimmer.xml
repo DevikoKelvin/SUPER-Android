@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="8dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/surveyId"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:background="@color/custom_toast_font_normal_soft_gray"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/custom_toast_font_normal_soft_gray"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/custom_toast_font_normal_soft_gray"
+                    android:textSize="14sp"
+                    tools:text="3/17/2025" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/outletName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:background="@color/custom_toast_font_normal_soft_gray"
+                android:fontFamily="@font/nucleo"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/outletAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/custom_toast_font_normal_soft_gray"
+                android:fontFamily="@font/nucleo"
+                android:textColor="@color/custom_toast_font_normal_soft_gray"
+                android:textSize="16sp"
+                tools:text="Jalan Murbei No.2, Sumurboto, Banyumanik, Semarang." />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/checkInTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:background="@color/custom_toast_font_normal_soft_gray"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/custom_toast_font_normal_soft_gray"
+                    android:textSize="14sp"
+                    tools:text="Checked In\n09:21:33" />
+
+                <TextView
+                    android:id="@+id/checkOutTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:background="@color/custom_toast_font_normal_soft_gray"
+                    android:fontFamily="@font/nucleo"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/custom_toast_font_normal_soft_gray"
+                    android:textSize="14sp"
+                    tools:text="Checked Out\n12:52:21" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

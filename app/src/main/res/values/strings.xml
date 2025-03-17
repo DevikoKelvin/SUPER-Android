@@ -26,6 +26,7 @@
 
     <!-- Outlets Menu -->
     <string name="outlet">Outlets/Customers</string>
+    <string name="search_outlet">Search Outlet Name</string>
 
     <!-- Outlet Detail -->
     <string name="outlet_detail_title">Outlet Info</string>
@@ -47,6 +48,11 @@
     <string name="start_survey_title">Surveys</string>
     <string name="start_survey_now">Start Survey Now!</string>
     <string name="today_survey">Today\'s Survey Tracking</string>
+
+    <!-- Survey Detail -->
+    <string name="survey_detail_title">Survey Detail</string>
+    <string name="survey_data">Survey Data</string>
+    <string name="survey_answer">Answer</string>
 
     <!-- Survey History Menu -->
     <string name="history_survey">Survey History</string>

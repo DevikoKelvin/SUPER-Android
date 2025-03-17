@@ -11,6 +11,7 @@ import id.erela.surveyproduct.objects.OutletItem
 class OutletAdapter(private val outlets: ArrayList<OutletItem>) :
     RecyclerView.Adapter<OutletAdapter.ViewHolder>() {
     private lateinit var onOutletItemClickListener: OnOutletItemClickListener
+    private var originalOutlets: ArrayList<OutletItem> = ArrayList(outlets)
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ListItemOutletBinding.bind(view)
@@ -44,6 +45,23 @@ class OutletAdapter(private val outlets: ArrayList<OutletItem>) :
 
     fun setOnOutletItemClickListener(onOutletItemClickListener: OnOutletItemClickListener) {
         this.onOutletItemClickListener = onOutletItemClickListener
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun filter(query: String) {
+        outlets.clear()
+        if (query.isEmpty()) {
+            outlets.addAll(originalOutlets)
+        } else {
+            val filteredList = originalOutlets.filter {
+                it.name!!.contains(query, ignoreCase = true) ||
+                        it.outletID!!.contains(query, ignoreCase = true) ||
+                        it.address!!.contains(query, ignoreCase = true) ||
+                        it.cityRegency!!.contains(query, ignoreCase = true)
+            }
+            outlets.addAll(filteredList)
+        }
+        notifyDataSetChanged()
     }
 
     interface OnOutletItemClickListener {

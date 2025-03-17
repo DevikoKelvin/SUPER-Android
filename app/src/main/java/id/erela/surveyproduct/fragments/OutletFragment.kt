@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -61,6 +63,23 @@ class OutletFragment(private val context: Context) : Fragment() {
                 mainContainerRefresh.isRefreshing = false
             }
 
+            searchInput.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    adapter.filter(s.toString())
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                }
+            })
+
             outletListRv.layoutManager = LinearLayoutManager(context)
             adapter = OutletAdapter(outletList).also {
                 with(it) {
@@ -90,9 +109,13 @@ class OutletFragment(private val context: Context) : Fragment() {
     )
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-            if (!isInitialized)
-                callNetwork()
+        binding?.apply {
+            if (isVisibleToUser) {
+                addNewOutletButton.isEnabled = true
+                if (!isInitialized)
+                    callNetwork()
+            } else
+                addNewOutletButton.isEnabled = false
         }
     }
 
@@ -104,7 +127,6 @@ class OutletFragment(private val context: Context) : Fragment() {
 
     private fun callNetwork() {
         loadingManager(true)
-        outletList.clear()
         binding?.apply {
             try {
                 AppAPI.superEndpoint.showAllOutlets()
@@ -120,6 +142,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                                     val result = response.body()
                                     when (result?.code) {
                                         1 -> {
+                                            outletList.clear()
                                             result.data?.forEach {
                                                 outletList.add(
                                                     OutletItem(
@@ -247,11 +270,13 @@ class OutletFragment(private val context: Context) : Fragment() {
     private fun loadingManager(isLoading: Boolean) {
         binding?.apply {
             if (isLoading) {
+                outletListRv.visibility = View.GONE
                 shimmerLayout.apply {
                     visibility = View.VISIBLE
                     startShimmer()
                 }
             } else {
+                outletListRv.visibility = View.VISIBLE
                 shimmerLayout.apply {
                     stopShimmer()
                     visibility = View.GONE

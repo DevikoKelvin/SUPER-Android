@@ -1,15 +1,21 @@
 package id.erela.surveyproduct.adapters.recycler_view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.databinding.ListItemSubquestionsBinding
-import id.erela.surveyproduct.objects.SubQuestionsItem
+import id.erela.surveyproduct.objects.SubQuestionsAnswerItem
 
-class SubQuestionsAdapter(private val subQuestions: List<SubQuestionsItem?>) :
-    RecyclerView.Adapter<SubQuestionsAdapter.ViewHolder>() {
+class SubQuestionsAnswerAdapter(
+    private val context: Context,
+    private val subQuestions: List<SubQuestionsAnswerItem?>
+) :
+    RecyclerView.Adapter<SubQuestionsAnswerAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ListItemSubquestionsBinding.bind(view)
     }
@@ -29,6 +35,17 @@ class SubQuestionsAdapter(private val subQuestions: List<SubQuestionsItem?>) :
         with(holder) {
             binding.apply {
                 subQuestions.text = "${position + 1}. ${item?.question}"
+                answer.text = item?.answer
+                if (item?.questionType != "photo") {
+                    answer.visibility = View.VISIBLE
+                    imageAnswer.visibility = View.GONE
+                } else {
+                    answer.visibility = View.GONE
+                    imageAnswer.visibility = View.VISIBLE
+                    Glide.with(context)
+                        .load(BuildConfig.IMAGE_URL + item.answer)
+                        .into(imageAnswer)
+                }
             }
         }
     }

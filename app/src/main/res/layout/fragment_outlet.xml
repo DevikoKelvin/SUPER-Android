@@ -58,13 +58,14 @@
                         app:realtimeOverlayColor="#9AD5E6FB" />
 
                     <EditText
+                        android:id="@+id/searchInput"
                         android:layout_width="match_parent"
                         android:layout_height="36dp"
                         android:layout_marginHorizontal="16dp"
                         android:layout_marginVertical="2dp"
                         android:fontFamily="@font/nucleo"
                         android:background="@android:color/transparent"
-                        android:hint="Search"
+                        android:hint="@string/search_outlet"
                         android:inputType="textFilter"
                         android:textColor="@color/text_primary_color"
                         android:textSize="14sp"
@@ -135,7 +136,6 @@
         android:layout_marginBottom="125dp"
         android:layout_marginEnd="32dp"
         app:cardBackgroundColor="@android:color/transparent"
-        app:cardCornerRadius="50dp"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

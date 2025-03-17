@@ -6,20 +6,31 @@ data class AnswerHistoryResponse(
     @field:SerializedName("code")
     val code: Int? = null,
     @field:SerializedName("data")
-    val data: List<AnswerItem?>? = null,
+    val data: List<QuestionAnswerItem?>? = null,
     @field:SerializedName("message")
     val message: String? = null
 )
 
-data class AnswerItem(
+data class QuestionAnswerItem(
     @field:SerializedName("Answer")
     val answer: String? = null,
     @field:SerializedName("QuestionID")
     val questionID: Int? = null,
-    @field:SerializedName("AnswerGroupID")
-    val answerGroupID: Int? = null,
-    @field:SerializedName("ID")
-    val iD: Int? = null,
+    @field:SerializedName("QuestionType")
+    val questionType: String? = null,
+    @field:SerializedName("Question")
+    val question: String? = null,
+    @field:SerializedName("SubQuestions")
+    val subQuestions: List<SubQuestionsAnswerItem?>? = null
+)
+
+data class SubQuestionsAnswerItem(
+    @field:SerializedName("Answer")
+    val answer: String? = null,
+    @field:SerializedName("QuestionType")
+    val questionType: String? = null,
+    @field:SerializedName("Question")
+    val question: String? = null,
     @field:SerializedName("SubQuestionID")
     val subQuestionID: Int? = null
 )

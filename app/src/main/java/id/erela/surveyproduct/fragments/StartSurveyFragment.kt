@@ -4,19 +4,22 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
-import id.erela.surveyproduct.adapters.recycler_view.QuestionsAdapter
-import id.erela.surveyproduct.databinding.FragmentSurveyBinding
+import id.erela.surveyproduct.activities.SurveyDetailActivity
+import id.erela.surveyproduct.adapters.recycler_view.CheckInOutAdapter
+import id.erela.surveyproduct.databinding.FragmentStartSurveyBinding
+import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
-import id.erela.surveyproduct.objects.QuestionsItem
-import id.erela.surveyproduct.objects.SurveyListResponse
+import id.erela.surveyproduct.objects.CheckInOutItem
+import id.erela.surveyproduct.objects.CheckInOutListResponse
+import id.erela.surveyproduct.objects.UsersSuper
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,31 +27,45 @@ import retrofit2.Response
 
 @SuppressLint("NotifyDataSetChanged")
 class StartSurveyFragment(private val context: Context) : Fragment() {
-    private var binding: FragmentSurveyBinding? = null
-    private lateinit var adapter: QuestionsAdapter
-    private val questions = ArrayList<QuestionsItem>()
+    private var binding: FragmentStartSurveyBinding? = null
     private var isInitialized = false
+    private lateinit var adapter: CheckInOutAdapter
+    private val checkInOutHistory = ArrayList<CheckInOutItem>()
+    private val userData: UsersSuper by lazy {
+        UserDataHelper(context).getData()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSurveyBinding.inflate(inflater, container, false)
+        binding = FragmentStartSurveyBinding.inflate(inflater, container, false)
         return binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
+            if (isInitialized)
+                loadingManager(false)
             mainContainerRefresh.setOnRefreshListener {
                 callNetwork()
                 mainContainerRefresh.isRefreshing = false
             }
 
-            adapter = QuestionsAdapter(questions, requireContext())
-            activeSurveyListRv.adapter = adapter
-            activeSurveyListRv.layoutManager = LinearLayoutManager(context)
-            activeSurveyListRv.setHasFixedSize(true)
+            adapter = CheckInOutAdapter(checkInOutHistory).also {
+                with(it) {
+                    setOnTodayTrackingItemClickListener(object :
+                        CheckInOutAdapter.OnCheckInOutItemClickListener {
+                        override fun onCheckInOutItemClick(item: CheckInOutItem?) {
+                            SurveyDetailActivity.start(context, item!!)
+                        }
+                    })
+                }
+            }
+            checkInOutListRv.adapter = adapter
+            checkInOutListRv.layoutManager = LinearLayoutManager(context)
+            checkInOutListRv.setHasFixedSize(true)
 
             startSurveyButton.setOnClickListener { }
         }
@@ -57,8 +74,14 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
     @Deprecated("Deprecated in Java")
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser)
-            callNetwork()
+        binding?.apply {
+            if (isVisibleToUser) {
+                startSurveyButton.isEnabled = true
+                if (!isInitialized)
+                    callNetwork()
+            } else
+                startSurveyButton.isEnabled = false
+        }
     }
 
     override fun onDestroyView() {
@@ -67,24 +90,27 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
     }
 
     private fun callNetwork() {
+        loadingManager(true)
         binding.apply {
             try {
-                AppAPI.superEndpoint.showAllSurveys()
-                    .enqueue(object : Callback<SurveyListResponse> {
+                AppAPI.superEndpoint.showTodayCheckInOut(userData.id!!.toInt())
+                    .enqueue(object : Callback<CheckInOutListResponse> {
                         override fun onResponse(
-                            call: Call<SurveyListResponse>,
-                            response: Response<SurveyListResponse>
+                            call: Call<CheckInOutListResponse>,
+                            response: Response<CheckInOutListResponse>
                         ) {
+                            loadingManager(false)
                             isInitialized = true
                             if (response.isSuccessful) {
                                 if (response.body() != null) {
                                     val result = response.body()
                                     when (result?.code) {
                                         1 -> {
-                                            questions.clear()
+                                            checkInOutHistory.clear()
                                             for (item in result.data!!) {
-                                                questions.add(item!!)
+                                                checkInOutHistory.add(item!!)
                                             }
+                                            Log.e("DATA", checkInOutHistory.toString())
                                             adapter.notifyDataSetChanged()
                                         }
 
@@ -144,10 +170,11 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                         }
 
                         override fun onFailure(
-                            call: Call<SurveyListResponse>,
+                            call: Call<CheckInOutListResponse>,
                             throwable: Throwable
                         ) {
                             isInitialized = false
+                            loadingManager(false)
                             Log.e("ERROR", throwable.toString())
                             throwable.printStackTrace()
                             CustomToast.getInstance(context)
@@ -168,6 +195,7 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                     })
             } catch (jsonException: JSONException) {
                 isInitialized = false
+                loadingManager(false)
                 Log.e("ERROR", jsonException.toString())
                 jsonException.printStackTrace()
                 CustomToast.getInstance(context)
@@ -184,6 +212,24 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
+            }
+        }
+    }
+
+    private fun loadingManager(isLoading: Boolean) {
+        binding?.apply {
+            if (isLoading) {
+                checkInOutListRv.visibility = View.GONE
+                shimmerLayout.apply {
+                    visibility = View.VISIBLE
+                    startShimmer()
+                }
+            } else {
+                checkInOutListRv.visibility = View.VISIBLE
+                shimmerLayout.apply {
+                    stopShimmer()
+                    visibility = View.GONE
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 package id.erela.surveyproduct.helpers.api
 
 import id.erela.surveyproduct.objects.AnswerHistoryResponse
-import id.erela.surveyproduct.objects.CheckInOutTodayListResponse
+import id.erela.surveyproduct.objects.CheckInOutListResponse
 import id.erela.surveyproduct.objects.OutletCategoryResponse
 import id.erela.surveyproduct.objects.OutletCreationResponse
 import id.erela.surveyproduct.objects.OutletListResponse
@@ -32,14 +32,19 @@ interface SuperEndpoint {
     @FormUrlEncoded
     fun showTodayCheckInOut(
         @Field("UserID") userID: Int
-    ): Call<CheckInOutTodayListResponse>
+    ): Call<CheckInOutListResponse>
+
+    @POST("survey/getAllCheckInOut")
+    @FormUrlEncoded
+    fun showAllCheckInOut(
+        @Field("UserID") userID: Int
+    ): Call<CheckInOutListResponse>
 
     @POST("survey/getAnswerHistory")
     @FormUrlEncoded
     fun showAnswerHistory(
-        @Field("UserID") userID: Int
+        @Field("AnswerGroupID") answerGroupID: Int
     ): Call<AnswerHistoryResponse>
-
 
     // Outlets
     @POST("outlet")

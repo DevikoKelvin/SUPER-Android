@@ -36,10 +36,10 @@ android {
     buildTypes {
         release {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""
-            /*buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""*/
-            buildConfigField 'String', 'SUPER_BASE_URL', "\"http://localhost:81/super/api/\""
-            /*buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""*/
-            buildConfigField 'String', 'IMAGE_URL', "\"http://localhost:81/super/public/assets/img/\""
+            buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""
+            /*buildConfigField 'String', 'SUPER_BASE_URL', "\"http://localhost:81/super/api/\""*/
+            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""
+            /*buildConfigField 'String', 'IMAGE_URL', "\"http://localhost:81/super/public/assets/img/\""*/
             buildConfigField 'String', 'MAP_URL', "\"https://api.maptiler.com/maps/streets-v2/style.json?key=\""
             buildConfigField 'String', 'KEY', "\"x-superapp-authorized\""
             buildConfigField 'String', 'VALUE', "\"2025::Er3L@n2e1pZVYgz8\""
@@ -52,10 +52,10 @@ android {
         }
         debug {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""
-            /*buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""*/
-            buildConfigField 'String', 'SUPER_BASE_URL', "\"http://localhost:81/super/api/\""
-            /*buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""*/
-            buildConfigField 'String', 'IMAGE_URL', "\"http://localhost:81/super/public/assets/img/\""
+            buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""
+            /*buildConfigField 'String', 'SUPER_BASE_URL', "\"http://localhost:81/super/api/\""*/
+            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""
+            /*buildConfigField 'String', 'IMAGE_URL', "\"http://localhost:81/super/public/assets/img/\""*/
             buildConfigField 'String', 'MAP_URL', "\"https://api.maptiler.com/maps/streets-v2/style.json?key=\""
             buildConfigField 'String', 'KEY', "\"x-superapp-authorized\""
             buildConfigField 'String', 'VALUE', "\"2025::Er3L@n2e1pZVYgz8\""

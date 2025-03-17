@@ -57,9 +57,8 @@ class DetailOutletActivity : AppCompatActivity() {
 
             outlet = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
                 intent.getSerializableExtra(DATA, OutletItem::class.java)!!
-            else {
+            else
                 intent.getSerializableExtra(DATA) as OutletItem
-            }
 
             outletName.text = outlet.name
             outletID.text = outlet.outletID
