@@ -17,8 +17,6 @@ class UserDataHelper(private val context: Context) {
     private val keyTeam = "key.team"
     private val keyBranchId = "key.branch_id"
     private val keyBranch = "key.branch"
-    private val keyCreatedAt = "key.created_at"
-    private val keyUpdatedAt = "key.updated_at"
 
     fun storeData(
         id: Int?,
@@ -32,9 +30,7 @@ class UserDataHelper(private val context: Context) {
         teamId: Int?,
         team: String?,
         branchId: Int?,
-        branch: String?,
-        createdAt: String?,
-        updatedAt: String?
+        branch: String?
     ) {
         SharedPreferencesHelper.getSharedPreferences(context).edit {
             also {
@@ -51,8 +47,6 @@ class UserDataHelper(private val context: Context) {
                     putString(keyTeam, team)
                     putInt(keyBranchId, branchId ?: 0)
                     putString(keyBranch, branch)
-                    putString(keyCreatedAt, createdAt)
-                    putString(keyUpdatedAt, updatedAt)
                 }
             }
         }
@@ -65,17 +59,15 @@ class UserDataHelper(private val context: Context) {
                     getInt(keyTypeId, 0),
                     getString(keyType, ""),
                     getString(keyUsername, ""),
-                    getString(keyPhotoProfile, ""),
-                    getString(keyCode, ""),
-                    getString(keyCreatedAt, ""),
-                    getString(keyTeam, ""),
-                    getInt(keyBranchId, 0),
-                    getInt(keyTeamId, 0),
-                    getString(keyUpdatedAt, ""),
                     getString(keyEmail, ""),
                     getString(keyFullName, ""),
+                    getString(keyPhotoProfile, ""),
+                    getString(keyCode, ""),
                     getInt(keyId, 0),
-                    getString(keyBranch, "")
+                    getString(keyTeam, ""),
+                    getInt(keyBranchId, 0),
+                    getString(keyBranch, ""),
+                    getInt(keyTeamId, 0)
                 )
             }
         }

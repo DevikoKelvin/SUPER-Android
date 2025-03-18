@@ -30,6 +30,22 @@ class ProfileFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        prepareView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        prepareView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
+    private fun prepareView() {
         binding?.apply {
             signOutButton.setOnClickListener {
                 onProfileButtonActionListener.onSignOut()
@@ -48,11 +64,6 @@ class ProfileFragment : Fragment() {
                 else if (userUsersSuper.teamName != "" && userUsersSuper.branchName == "") userUsersSuper.teamName
                 else "${userUsersSuper.teamName} of Branch ${userUsersSuper.branchName}"
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
     }
 
     fun setOnProfileButtonActionListener(onProfileButtonActionListener: OnProfileButtonActionListener) {

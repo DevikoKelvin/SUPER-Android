@@ -79,6 +79,16 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <app.rive.runtime.kotlin.RiveAnimationView
+                android:id="@+id/emptyAnimation"
+                android:layout_width="350dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:riveAutoPlay="true"
+                app:riveLoop="LOOP"
+                app:riveResource="@raw/empty_animation" />
+
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/shimmerLayout"
                 android:layout_width="match_parent"

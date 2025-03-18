@@ -153,9 +153,7 @@ class LoginActivity : AppCompatActivity() {
                                                                             result1.usersSuper?.teamID,
                                                                             result1.usersSuper?.teamName,
                                                                             result1.usersSuper?.branchID,
-                                                                            result1.usersSuper?.branchName,
-                                                                            result1.usersSuper?.createdAt,
-                                                                            result1.usersSuper?.updatedAt
+                                                                            result1.usersSuper?.branchName
                                                                         )
                                                                     Handler(mainLooper).postDelayed({
                                                                         startActivity(

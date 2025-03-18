@@ -48,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="125dp"
+                android:fontFamily="@font/nucleo"
                 android:text="@string/outlet_detail_name"
                 android:textColor="@color/text_primary_color"
                 android:textSize="16sp"
@@ -76,6 +77,7 @@
                     android:id="@+id/outletNameField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/nucleo"
                     android:inputType="text"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -85,6 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/nucleo"
                 android:text="@string/outlet_detail_type"
                 android:textColor="@color/text_primary_color"
                 android:textSize="16sp"
@@ -115,6 +118,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:fontFamily="@font/nucleo"
                     tools:listitem="@layout/support_simple_spinner_dropdown_item" />
 
                 <ImageView
@@ -144,6 +148,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/nucleo"
                         android:text="@string/outlet_detail_province"
                         android:textColor="@color/text_primary_color"
                         android:textSize="16sp"
@@ -173,6 +178,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:fontFamily="@font/nucleo"
                             tools:listitem="@layout/support_simple_spinner_dropdown_item" />
 
                         <ImageView
@@ -195,6 +201,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/nucleo"
                         android:text="@string/outlet_detail_city_regency"
                         android:textColor="@color/text_primary_color"
                         android:textSize="16sp"
@@ -224,6 +231,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:fontFamily="@font/nucleo"
                             tools:listitem="@layout/support_simple_spinner_dropdown_item" />
 
                         <ImageView
@@ -255,6 +263,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/nucleo"
                         android:text="@string/outlet_detail_sub_district"
                         android:textColor="@color/text_primary_color"
                         android:textSize="16sp"
@@ -283,6 +292,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:fontFamily="@font/nucleo"
                             tools:listitem="@layout/support_simple_spinner_dropdown_item" />
 
                         <ImageView
@@ -305,6 +315,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/nucleo"
                         android:text="@string/outlet_detail_village"
                         android:textColor="@color/text_primary_color"
                         android:textSize="16sp"
@@ -333,6 +344,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:fontFamily="@font/nucleo"
                             tools:listitem="@layout/support_simple_spinner_dropdown_item" />
 
                         <ImageView
@@ -351,6 +363,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/nucleo"
                 android:text="@string/outlet_detail_address"
                 android:textColor="@color/text_primary_color"
                 android:textSize="16sp"
@@ -379,6 +392,7 @@
                     android:id="@+id/addressField"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
+                    android:fontFamily="@font/nucleo"
                     android:gravity="top"
                     android:inputType="textMultiLine"
                     android:textSize="14sp" />
@@ -389,6 +403,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/nucleo"
                 android:text="@string/outlet_detail_location"
                 android:textColor="@color/text_primary_color"
                 android:textSize="16sp"

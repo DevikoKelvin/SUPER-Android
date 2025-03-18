@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/home_fragment">
+
+    <fragment
+        android:id="@+id/home_fragment"
+        android:name="id.erela.surveyproduct.fragments.HomeFragment"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_home_fragment_to_outlet_fragment"
+            app:destination="@id/outlet_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/outlet_fragment"
+        android:name="id.erela.surveyproduct.fragments.OutletFragment"
+        android:label="@string/outlet"
+        tools:layout="@layout/fragment_outlet">
+        <action
+            android:id="@+id/action_outlet_fragment_to_home_fragment"
+            app:destination="@id/home_fragment" />
+        <action
+            android:id="@+id/action_outlet_fragment_to_start_survey_fragment"
+            app:destination="@id/start_survey_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/start_survey_fragment"
+        android:name="id.erela.surveyproduct.fragments.StartSurveyFragment"
+        android:label="@string/start_survey_title"
+        tools:layout="@layout/fragment_start_survey">
+        <action
+            android:id="@+id/action_start_survey_fragment_to_home_fragment"
+            app:destination="@id/home_fragment" />
+        <action
+            android:id="@+id/action_start_survey_fragment_to_history_fragment"
+            app:destination="@id/history_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/history_fragment"
+        android:name="id.erela.surveyproduct.fragments.HistoryFragment"
+        android:label="@string/history"
+        tools:layout="@layout/fragment_history">
+        <action
+            android:id="@+id/action_history_fragment_to_home_fragment"
+            app:destination="@id/home_fragment" />
+        <action
+            android:id="@+id/action_history_fragment_to_profile_fragment"
+            app:destination="@id/profile_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/profile_fragment"
+        android:name="id.erela.surveyproduct.fragments.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profile_fragment_to_home_fragment"
+            app:destination="@id/home_fragment" />
+    </fragment>
+</navigation>

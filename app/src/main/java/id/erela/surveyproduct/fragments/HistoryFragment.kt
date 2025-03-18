@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.activities.SurveyDetailActivity
 import id.erela.surveyproduct.adapters.recycler_view.CheckInOutAdapter
+import id.erela.surveyproduct.bottom_sheets.FilterHistoryBottomSheet
 import id.erela.surveyproduct.databinding.FragmentHistoryBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
@@ -24,16 +25,21 @@ import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @SuppressLint("NotifyDataSetChanged")
 class HistoryFragment(private val context: Context) : Fragment() {
     private var binding: FragmentHistoryBinding? = null
     private var isInitialized = false
     private lateinit var adapter: CheckInOutAdapter
-    private val checkInOutHistory = ArrayList<CheckInOutItem>()
+    private val checkInOutHistory = ArrayList<CheckInOutItem?>()
     private val userData: UsersSuper by lazy {
         UserDataHelper(context).getData()
     }
+    private var start = ""
+    private var end = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,11 +57,59 @@ class HistoryFragment(private val context: Context) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        prepareView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        prepareView()
+    }
+
+    @Deprecated(
+        "Deprecated in Java", ReplaceWith(
+            "super.setUserVisibleHint(isVisibleToUser)",
+            "androidx.fragment.app.Fragment"
+        )
+    )
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) {
+            prepareView()
+            if (!isInitialized)
+                callNetwork(start, end)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        isInitialized = false
+    }
+
+    private fun prepareView() {
         binding?.apply {
-            if (isInitialized)
+            val startCalendar = Calendar.getInstance()
+            startCalendar.set(Calendar.DAY_OF_MONTH, 1)
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.forLanguageTag("id-ID"))
+            start = dateFormat.format(startCalendar.time)
+
+            val endCalendar = Calendar.getInstance()
+            end = dateFormat.format(endCalendar.time)
+
+            if (isInitialized) {
+                if (checkInOutHistory.isEmpty()) {
+                    emptyAnimation.visibility = View.VISIBLE
+                    checkInOutListRv.visibility = View.GONE
+                } else {
+                    emptyAnimation.visibility = View.GONE
+                    checkInOutListRv.visibility = View.VISIBLE
+                }
                 loadingManager(false)
+            } else {
+                callNetwork(start, end)
+            }
             mainContainerRefresh.setOnRefreshListener {
-                callNetwork()
+                callNetwork(start, end)
                 mainContainerRefresh.isRefreshing = false
             }
 
@@ -72,33 +126,32 @@ class HistoryFragment(private val context: Context) : Fragment() {
             checkInOutListRv.adapter = adapter
             checkInOutListRv.layoutManager = LinearLayoutManager(context)
             checkInOutListRv.setHasFixedSize(true)
+
+            filterButton.setOnClickListener {
+                val bottomSheet = FilterHistoryBottomSheet(context, start, end).also {
+                    with(it) {
+                        setOnFilterOkListener(object : FilterHistoryBottomSheet.OnFilterOkListener {
+                            override fun onFilterOk(start: String, end: String) {
+                                this@HistoryFragment.start = start
+                                this@HistoryFragment.end = end
+                                callNetwork(start, end)
+                            }
+                        })
+                    }
+                }
+
+                if (bottomSheet.window != null)
+                    bottomSheet.show()
+            }
         }
     }
 
-    @Deprecated(
-        "Deprecated in Java", ReplaceWith(
-            "super.setUserVisibleHint(isVisibleToUser)",
-            "androidx.fragment.app.Fragment"
-        )
-    )
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) {
-            if (!isInitialized)
-                callNetwork()
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        isInitialized = false
-    }
-
-    private fun callNetwork() {
+    private fun callNetwork(start: String, end: String) {
+        Log.e("Date", "$start - $end")
         loadingManager(true)
-        binding.apply {
+        binding?.apply {
             try {
-                AppAPI.superEndpoint.showAllCheckInOut(userData.iD!!.toInt())
+                AppAPI.superEndpoint.showAllCheckInOut(userData.iD!!.toInt(), start, end)
                     .enqueue(object : Callback<CheckInOutListResponse> {
                         override fun onResponse(
                             call: Call<CheckInOutListResponse>,
@@ -115,61 +168,32 @@ class HistoryFragment(private val context: Context) : Fragment() {
                                             for (item in result.data!!) {
                                                 checkInOutHistory.add(item!!)
                                             }
+                                            if (checkInOutHistory.isEmpty()) {
+                                                emptyAnimation.visibility = View.VISIBLE
+                                                checkInOutListRv.visibility = View.GONE
+                                            } else {
+                                                emptyAnimation.visibility = View.GONE
+                                                checkInOutListRv.visibility = View.VISIBLE
+                                            }
                                             adapter.notifyDataSetChanged()
                                         }
 
                                         0 -> {
-                                            CustomToast.getInstance(context)
-                                                .setMessage(result.message!!)
-                                                .setFontColor(
-                                                    ContextCompat.getColor(
-                                                        context,
-                                                        R.color.custom_toast_font_failed
-                                                    )
-                                                )
-                                                .setBackgroundColor(
-                                                    ContextCompat.getColor(
-                                                        context,
-                                                        R.color.custom_toast_background_failed
-                                                    )
-                                                ).show()
+                                            emptyAnimation.visibility = View.VISIBLE
+                                            checkInOutListRv.visibility = View.GONE
                                         }
                                     }
                                 } else {
                                     Log.e("ERROR", "Response body is null")
                                     Log.e("Response", response.toString())
-                                    CustomToast.getInstance(context)
-                                        .setMessage("Something went wrong, please try again.")
-                                        .setFontColor(
-                                            ContextCompat.getColor(
-                                                context,
-                                                R.color.custom_toast_font_failed
-                                            )
-                                        )
-                                        .setBackgroundColor(
-                                            ContextCompat.getColor(
-                                                context,
-                                                R.color.custom_toast_background_failed
-                                            )
-                                        ).show()
+                                    emptyAnimation.visibility = View.VISIBLE
+                                    checkInOutListRv.visibility = View.GONE
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
                                 Log.e("Response", response.toString())
-                                CustomToast.getInstance(context)
-                                    .setMessage("Something went wrong, please try again.")
-                                    .setFontColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.custom_toast_font_failed
-                                        )
-                                    )
-                                    .setBackgroundColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.custom_toast_background_failed
-                                        )
-                                    ).show()
+                                emptyAnimation.visibility = View.VISIBLE
+                                checkInOutListRv.visibility = View.GONE
                             }
                         }
 
@@ -181,20 +205,8 @@ class HistoryFragment(private val context: Context) : Fragment() {
                             loadingManager(false)
                             Log.e("ERROR", throwable.toString())
                             throwable.printStackTrace()
-                            CustomToast.getInstance(context)
-                                .setMessage("Something went wrong, please try again.")
-                                .setFontColor(
-                                    ContextCompat.getColor(
-                                        context,
-                                        R.color.custom_toast_font_failed
-                                    )
-                                )
-                                .setBackgroundColor(
-                                    ContextCompat.getColor(
-                                        context,
-                                        R.color.custom_toast_background_failed
-                                    )
-                                ).show()
+                            emptyAnimation.visibility = View.VISIBLE
+                            checkInOutListRv.visibility = View.GONE
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -202,20 +214,8 @@ class HistoryFragment(private val context: Context) : Fragment() {
                 loadingManager(false)
                 Log.e("ERROR", jsonException.toString())
                 jsonException.printStackTrace()
-                CustomToast.getInstance(context)
-                    .setMessage("Something went wrong, please try again.")
-                    .setFontColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.custom_toast_font_failed
-                        )
-                    )
-                    .setBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.custom_toast_background_failed
-                        )
-                    ).show()
+                emptyAnimation.visibility = View.VISIBLE
+                checkInOutListRv.visibility = View.GONE
             }
         }
     }
@@ -223,6 +223,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
     private fun loadingManager(isLoading: Boolean) {
         binding?.apply {
             if (isLoading) {
+                emptyAnimation.visibility = View.GONE
                 checkInOutListRv.visibility = View.GONE
                 shimmerLayout.apply {
                     visibility = View.VISIBLE

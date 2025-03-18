@@ -55,30 +55,60 @@ class OutletFragment(private val context: Context) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        prepareView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        prepareView()
+    }
+
+    @Deprecated(
+        "Deprecated in Java", ReplaceWith(
+            "super.setUserVisibleHint(isVisibleToUser)",
+            "androidx.fragment.app.Fragment"
+        )
+    )
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
         binding?.apply {
-            if (isInitialized)
+            if (isVisibleToUser) {
+                prepareView()
+                addNewOutletButton.isEnabled = true
+                if (!isInitialized)
+                    callNetwork()
+            } else
+                addNewOutletButton.isEnabled = false
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+        isInitialized = false
+    }
+
+    private fun prepareView() {
+        binding?.apply {
+            if (isInitialized) {
+                if (outletList.isEmpty()) {
+                    emptyAnimation.visibility = View.VISIBLE
+                    outletListRv.visibility = View.GONE
+                } else {
+                    emptyAnimation.visibility = View.GONE
+                    outletListRv.visibility = View.VISIBLE
+                }
                 loadingManager(false)
+            } else {
+                callNetwork()
+            }
             mainContainerRefresh.setOnRefreshListener {
                 callNetwork()
                 mainContainerRefresh.isRefreshing = false
             }
 
-            searchInput.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    adapter.filter(s.toString())
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                }
-            })
+            prepareSearch()
 
             outletListRv.layoutManager = LinearLayoutManager(context)
             adapter = OutletAdapter(outletList).also {
@@ -101,28 +131,27 @@ class OutletFragment(private val context: Context) : Fragment() {
         }
     }
 
-    @Deprecated(
-        "Deprecated in Java", ReplaceWith(
-            "super.setUserVisibleHint(isVisibleToUser)",
-            "androidx.fragment.app.Fragment"
-        )
-    )
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
+    private fun prepareSearch() {
         binding?.apply {
-            if (isVisibleToUser) {
-                addNewOutletButton.isEnabled = true
-                if (!isInitialized)
-                    callNetwork()
-            } else
-                addNewOutletButton.isEnabled = false
-        }
-    }
+            if (isInitialized) {
+                searchInput.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
-        isInitialized = false
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        adapter.filter(s.toString())
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {
+                    }
+                })
+            }
+        }
     }
 
     private fun callNetwork() {
@@ -135,8 +164,8 @@ class OutletFragment(private val context: Context) : Fragment() {
                             call: Call<OutletListResponse>,
                             response: Response<OutletListResponse>
                         ) {
-                            isInitialized = true
                             loadingManager(false)
+                            isInitialized = true
                             if (response.isSuccessful) {
                                 if (response.body() != null) {
                                     val result = response.body()
@@ -162,7 +191,15 @@ class OutletFragment(private val context: Context) : Fragment() {
                                                     )
                                                 )
                                             }
+                                            if (outletList.isEmpty()) {
+                                                emptyAnimation.visibility = View.VISIBLE
+                                                outletListRv.visibility = View.GONE
+                                            } else {
+                                                emptyAnimation.visibility = View.GONE
+                                                outletListRv.visibility = View.VISIBLE
+                                            }
                                             adapter.notifyDataSetChanged()
+                                            prepareSearch()
                                         }
 
                                         0 -> {
@@ -180,6 +217,8 @@ class OutletFragment(private val context: Context) : Fragment() {
                                                         R.color.custom_toast_background_failed
                                                     )
                                                 ).show()
+                                            emptyAnimation.visibility = View.VISIBLE
+                                            outletListRv.visibility = View.GONE
                                         }
                                     }
                                 } else {
@@ -199,6 +238,8 @@ class OutletFragment(private val context: Context) : Fragment() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
+                                    emptyAnimation.visibility = View.VISIBLE
+                                    outletListRv.visibility = View.GONE
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
@@ -217,6 +258,8 @@ class OutletFragment(private val context: Context) : Fragment() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
+                                emptyAnimation.visibility = View.VISIBLE
+                                outletListRv.visibility = View.GONE
                             }
                         }
 
@@ -242,6 +285,8 @@ class OutletFragment(private val context: Context) : Fragment() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
+                            emptyAnimation.visibility = View.VISIBLE
+                            outletListRv.visibility = View.GONE
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -263,6 +308,8 @@ class OutletFragment(private val context: Context) : Fragment() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
+                emptyAnimation.visibility = View.VISIBLE
+                outletListRv.visibility = View.GONE
             }
         }
     }
@@ -270,6 +317,7 @@ class OutletFragment(private val context: Context) : Fragment() {
     private fun loadingManager(isLoading: Boolean) {
         binding?.apply {
             if (isLoading) {
+                emptyAnimation.visibility = View.GONE
                 outletListRv.visibility = View.GONE
                 shimmerLayout.apply {
                     visibility = View.VISIBLE

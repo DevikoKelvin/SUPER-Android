@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'id.erela.surveyproduct'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "id.erela.surveyproduct"
         minSdk 26
-        targetSdk 35
+        targetSdk 36
         versionCode 1
         versionName "1.0"
 
@@ -36,10 +36,10 @@ android {
     buildTypes {
         release {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""
-            /*buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""*/
-            buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.18.24:81/super/api/\""
-            /*buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""*/
-            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.18.24:81/super/public/assets/img/\""
+            buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""
+            /*buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.18.24:81/super/api/\""*/
+            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""
+            /*buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.18.24:81/super/public/assets/img/\""*/
             buildConfigField 'String', 'MAP_URL', "\"https://api.maptiler.com/maps/streets-v2/style.json?key=\""
             buildConfigField 'String', 'KEY', "\"x-superapp-authorized\""
             buildConfigField 'String', 'VALUE', "\"2025::Er3L@n2e1pZVYgz8\""
@@ -52,10 +52,10 @@ android {
         }
         debug {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""
-            /*buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""*/
-            buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.18.24:81/super/api/\""
-            /*buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""*/
-            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.18.24:81/super/public/assets/img/\""
+            buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:81/super/api/\""
+            /*buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.18.24:81/super/api/\""*/
+            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:81/super/public/assets/img/\""
+            /*buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.18.24:81/super/public/assets/img/\""*/
             buildConfigField 'String', 'MAP_URL', "\"https://api.maptiler.com/maps/streets-v2/style.json?key=\""
             buildConfigField 'String', 'KEY', "\"x-superapp-authorized\""
             buildConfigField 'String', 'VALUE', "\"2025::Er3L@n2e1pZVYgz8\""
@@ -78,12 +78,15 @@ android {
         buildConfig true
         viewBinding true
     }
+    buildToolsVersion '36.0.0 rc5'
 }
 
 dependencies {
     // Core
     implementation libs.androidx.core.ktx
     implementation libs.androidx.appcompat
+    implementation libs.androidx.navigation.fragment.ktx
+    implementation libs.androidx.navigation.ui.ktx
 
     // UI
     implementation libs.material
@@ -93,10 +96,10 @@ dependencies {
     implementation libs.blurkit.android
     implementation libs.realtimeblurview
     implementation libs.supergradienttextview
-    implementation libs.lottie
     implementation libs.glide
     implementation libs.swipeRefreshLayout
     implementation libs.shimmer
+    implementation libs.rive.android
 
     implementation libs.retrofit
     implementation libs.okhttp3

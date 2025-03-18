@@ -53,13 +53,28 @@ class OutletAdapter(private val outlets: ArrayList<OutletItem>) :
         if (query.isEmpty()) {
             outlets.addAll(originalOutlets)
         } else {
-            val filteredList = originalOutlets.filter {
+            for (i in 0 until originalOutlets.size) {
+                if (originalOutlets[i].name!!.contains(
+                        query,
+                        ignoreCase = true
+                    ) || originalOutlets[i].outletID!!.contains(
+                        query,
+                        ignoreCase = true
+                    ) || originalOutlets[i].address!!.contains(
+                        query,
+                        ignoreCase = true
+                    ) || originalOutlets[i].cityRegency!!.contains(query, ignoreCase = true)
+                ) {
+                    outlets.add(originalOutlets[i])
+                }
+            }
+            /*val filteredList = originalOutlets.filter {
                 it.name!!.contains(query, ignoreCase = true) ||
                         it.outletID!!.contains(query, ignoreCase = true) ||
                         it.address!!.contains(query, ignoreCase = true) ||
                         it.cityRegency!!.contains(query, ignoreCase = true)
             }
-            outlets.addAll(filteredList)
+            outlets.addAll(filteredList)*/
         }
         notifyDataSetChanged()
     }

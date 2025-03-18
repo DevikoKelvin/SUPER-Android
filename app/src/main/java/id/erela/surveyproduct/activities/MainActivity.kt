@@ -8,14 +8,20 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
+import app.rive.runtime.kotlin.core.Rive
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.adapters.home_nav.HomeNavPagerAdapter
 import id.erela.surveyproduct.databinding.ActivityMainBinding
 import id.erela.surveyproduct.dialogs.ConfirmationDialog
+import id.erela.surveyproduct.fragments.HistoryFragment
+import id.erela.surveyproduct.fragments.HomeFragment
+import id.erela.surveyproduct.fragments.OutletFragment
+import id.erela.surveyproduct.fragments.ProfileFragment
+import id.erela.surveyproduct.fragments.StartSurveyFragment
 import id.erela.surveyproduct.helpers.UserDataHelper
 
-class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionListener {
+class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionListener {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -31,6 +37,7 @@ class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionLi
 
     private fun init() {
         binding.apply {
+            Rive.init(applicationContext)
             onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     binding.apply {
@@ -59,23 +66,32 @@ class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionLi
                 }
             })
 
-            adapter = HomeNavPagerAdapter(supportFragmentManager, this@MainActivity).also {
-                with(it) {
-                    onFragmentActionListener(this@MainActivity)
+            val fragmentList = listOf(
+                HomeFragment(this@MainActivity),
+                OutletFragment(this@MainActivity),
+                StartSurveyFragment(this@MainActivity),
+                HistoryFragment(this@MainActivity),
+                ProfileFragment().also {
+                    with(it) {
+                        setOnProfileButtonActionListener(this@MainActivity)
+                    }
                 }
-            }
+            )
+
+            adapter = HomeNavPagerAdapter(fragmentList, supportFragmentManager, lifecycle)
 
             fragmentsContainer.adapter = adapter
+            fragmentsContainer.setCurrentItem(0, true)
+            bottomNavMenu.menu.findItem(R.id.home).isChecked = true
 
-            fragmentsContainer.currentItem = 0
-            bottomNavMenu.selectedItemId = R.id.home
-
-            fragmentsContainer.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            fragmentsContainer.registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
                 override fun onPageScrolled(
                     position: Int,
                     positionOffset: Float,
                     positionOffsetPixels: Int
                 ) {
+                    super.onPageScrolled(position, positionOffset, positionOffsetPixels)
                     when (position) {
                         0 -> {
                             titleBar.alpha = 1f
@@ -115,49 +131,40 @@ class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionLi
                 }
 
                 override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
                     when (position) {
-                        0 -> bottomNavMenu.selectedItemId = R.id.home
-                        1 -> bottomNavMenu.selectedItemId = R.id.customers
-                        2 -> bottomNavMenu.selectedItemId = R.id.survey
-                        3 -> bottomNavMenu.selectedItemId = R.id.history
-                        4 -> bottomNavMenu.selectedItemId = R.id.your_profile
+                        0 -> bottomNavMenu.menu.findItem(R.id.home).isChecked = true
+                        1 -> bottomNavMenu.menu.findItem(R.id.outlet).isChecked = true
+                        2 -> bottomNavMenu.menu.findItem(R.id.start_survey).isChecked = true
+                        3 -> bottomNavMenu.menu.findItem(R.id.history).isChecked = true
+                        4 -> bottomNavMenu.menu.findItem(R.id.profile).isChecked = true
                     }
                 }
-
-                override fun onPageScrollStateChanged(state: Int) {}
             })
 
-            bottomNavMenu.setOnNavigationItemSelectedListener {
+            bottomNavMenu.setOnItemSelectedListener {
                 when (it.itemId) {
                     R.id.home -> {
-                        fragmentsContainer.currentItem = 0
-                        true
+                        fragmentsContainer.setCurrentItem(0, false)
                     }
 
-                    R.id.customers -> {
-                        fragmentsContainer.currentItem = 1
-                        true
+                    R.id.outlet -> {
+                        fragmentsContainer.setCurrentItem(1, false)
                     }
 
-                    R.id.survey -> {
-                        fragmentsContainer.currentItem = 2
-                        true
+                    R.id.start_survey -> {
+                        fragmentsContainer.setCurrentItem(2, false)
                     }
 
                     R.id.history -> {
-                        fragmentsContainer.currentItem = 3
-                        true
+                        fragmentsContainer.setCurrentItem(3, false)
                     }
 
-                    R.id.your_profile -> {
-                        fragmentsContainer.currentItem = 4
-                        true
-                    }
-
-                    else -> {
-                        false
+                    R.id.profile -> {
+                        fragmentsContainer.setCurrentItem(4, false)
                     }
                 }
+                false
             }
         }
     }
@@ -170,7 +177,7 @@ class MainActivity : AppCompatActivity(), HomeNavPagerAdapter.OnFragmentActionLi
         return super.dispatchTouchEvent(ev)
     }
 
-    override fun onProfileSignOut() {
+    override fun onSignOut() {
         val dialog = ConfirmationDialog(
             this@MainActivity,
             "Are you sure you want to sign out?",

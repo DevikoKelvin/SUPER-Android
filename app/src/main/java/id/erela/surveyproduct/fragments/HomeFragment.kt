@@ -30,10 +30,25 @@ class HomeFragment(private val context: Context) : Fragment() {
         return binding?.root
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        prepareView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        prepareView()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun prepareView() {
         binding?.apply {
             Glide.with(context)
                 .load(BuildConfig.IMAGE_URL + userData.photoProfile)
@@ -56,10 +71,5 @@ class HomeFragment(private val context: Context) : Fragment() {
 
             erelaRedirect.setOnClickListener {  }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
     }
 }

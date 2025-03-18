@@ -7,12 +7,12 @@
         android:title="@string/home" />
 
     <item
-        android:id="@+id/customers"
+        android:id="@+id/outlet"
         android:icon="@drawable/outlet_icon"
         android:title="@string/list_customer" />
 
     <item
-        android:id="@+id/survey"
+        android:id="@+id/start_survey"
         android:icon="@drawable/survey_icon"
         android:title="@string/survey_add" />
 
@@ -22,7 +22,7 @@
         android:title="@string/history" />
 
     <item
-        android:id="@+id/your_profile"
+        android:id="@+id/profile"
         android:icon="@drawable/profile_icon"
         android:title="@string/profile" />
 </menu>

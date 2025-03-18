@@ -56,6 +56,11 @@
 
     <!-- Survey History Menu -->
     <string name="history_survey">Survey History</string>
+    <string name="filter_survey">Filter</string>
+
+    <!-- History Filter -->
+    <string name="by_date">By Date</string>
+    <string name="range_select">Select Date Range</string>
 
     <!-- Profile Menu -->
     <string name="signout_text">Sign Out</string>

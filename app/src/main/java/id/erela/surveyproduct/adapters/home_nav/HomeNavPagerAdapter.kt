@@ -1,45 +1,16 @@
 package id.erela.surveyproduct.adapters.home_nav
 
-import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
-import id.erela.surveyproduct.fragments.HistoryFragment
-import id.erela.surveyproduct.fragments.HomeFragment
-import id.erela.surveyproduct.fragments.OutletFragment
-import id.erela.surveyproduct.fragments.ProfileFragment
-import id.erela.surveyproduct.fragments.StartSurveyFragment
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class HomeNavPagerAdapter(fragmentManager: FragmentManager, private val context: Context) :
-    FragmentPagerAdapter(fragmentManager) {
-    private lateinit var onFragmentActionListener: OnFragmentActionListener
+class HomeNavPagerAdapter(private val fragments: List<Fragment>,
+                          fragmentManager: FragmentManager,
+                          lifecycle: Lifecycle) :
+    FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    override fun getCount(): Int = 5
+    override fun getItemCount(): Int = fragments.size
 
-    override fun getItem(position: Int): Fragment = when (position) {
-        0 -> HomeFragment(context)
-        1 -> OutletFragment(context)
-        2 -> StartSurveyFragment(context)
-        3 -> HistoryFragment(context)
-        4 -> ProfileFragment().also {
-            with(it) {
-                setOnProfileButtonActionListener(object :
-                    ProfileFragment.OnProfileButtonActionListener {
-                    override fun onSignOut() {
-                        onFragmentActionListener.onProfileSignOut()
-                    }
-                })
-            }
-        }
-
-        else -> throw IllegalArgumentException("Invalid position: $position")
-    }
-
-    fun onFragmentActionListener(onFragmentActionListener: OnFragmentActionListener) {
-        this.onFragmentActionListener = onFragmentActionListener
-    }
-
-    interface OnFragmentActionListener {
-        fun onProfileSignOut()
-    }
+    override fun createFragment(position: Int): Fragment = fragments[position]
 }

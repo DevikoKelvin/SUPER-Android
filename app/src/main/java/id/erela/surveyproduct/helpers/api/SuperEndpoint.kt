@@ -37,7 +37,9 @@ interface SuperEndpoint {
     @POST("survey/getAllCheckInOut")
     @FormUrlEncoded
     fun showAllCheckInOut(
-        @Field("UserID") userID: Int
+        @Field("UserID") userID: Int,
+        @Field("StartDate") startDate: String?,
+        @Field("EndDate") endDate: String?
     ): Call<CheckInOutListResponse>
 
     @POST("survey/getAnswerHistory")
