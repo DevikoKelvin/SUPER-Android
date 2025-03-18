@@ -145,7 +145,7 @@ class AddOutletActivity : AppCompatActivity() {
                 } else {
                     try {
                         AppAPI.superEndpoint.outletCreation(
-                            userData.branchId ?: 0,
+                            userData.branchID ?: 0,
                             outletNameField.text.toString(),
                             selectedType,
                             addressField.text.toString(),

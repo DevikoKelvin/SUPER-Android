@@ -3,32 +3,34 @@ package id.erela.surveyproduct.objects
 import com.google.gson.annotations.SerializedName
 
 data class UsersSuper(
-    @field:SerializedName("type_name")
+    @field:SerializedName("TypeID")
+    val typeID: Int? = null,
+    @field:SerializedName("TypeName")
     val typeName: String? = null,
-    @field:SerializedName("photo_profile")
+    @field:SerializedName("UserName")
+    val userName: String? = null,
+    @field:SerializedName("PhotoProfile")
     val photoProfile: String? = null,
-    @field:SerializedName("type_id")
-    val typeId: Int? = null,
+    @field:SerializedName("UserCode")
+    val userCode: String? = null,
     @field:SerializedName("created_at")
     val createdAt: String? = null,
-    @field:SerializedName("usermail")
-    val userMail: String? = null,
-    @field:SerializedName("team_id")
-    val teamId: Int? = null,
-    @field:SerializedName("team_name")
+    @field:SerializedName("TeamName")
     val teamName: String? = null,
+    @field:SerializedName("BranchID")
+    val branchID: Int? = null,
+    @field:SerializedName("TeamID")
+    val teamID: Int? = null,
     @field:SerializedName("updated_at")
     val updatedAt: String? = null,
-    @field:SerializedName("branch_id")
-    val branchId: Int? = null,
-    @field:SerializedName("branch_name")
+    @field:SerializedName("UserMail")
+    val userMail: String? = null,
+    @field:SerializedName("FullName")
+    val fullName: String? = null,
+    @field:SerializedName("ID")
+    val iD: Int? = null,
+    @field:SerializedName("BranchName")
     val branchName: String? = null,
-    @field:SerializedName("id")
-    val id: Int? = null,
-    @field:SerializedName("fullname")
-    val fullname: String? = null,
-    @field:SerializedName("usercode")
-    val usercode: String? = null,
-    @field:SerializedName("username")
-    val username: String? = null
+    @field:SerializedName("Password")
+    val password: String? = null
 )

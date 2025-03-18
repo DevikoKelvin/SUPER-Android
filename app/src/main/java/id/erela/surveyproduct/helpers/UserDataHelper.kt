@@ -62,20 +62,20 @@ class UserDataHelper(private val context: Context) {
         SharedPreferencesHelper.getSharedPreferences(context).also {
             with(it) {
                 return UsersSuper(
-                    getString(keyType, ""),
-                    getString(keyPhotoProfile, ""),
                     getInt(keyTypeId, 0),
-                    getString(keyCreatedAt, ""),
-                    getString(keyEmail, ""),
-                    getInt(keyTeamId, 0),
-                    getString(keyTeam, ""),
-                    getString(keyUpdatedAt, ""),
-                    getInt(keyBranchId, 0),
-                    getString(keyBranch, ""),
-                    getInt(keyId, 0),
-                    getString(keyFullName, ""),
+                    getString(keyType, ""),
+                    getString(keyUsername, ""),
+                    getString(keyPhotoProfile, ""),
                     getString(keyCode, ""),
-                    getString(keyUsername, "")
+                    getString(keyCreatedAt, ""),
+                    getString(keyTeam, ""),
+                    getInt(keyBranchId, 0),
+                    getInt(keyTeamId, 0),
+                    getString(keyUpdatedAt, ""),
+                    getString(keyEmail, ""),
+                    getString(keyFullName, ""),
+                    getInt(keyId, 0),
+                    getString(keyBranch, "")
                 )
             }
         }

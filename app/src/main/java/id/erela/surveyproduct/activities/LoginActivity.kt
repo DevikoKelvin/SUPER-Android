@@ -123,6 +123,7 @@ class LoginActivity : AppCompatActivity() {
                                                     if (response1.isSuccessful) {
                                                         if (response1.body() != null) {
                                                             val result1 = response1.body()
+                                                            Log.e("Response", result1.toString())
                                                             when (result1?.code) {
                                                                 1 -> {
                                                                     CustomToast.getInstance(applicationContext)
@@ -141,17 +142,17 @@ class LoginActivity : AppCompatActivity() {
                                                                         ).show()
                                                                     UserDataHelper(this@LoginActivity)
                                                                         .storeData(
-                                                                            result1.usersSuper?.id,
-                                                                            result1.usersSuper?.fullname,
+                                                                            result1.usersSuper?.iD,
+                                                                            result1.usersSuper?.fullName,
                                                                             result1.usersSuper?.userMail,
-                                                                            result1.usersSuper?.username,
+                                                                            result1.usersSuper?.userName,
                                                                             result1.usersSuper?.photoProfile,
-                                                                            result1.usersSuper?.usercode,
-                                                                            result1.usersSuper?.typeId,
+                                                                            result1.usersSuper?.userCode,
+                                                                            result1.usersSuper?.typeID,
                                                                             result1.usersSuper?.typeName,
-                                                                            result1.usersSuper?.teamId,
+                                                                            result1.usersSuper?.teamID,
                                                                             result1.usersSuper?.teamName,
-                                                                            result1.usersSuper?.branchId,
+                                                                            result1.usersSuper?.branchID,
                                                                             result1.usersSuper?.branchName,
                                                                             result1.usersSuper?.createdAt,
                                                                             result1.usersSuper?.updatedAt

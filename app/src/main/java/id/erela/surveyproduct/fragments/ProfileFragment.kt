@@ -37,10 +37,10 @@ class ProfileFragment : Fragment() {
             Glide.with(requireContext())
                 .load(BuildConfig.IMAGE_URL + userUsersSuper.photoProfile)
                 .into(profilePicture)
-            fullName.text = userUsersSuper.fullname
+            fullName.text = userUsersSuper.fullName
             userType.text = userUsersSuper.typeName
-            userCode.text = userUsersSuper.usercode
-            userName.text = userUsersSuper.username
+            userCode.text = userUsersSuper.userCode
+            userName.text = userUsersSuper.userName
             userMail.text = userUsersSuper.userMail
             teamBranch.text =
                 if (userUsersSuper.teamName == "" && userUsersSuper.branchName == "") "-"

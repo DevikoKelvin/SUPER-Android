@@ -20,7 +20,7 @@ interface SuperEndpoint {
     @POST("user/getUserByUsername")
     @FormUrlEncoded
     fun getUserByUsername(
-        @Field("username") username: String?
+        @Field("UserName") username: String?
     ): Call<UserDetailResponse>
 
 

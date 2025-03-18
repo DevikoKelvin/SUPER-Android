@@ -52,7 +52,7 @@ class HomeFragment(private val context: Context) : Fragment() {
                     else -> "evening,"
                 }
             }"
-            fullName.text = "${userData.fullname}!"
+            fullName.text = "${userData.fullName}!"
 
             erelaRedirect.setOnClickListener {  }
         }

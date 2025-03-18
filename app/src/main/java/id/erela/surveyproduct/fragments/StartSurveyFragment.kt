@@ -93,7 +93,7 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
         loadingManager(true)
         binding.apply {
             try {
-                AppAPI.superEndpoint.showTodayCheckInOut(userData.id!!.toInt())
+                AppAPI.superEndpoint.showTodayCheckInOut(userData.iD!!.toInt())
                     .enqueue(object : Callback<CheckInOutListResponse> {
                         override fun onResponse(
                             call: Call<CheckInOutListResponse>,
