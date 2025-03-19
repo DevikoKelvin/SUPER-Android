@@ -2,6 +2,8 @@ package id.erela.surveyproduct.helpers.api
 
 import id.erela.surveyproduct.objects.AnswerHistoryResponse
 import id.erela.surveyproduct.objects.CheckInOutListResponse
+import id.erela.surveyproduct.objects.CheckInResponse
+import id.erela.surveyproduct.objects.CheckOutResponse
 import id.erela.surveyproduct.objects.OutletCategoryResponse
 import id.erela.surveyproduct.objects.OutletCreationResponse
 import id.erela.surveyproduct.objects.OutletListResponse
@@ -10,10 +12,15 @@ import id.erela.surveyproduct.objects.ProvinceListResponse
 import id.erela.surveyproduct.objects.RegionListResponse
 import id.erela.surveyproduct.objects.SurveyListResponse
 import id.erela.surveyproduct.objects.UserDetailResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.PartMap
 
 interface SuperEndpoint {
     // Users
@@ -47,6 +54,7 @@ interface SuperEndpoint {
     fun showAnswerHistory(
         @Field("AnswerGroupID") answerGroupID: Int
     ): Call<AnswerHistoryResponse>
+
 
     // Outlets
     @POST("outlet")
@@ -86,4 +94,20 @@ interface SuperEndpoint {
         @Field("Latitude") latitude: Double,
         @Field("Longitude") longitude: Double
     ): Call<OutletCreationResponse>
+
+    // Answers
+    @POST("check/in")
+    @Multipart
+    fun checkIn(
+        @PartMap data: Map<String, RequestBody>,
+        @Part photoIn: MultipartBody.Part
+    ): Call<CheckInResponse>
+
+    @POST
+    @FormUrlEncoded
+    fun checkOut(
+        @Field("ID") checkInID: Int,
+        @Field("LatOut") latOut: Double,
+        @Field("LongOut") longOut: Double
+    ): Call<CheckOutResponse>
 }

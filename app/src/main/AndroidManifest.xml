@@ -37,6 +37,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activities.StartSurveyActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".activities.SurveyDetailActivity"
             android:exported="false"
             android:screenOrientation="portrait"
@@ -77,4 +82,5 @@
             android:name="com.mapbox.token"
             android:value="hqBlKgEYA5AHUcrsp4iT" />
     </application>
+
 </manifest>

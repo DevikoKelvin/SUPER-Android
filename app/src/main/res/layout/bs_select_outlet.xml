@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="75dp"
+        android:layout_height="5dp"
+        android:layout_gravity="center"
+        android:layout_marginVertical="18dp"
+        app:cardBackgroundColor="@color/custom_toast_font_normal_soft_gray"
+        app:cardCornerRadius="50dp"
+        app:strokeWidth="0dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/nucleo"
+        android:text="@string/choose_outlet"
+        android:textColor="@color/text_primary_color"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/searchContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardCornerRadius="25dp"
+        app:strokeWidth="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.github.mmin18.widget.RealtimeBlurView
+                android:id="@+id/realtimeBlurViewSearchView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:realtimeBlurRadius="15dp"
+                app:realtimeOverlayColor="#9AD5E6FB" />
+
+            <EditText
+                android:id="@+id/searchInput"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="2dp"
+                android:fontFamily="@font/nucleo"
+                android:background="@android:color/transparent"
+                android:hint="@string/search_outlet"
+                android:inputType="textFilter"
+                android:textColor="@color/text_primary_color"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:drawableEnd="@drawable/baseline_search_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="Autofill" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/list_item_outlet_shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <include
+                layout="@layout/list_item_outlet_shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <include
+                layout="@layout/list_item_outlet_shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <include
+                layout="@layout/list_item_outlet_shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <include
+                layout="@layout/list_item_outlet_shimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/outletListRv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="16dp"
+        android:paddingBottom="56dp"
+        tools:listitem="@layout/list_item_outlet" />
+</LinearLayout>

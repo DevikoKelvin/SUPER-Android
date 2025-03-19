@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +12,15 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.activities.AddOutletActivity
 import id.erela.surveyproduct.activities.DetailOutletActivity
 import id.erela.surveyproduct.adapters.recycler_view.OutletAdapter
+import id.erela.surveyproduct.adapters.recycler_view.OutletDiffUtilCallback
 import id.erela.surveyproduct.databinding.FragmentOutletBinding
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
@@ -29,6 +30,7 @@ import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Locale
 
 @SuppressLint("NotifyDataSetChanged")
 class OutletFragment(private val context: Context) : Fragment() {
@@ -108,21 +110,6 @@ class OutletFragment(private val context: Context) : Fragment() {
                 mainContainerRefresh.isRefreshing = false
             }
 
-            prepareSearch()
-
-            outletListRv.layoutManager = LinearLayoutManager(context)
-            adapter = OutletAdapter(outletList).also {
-                with(it) {
-                    setOnOutletItemClickListener(object : OutletAdapter.OnOutletItemClickListener {
-                        override fun onOutletItemClick(outlet: OutletItem) {
-                            DetailOutletActivity.start(context, outlet)
-                        }
-                    })
-                }
-            }
-            outletListRv.adapter = adapter
-            adapter.notifyDataSetChanged()
-
             addNewOutletButton.setOnClickListener {
                 activityResultLauncher.launch(
                     Intent(context, AddOutletActivity::class.java)
@@ -131,32 +118,31 @@ class OutletFragment(private val context: Context) : Fragment() {
         }
     }
 
-    private fun prepareSearch() {
-        binding?.apply {
-            if (isInitialized) {
-                searchInput.addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(
-                        s: CharSequence?,
-                        start: Int,
-                        count: Int,
-                        after: Int
-                    ) {
-                    }
-
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        adapter.filter(s.toString())
-                    }
-
-                    override fun afterTextChanged(s: Editable?) {
-                    }
-                })
-            }
-        }
-    }
-
     private fun callNetwork() {
         loadingManager(true)
         binding?.apply {
+            searchInput.addTextChangedListener { editable ->
+                val searchText = editable.toString().lowercase(Locale.forLanguageTag("id-ID"))
+                val filteredList = if (searchText.isEmpty()) {
+                    outletList
+                } else {
+                    outletList.filter { outletItem ->
+                        outletItem.name?.lowercase(Locale.forLanguageTag("id-ID"))
+                            ?.indexOf(searchText) != -1
+                    }
+                }
+                val diffCallback = OutletDiffUtilCallback(outletList, filteredList)
+                val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+                outletList.clear()
+                outletList.addAll(filteredList)
+                diffResult.dispatchUpdatesTo(adapter)
+
+                if (editable.toString().isEmpty()) {
+                    callNetwork()
+                }
+            }
+
             try {
                 AppAPI.superEndpoint.showAllOutlets()
                     .enqueue(object : Callback<OutletListResponse> {
@@ -198,8 +184,23 @@ class OutletFragment(private val context: Context) : Fragment() {
                                                 emptyAnimation.visibility = View.GONE
                                                 outletListRv.visibility = View.VISIBLE
                                             }
+                                            outletListRv.layoutManager =
+                                                LinearLayoutManager(context)
+                                            adapter = OutletAdapter(outletList).also {
+                                                with(it) {
+                                                    setOnOutletItemClickListener(object :
+                                                        OutletAdapter.OnOutletItemClickListener {
+                                                        override fun onOutletItemClick(outlet: OutletItem) {
+                                                            DetailOutletActivity.start(
+                                                                context,
+                                                                outlet
+                                                            )
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                            outletListRv.adapter = adapter
                                             adapter.notifyDataSetChanged()
-                                            prepareSearch()
                                         }
 
                                         0 -> {

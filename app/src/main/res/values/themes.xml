@@ -6,7 +6,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="colorPrimary">@color/light_blue_accent</item>
         <item name="colorSecondary">@color/dark_blue_accent</item>
-        <!--<item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>-->
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
@@ -16,7 +16,7 @@
         <item name="android:color">@color/text_primary_color</item>
     </style>
 
-    <!--<style name="AppBottomSheetDialogTheme" parent="Theme.Material3.Light.BottomSheetDialog">
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Material3.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
         <item name="cornerSizeTopLeft">25dp</item>
         <item name="cornerSizeTopRight">25dp</item>
@@ -25,7 +25,7 @@
 
     <style name="AppModalStyle" parent="Widget.Material3.BottomSheet.Modal">
         <item name="android:background">@drawable/bottom_sheets_background</item>
-    </style>-->
+    </style>
 
     <style name="CustomSpinnerTheme" parent="Widget.AppCompat.Spinner">
         <item name="background">@drawable/spinner_background</item>

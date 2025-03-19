@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.rive.runtime.kotlin.core.Rive
 import id.erela.surveyproduct.R
+import id.erela.surveyproduct.activities.StartSurveyActivity
 import id.erela.surveyproduct.activities.SurveyDetailActivity
 import id.erela.surveyproduct.adapters.recycler_view.CheckInOutAdapter
 import id.erela.surveyproduct.databinding.FragmentStartSurveyBinding
@@ -108,7 +109,9 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
             checkInOutListRv.layoutManager = LinearLayoutManager(context)
             checkInOutListRv.setHasFixedSize(true)
 
-            startSurveyButton.setOnClickListener { }
+            startSurveyButton.setOnClickListener {
+                StartSurveyActivity.start(context)
+            }
         }
     }
 
