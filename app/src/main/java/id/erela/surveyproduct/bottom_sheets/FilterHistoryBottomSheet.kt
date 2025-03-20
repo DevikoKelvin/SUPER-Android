@@ -1,13 +1,13 @@
 package id.erela.surveyproduct.bottom_sheets
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
-import android.widget.DatePicker
+import com.google.android.material.datepicker.MaterialDatePicker
 import androidx.core.graphics.drawable.toDrawable
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import id.erela.surveyproduct.databinding.BsFilterHistoryBinding
 import java.text.SimpleDateFormat
@@ -16,7 +16,8 @@ import java.util.*
 class FilterHistoryBottomSheet(
     context: Context,
     private var start: String,
-    private var end: String
+    private var end: String,
+    private val fragmentManager: FragmentManager
 ) : BottomSheetDialog(context) {
     private val binding: BsFilterHistoryBinding by lazy {
         BsFilterHistoryBinding.inflate(layoutInflater)
@@ -39,65 +40,50 @@ class FilterHistoryBottomSheet(
             val dateFormat =
                 SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"))
             val serverDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.forLanguageTag("id-ID"))
-            val startCalendar = Calendar.getInstance()
-
-            if (start.isNotEmpty()){
-                startCalendar.time = serverDateFormat.parse(start)!!
+            val startCalendar = Calendar.getInstance().apply {
+                if (start.isNotEmpty()) {
+                    time = serverDateFormat.parse(start)!!
+                }
             }
 
             startDate.text = dateFormat.format(startCalendar.time)
+            startCalendar.add(Calendar.DAY_OF_MONTH, 1)
 
             startDateButton.setOnClickListener {
-                val calendar = Calendar.getInstance().apply {
-                    if (start.isNotEmpty()) {
-                        time = serverDateFormat.parse(start)!!
-                    }
+                val datePicker = MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Select Date")
+                    .setSelection(startCalendar.timeInMillis)
+                    .build()
+                datePicker.addOnPositiveButtonClickListener { selection ->
+                    startCalendar.timeInMillis = selection
+                    startDate.text = dateFormat.format(startCalendar.time)
+                    start = serverDateFormat.format(startCalendar.time)
+                    Log.e("START", start)
                 }
-                val year = calendar.get(Calendar.YEAR)
-                val month = calendar.get(Calendar.MONTH)
-                val day = calendar.get(Calendar.DAY_OF_MONTH)
-                val datePickerDialog = DatePickerDialog(
-                    context,
-                    { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-                        val selectedDate = Calendar.getInstance()
-                        selectedDate.set(mYear, mMonth, mDayOfMonth)
-                        startDate.text = dateFormat.format(selectedDate.time)
-                        start = serverDateFormat.format(selectedDate.time)
-                        Log.e("START", start)
-                    },
-                    year, month, day
-                )
-                datePickerDialog.show()
+                datePicker.show(fragmentManager, "START")
             }
 
-            val nowCalendar = Calendar.getInstance()
-
-            if (end.isNotEmpty()){
-                nowCalendar.time = serverDateFormat.parse(end)!!
+            val nowCalendar = Calendar.getInstance().apply {
+                if (end.isNotEmpty()) {
+                    time = serverDateFormat.parse(end)!!
+                }
             }
+
             endDate.text = dateFormat.format(nowCalendar.time)
+            nowCalendar.add(Calendar.DAY_OF_MONTH, 1)
 
             endDateButton.setOnClickListener {
-                val calendar = Calendar.getInstance().apply {
-                    if (end.isNotEmpty()) {
-                        time = serverDateFormat.parse(end)!!
-                    }
+                val datePicker = MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Select Date")
+                    .setSelection(nowCalendar.timeInMillis)
+                    .build()
+                datePicker.addOnPositiveButtonClickListener { selection ->
+                    nowCalendar.timeInMillis = selection
+                    endDate.text = dateFormat.format(nowCalendar.time)
+                    end = serverDateFormat.format(nowCalendar.time)
+                    Log.e("END", end)
                 }
-                val year = calendar.get(Calendar.YEAR)
-                val month = calendar.get(Calendar.MONTH)
-                val day = calendar.get(Calendar.DAY_OF_MONTH)
-                val datePickerDialog = DatePickerDialog(
-                    context,
-                    { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-                        val selectedDate = Calendar.getInstance()
-                        selectedDate.set(mYear, mMonth, mDayOfMonth)
-                        endDate.text = dateFormat.format(selectedDate.time)
-                        end = serverDateFormat.format(selectedDate.time)
-                        Log.e("END", end)
-                    },
-                    year, month, day
-                )
-                datePickerDialog.show()
+                datePicker.show(fragmentManager, "END")
             }
 
             okButton.setOnClickListener {

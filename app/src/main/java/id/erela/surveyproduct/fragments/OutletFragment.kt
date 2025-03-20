@@ -14,13 +14,11 @@ import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.activities.AddOutletActivity
 import id.erela.surveyproduct.activities.DetailOutletActivity
 import id.erela.surveyproduct.adapters.recycler_view.OutletAdapter
-import id.erela.surveyproduct.adapters.recycler_view.OutletDiffUtilCallback
 import id.erela.surveyproduct.databinding.FragmentOutletBinding
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
@@ -123,24 +121,44 @@ class OutletFragment(private val context: Context) : Fragment() {
         binding?.apply {
             searchInput.addTextChangedListener { editable ->
                 val searchText = editable.toString().lowercase(Locale.forLanguageTag("id-ID"))
-                val filteredList = if (searchText.isEmpty()) {
-                    outletList
-                } else {
-                    outletList.filter { outletItem ->
-                        outletItem.name?.lowercase(Locale.forLanguageTag("id-ID"))
+                val filteredList = ArrayList<OutletItem>()
+                for (i in 0 until outletList.size) {
+                    if (outletList[i].name?.lowercase(Locale.forLanguageTag("id-ID"))
+                            ?.indexOf(searchText) != -1 || outletList[i].address?.lowercase(
+                            Locale.forLanguageTag(
+                                "id-ID"
+                            )
+                        )?.indexOf(searchText) != -1
+                        || outletList[i].cityRegency?.lowercase(Locale.forLanguageTag("id-ID"))
                             ?.indexOf(searchText) != -1
+                        || outletList[i].outletID?.lowercase(Locale.forLanguageTag("id-ID"))
+                            ?.indexOf(searchText) != -1
+                    ) {
+                        filteredList.add(outletList[i])
                     }
                 }
-                val diffCallback = OutletDiffUtilCallback(outletList, filteredList)
-                val diffResult = DiffUtil.calculateDiff(diffCallback)
 
-                outletList.clear()
-                outletList.addAll(filteredList)
-                diffResult.dispatchUpdatesTo(adapter)
+                adapter = OutletAdapter(filteredList, "survey").also {
+                    with(it) {
+                        setOnOutletItemClickListener(object :
+                            OutletAdapter.OnOutletItemClickListener {
+                            override fun onOutletForDetailItemClick(
+                                outlet: OutletItem
+                            ) {
+                                DetailOutletActivity.start(
+                                    context,
+                                    outlet
+                                )
+                            }
 
-                if (editable.toString().isEmpty()) {
-                    callNetwork()
+                            override fun onOutletForSurveyItemClick(
+                                outlet: OutletItem
+                            ) {
+                            }
+                        })
+                    }
                 }
+                outletListRv.adapter = adapter
             }
 
             try {
@@ -186,15 +204,22 @@ class OutletFragment(private val context: Context) : Fragment() {
                                             }
                                             outletListRv.layoutManager =
                                                 LinearLayoutManager(context)
-                                            adapter = OutletAdapter(outletList).also {
+                                            adapter = OutletAdapter(outletList, "detail").also {
                                                 with(it) {
                                                     setOnOutletItemClickListener(object :
                                                         OutletAdapter.OnOutletItemClickListener {
-                                                        override fun onOutletItemClick(outlet: OutletItem) {
+                                                        override fun onOutletForDetailItemClick(
+                                                            outlet: OutletItem
+                                                        ) {
                                                             DetailOutletActivity.start(
                                                                 context,
                                                                 outlet
                                                             )
+                                                        }
+
+                                                        override fun onOutletForSurveyItemClick(
+                                                            outlet: OutletItem
+                                                        ) {
                                                         }
                                                     })
                                                 }

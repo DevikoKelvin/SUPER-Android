@@ -17,7 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginVertical="16dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -28,6 +28,7 @@
                 android:id="@+id/questionNumbers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:fontFamily="@font/nucleo"
                 android:textColor="@color/text_primary_color"
                 android:textSize="14sp"
@@ -37,6 +38,7 @@
                 android:id="@+id/questions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:fontFamily="@font/nucleo"
                 android:textColor="@color/text_primary_color"
                 android:textSize="18sp"
@@ -51,8 +53,10 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/answerTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
                     android:fontFamily="@font/nucleo"
                     android:text="@string/survey_answer"
                     android:textColor="@color/text_primary_color"
@@ -62,19 +66,106 @@
                     android:id="@+id/answer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
                     android:fontFamily="@font/nucleo"
                     android:textColor="@color/text_primary_color"
                     android:textSize="16sp"
                     android:textStyle="bold"
+                    android:visibility="gone"
                     tools:text="@tools:sample/lorem" />
 
-                <ImageView
-                    android:id="@+id/imageAnswer"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/answerFieldLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:src="@tools:sample/avatars"
-                    tools:ignore="ContentDescription" />
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxStrokeColor="@color/text_primary_color"
+                    app:boxStrokeWidth="1dp"
+                    app:expandedHintEnabled="false"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false"
+                    app:hintTextColor="@color/black"
+                    app:placeholderText="@string/survey_answer">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/answerField"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:fontFamily="@font/nucleo"
+                        android:gravity="top"
+                        android:inputType="textMultiLine"
+                        android:textSize="14sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/takePhotoButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="8dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardElevation="4dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="8dp"
+                        tools:ignore="UseCompoundDrawables">
+
+                        <ImageView
+                            android:layout_width="21dp"
+                            android:layout_height="21dp"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="4dp"
+                            android:src="@drawable/camera_icon"
+                            tools:ignore="ContentDescription" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/nucleo"
+                            android:text="@string/take_photo"
+                            android:textColor="@color/text_primary_color"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="8dp"
+                    app:strokeWidth="0dp">
+
+                    <ImageView
+                        android:id="@+id/imageAnswer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:ignore="ContentDescription"
+                        tools:src="@tools:sample/avatars" />
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/multipleCheckboxAnswerRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone"
+                tools:itemCount="3"
+                tools:listitem="@layout/list_item_subquestions" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/subQuestionsRv"

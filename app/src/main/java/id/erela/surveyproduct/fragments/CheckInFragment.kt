@@ -1,5 +1,6 @@
 package id.erela.surveyproduct.fragments
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -8,8 +9,6 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.LOCATION_SERVICE
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.mapbox.mapboxsdk.Mapbox
@@ -25,11 +25,13 @@ import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
 import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
+import id.erela.surveyproduct.activities.StartSurveyActivity
 import id.erela.surveyproduct.bottom_sheets.SelectOutletBottomSheet
 import id.erela.surveyproduct.databinding.FragmentCheckInBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
 import id.erela.surveyproduct.helpers.PermissionHelper
 import id.erela.surveyproduct.helpers.customs.CustomToast
+import id.erela.surveyproduct.objects.OutletItem
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -37,10 +39,14 @@ import java.util.Locale
 class CheckInFragment(private val context: Context) : Fragment() {
     private var binding: FragmentCheckInBinding? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var selectedOutlet = 0
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private var cameraCaptureFileName: String = ""
-    private lateinit var imageUri: Uri
+    private var imageUri: Uri? = null
+    private val activity: StartSurveyActivity by lazy {
+        requireActivity() as StartSurveyActivity
+    }
     private val cameraLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -96,7 +102,19 @@ class CheckInFragment(private val context: Context) : Fragment() {
             }
 
             chooseOutletButton.setOnClickListener {
-                val bottomSheet = SelectOutletBottomSheet(context)
+                val bottomSheet = SelectOutletBottomSheet(context).also {
+                    with(it) {
+                        setOnOutletSelectedListener(object :
+                            SelectOutletBottomSheet.OnOutletSelectedListener {
+                            @SuppressLint("SetTextI18n")
+                            override fun onOutletSelected(outlet: OutletItem) {
+                                selectedOutlet = outlet.iD!!.toInt()
+                                outletText.text = "${outlet.name} | OutletID: ${outlet.outletID}"
+                                activity.setCheckInData(selectedOutlet, latitude, longitude, imageUri)
+                            }
+                        })
+                    }
+                }
 
                 if (bottomSheet.window != null)
                     bottomSheet.show()
@@ -177,6 +195,7 @@ class CheckInFragment(private val context: Context) : Fragment() {
                     if (location != null) {
                         latitude = location.latitude
                         longitude = location.longitude
+                        activity.setCheckInData(selectedOutlet, latitude, longitude, imageUri)
                         setMapPreview()
                     }
                 }
@@ -184,7 +203,8 @@ class CheckInFragment(private val context: Context) : Fragment() {
     }
 
     private fun openCamera() {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.forLanguageTag("id-ID")).format(Date())
+        val timeStamp =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.forLanguageTag("id-ID")).format(Date())
         cameraCaptureFileName = "FixMe_Capture_$timeStamp.jpg"
         imageUri = context.contentResolver.insert(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -195,6 +215,7 @@ class CheckInFragment(private val context: Context) : Fragment() {
                 }
             }
         )!!
+        activity.setCheckInData(selectedOutlet, latitude, longitude, imageUri)
 
         cameraLauncher.launch(
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {

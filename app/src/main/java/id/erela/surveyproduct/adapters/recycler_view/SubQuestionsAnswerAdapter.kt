@@ -9,11 +9,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.databinding.ListItemSubquestionsBinding
-import id.erela.surveyproduct.objects.SubQuestionsAnswerItem
+import id.erela.surveyproduct.objects.SubQuestionAnswersItem
 
 class SubQuestionsAnswerAdapter(
     private val context: Context,
-    private val subQuestions: List<SubQuestionsAnswerItem?>
+    private val subQuestions: List<SubQuestionAnswersItem?>,
+    private val usage: String
 ) :
     RecyclerView.Adapter<SubQuestionsAnswerAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -35,16 +36,28 @@ class SubQuestionsAnswerAdapter(
         with(holder) {
             binding.apply {
                 subQuestions.text = "${position + 1}. ${item?.question}"
-                answer.text = item?.answer
-                if (item?.questionType != "photo") {
-                    answer.visibility = View.VISIBLE
-                    imageAnswer.visibility = View.GONE
-                } else {
-                    answer.visibility = View.GONE
-                    imageAnswer.visibility = View.VISIBLE
-                    Glide.with(context)
-                        .load(BuildConfig.IMAGE_URL + item.answer)
-                        .into(imageAnswer)
+
+                when (usage) {
+                    "survey" -> {
+
+                    }
+
+                    "history" -> {
+                        answer.text = if (item?.answer?.size == 1)
+                            item.answer[0]?.answer
+                        else
+                            ""
+                        if (item?.questionType == "photo") {
+                            answer.visibility = View.GONE
+                            imageAnswer.visibility = View.VISIBLE
+                            Glide.with(context)
+                                .load(BuildConfig.IMAGE_URL + item.answer)
+                                .into(imageAnswer)
+                        } else {
+                            answer.visibility = View.VISIBLE
+                            imageAnswer.visibility = View.GONE
+                        }
+                    }
                 }
             }
         }

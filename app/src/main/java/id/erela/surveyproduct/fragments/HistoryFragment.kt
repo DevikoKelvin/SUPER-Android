@@ -7,17 +7,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import id.erela.surveyproduct.R
 import id.erela.surveyproduct.activities.SurveyDetailActivity
 import id.erela.surveyproduct.adapters.recycler_view.CheckInOutAdapter
 import id.erela.surveyproduct.bottom_sheets.FilterHistoryBottomSheet
 import id.erela.surveyproduct.databinding.FragmentHistoryBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
-import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.CheckInOutItem
 import id.erela.surveyproduct.objects.CheckInOutListResponse
 import id.erela.surveyproduct.objects.UsersSuper
@@ -128,7 +125,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
             checkInOutListRv.setHasFixedSize(true)
 
             filterButton.setOnClickListener {
-                val bottomSheet = FilterHistoryBottomSheet(context, start, end).also {
+                val bottomSheet = FilterHistoryBottomSheet(context, start, end, parentFragmentManager).also {
                     with(it) {
                         setOnFilterOkListener(object : FilterHistoryBottomSheet.OnFilterOkListener {
                             override fun onFilterOk(start: String, end: String) {

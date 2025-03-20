@@ -7,7 +7,8 @@
         <item name="colorPrimary">@color/light_blue_accent</item>
         <item name="colorSecondary">@color/dark_blue_accent</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:textColorPrimary">@color/text_primary_color</item>
+        <item name="android:textColorSecondary">@color/text_primary_color</item>
     </style>
 
     <style name="Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
@@ -16,12 +17,11 @@
 
     <style name="AppBottomSheetDialogTheme" parent="Theme.Material3.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
-        <item name="cornerSizeTopLeft">25dp</item>
-        <item name="cornerSizeTopRight">25dp</item>
         <item name="colorSecondary">@color/text_primary_color</item>
     </style>
 
     <style name="AppModalStyle" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="android:backgroundTint">@color/white</item>
         <item name="android:background">@drawable/bottom_sheets_background</item>
     </style>
 

@@ -4,12 +4,11 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import id.erela.surveyproduct.databinding.ListItemOutletBinding
 import id.erela.surveyproduct.objects.OutletItem
 
-class OutletAdapter(private val outlets: ArrayList<OutletItem>) :
+class OutletAdapter(private val outlets: ArrayList<OutletItem>, private val usage: String) :
     RecyclerView.Adapter<OutletAdapter.ViewHolder>() {
     private lateinit var onOutletItemClickListener: OnOutletItemClickListener
 
@@ -37,7 +36,10 @@ class OutletAdapter(private val outlets: ArrayList<OutletItem>) :
                 cityName.text = item.cityRegency
 
                 itemView.setOnClickListener {
-                    onOutletItemClickListener.onOutletItemClick(item)
+                    when (usage) {
+                        "detail" -> onOutletItemClickListener.onOutletForDetailItemClick(item)
+                        "survey" -> onOutletItemClickListener.onOutletForSurveyItemClick(item)
+                    }
                 }
             }
         }
@@ -48,23 +50,7 @@ class OutletAdapter(private val outlets: ArrayList<OutletItem>) :
     }
 
     interface OnOutletItemClickListener {
-        fun onOutletItemClick(outlet: OutletItem)
+        fun onOutletForDetailItemClick(outlet: OutletItem)
+        fun onOutletForSurveyItemClick(outlet: OutletItem)
     }
-}
-
-class OutletDiffUtilCallback(
-    private val oldList: List<OutletItem>,
-    private val newList: List<OutletItem>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-
-    override fun getNewListSize(): Int = newList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-        oldList[oldItemPosition].name == newList[newItemPosition].name
-                || oldList[oldItemPosition].address == newList[newItemPosition].address
-                || oldList[oldItemPosition].cityRegency == newList[newItemPosition].cityRegency
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-        oldList[oldItemPosition] == newList[newItemPosition]
 }

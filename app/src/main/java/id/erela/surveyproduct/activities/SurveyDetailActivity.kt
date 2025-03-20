@@ -15,7 +15,7 @@ import id.erela.surveyproduct.databinding.ActivitySurveyDetailBinding
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.objects.AnswerHistoryResponse
 import id.erela.surveyproduct.objects.CheckInOutItem
-import id.erela.surveyproduct.objects.QuestionAnswerItem
+import id.erela.surveyproduct.objects.QuestionAnswersItem
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,7 +27,7 @@ class SurveyDetailActivity : AppCompatActivity() {
     }
     private lateinit var surveyItem: CheckInOutItem
     private lateinit var adapter: QuestionsAnswerAdapter
-    private val questionsAnswerList = ArrayList<QuestionAnswerItem>()
+    private val questionsAnswerList = ArrayList<QuestionAnswersItem>()
 
     companion object {
         private const val DATA = "DATA"
@@ -70,7 +70,7 @@ class SurveyDetailActivity : AppCompatActivity() {
             outletName.text = surveyItem.outletName
             outletAddress.text = surveyItem.outletAddress
 
-            adapter = QuestionsAnswerAdapter(questionsAnswerList, this@SurveyDetailActivity)
+            adapter = QuestionsAnswerAdapter(questionsAnswerList, this@SurveyDetailActivity, "history")
             answeredQuestionRv.adapter = adapter
             answeredQuestionRv.setHasFixedSize(true)
             answeredQuestionRv.layoutManager = LinearLayoutManager(this@SurveyDetailActivity)
@@ -101,7 +101,7 @@ class SurveyDetailActivity : AppCompatActivity() {
                                         if (result.data != null) {
                                             for (i in result.data.indices) {
                                                 questionsAnswerList.add(
-                                                    QuestionAnswerItem(
+                                                    QuestionAnswersItem(
                                                         result.data[i]?.answer,
                                                         result.data[i]?.questionID,
                                                         result.data[i]?.questionType,
