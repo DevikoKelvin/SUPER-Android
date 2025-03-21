@@ -143,20 +143,6 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                                         }
 
                                         0 -> {
-                                            /*CustomToast.getInstance(context)
-                                                .setMessage(result.message!!)
-                                                .setFontColor(
-                                                    ContextCompat.getColor(
-                                                        context,
-                                                        R.color.custom_toast_font_failed
-                                                    )
-                                                )
-                                                .setBackgroundColor(
-                                                    ContextCompat.getColor(
-                                                        context,
-                                                        R.color.custom_toast_background_failed
-                                                    )
-                                                ).show()*/
                                             emptyAnimation.visibility = View.VISIBLE
                                             checkInOutListRv.visibility = View.GONE
                                         }
@@ -164,40 +150,12 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                                 } else {
                                     Log.e("ERROR", "Response body is null")
                                     Log.e("Response", response.toString())
-                                    /*CustomToast.getInstance(context)
-                                        .setMessage("Something went wrong, please try again.")
-                                        .setFontColor(
-                                            ContextCompat.getColor(
-                                                context,
-                                                R.color.custom_toast_font_failed
-                                            )
-                                        )
-                                        .setBackgroundColor(
-                                            ContextCompat.getColor(
-                                                context,
-                                                R.color.custom_toast_background_failed
-                                            )
-                                        ).show()*/
                                     emptyAnimation.visibility = View.VISIBLE
                                     checkInOutListRv.visibility = View.GONE
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
                                 Log.e("Response", response.toString())
-                                /*CustomToast.getInstance(context)
-                                    .setMessage("Something went wrong, please try again.")
-                                    .setFontColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.custom_toast_font_failed
-                                        )
-                                    )
-                                    .setBackgroundColor(
-                                        ContextCompat.getColor(
-                                            context,
-                                            R.color.custom_toast_background_failed
-                                        )
-                                    ).show()*/
                                 emptyAnimation.visibility = View.VISIBLE
                                 checkInOutListRv.visibility = View.GONE
                             }
@@ -211,20 +169,6 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                             loadingManager(false)
                             Log.e("ERROR", throwable.toString())
                             throwable.printStackTrace()
-                            /*CustomToast.getInstance(context)
-                                .setMessage("Something went wrong, please try again.")
-                                .setFontColor(
-                                    ContextCompat.getColor(
-                                        context,
-                                        R.color.custom_toast_font_failed
-                                    )
-                                )
-                                .setBackgroundColor(
-                                    ContextCompat.getColor(
-                                        context,
-                                        R.color.custom_toast_background_failed
-                                    )
-                                ).show()*/
                             emptyAnimation.visibility = View.VISIBLE
                             checkInOutListRv.visibility = View.GONE
                         }
@@ -234,20 +178,6 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                 loadingManager(false)
                 Log.e("ERROR", jsonException.toString())
                 jsonException.printStackTrace()
-                /*CustomToast.getInstance(context)
-                    .setMessage("Something went wrong, please try again.")
-                    .setFontColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.custom_toast_font_failed
-                        )
-                    )
-                    .setBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.custom_toast_background_failed
-                        )
-                    ).show()*/
                 emptyAnimation.visibility = View.VISIBLE
                 checkInOutListRv.visibility = View.GONE
             }

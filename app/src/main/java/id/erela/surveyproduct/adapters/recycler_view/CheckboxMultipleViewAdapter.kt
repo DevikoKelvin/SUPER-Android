@@ -26,6 +26,8 @@ class CheckboxMultipleViewAdapter(private val answer: List<AnswerItem?>) :
 
         with(holder) {
             binding.apply {
+                checkboxMultipleViewContainer.visibility = View.VISIBLE
+
                 answer.text = item?.option
                 if (item?.answer == "1")
                     checkIcon.visibility = View.VISIBLE

@@ -89,7 +89,6 @@ class HistoryFragment(private val context: Context) : Fragment() {
             startCalendar.set(Calendar.DAY_OF_MONTH, 1)
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.forLanguageTag("id-ID"))
             start = dateFormat.format(startCalendar.time)
-
             val endCalendar = Calendar.getInstance()
             end = dateFormat.format(endCalendar.time)
 
@@ -125,17 +124,19 @@ class HistoryFragment(private val context: Context) : Fragment() {
             checkInOutListRv.setHasFixedSize(true)
 
             filterButton.setOnClickListener {
-                val bottomSheet = FilterHistoryBottomSheet(context, start, end, parentFragmentManager).also {
-                    with(it) {
-                        setOnFilterOkListener(object : FilterHistoryBottomSheet.OnFilterOkListener {
-                            override fun onFilterOk(start: String, end: String) {
-                                this@HistoryFragment.start = start
-                                this@HistoryFragment.end = end
-                                callNetwork(start, end)
-                            }
-                        })
+                val bottomSheet =
+                    FilterHistoryBottomSheet(context, start, end, parentFragmentManager).also {
+                        with(it) {
+                            setOnFilterOkListener(object :
+                                FilterHistoryBottomSheet.OnFilterOkListener {
+                                override fun onFilterOk(start: String, end: String) {
+                                    this@HistoryFragment.start = start
+                                    this@HistoryFragment.end = end
+                                    callNetwork(start, end)
+                                }
+                            })
+                        }
                     }
-                }
 
                 if (bottomSheet.window != null)
                     bottomSheet.show()
@@ -144,7 +145,6 @@ class HistoryFragment(private val context: Context) : Fragment() {
     }
 
     private fun callNetwork(start: String, end: String) {
-        Log.e("Date", "$start - $end")
         loadingManager(true)
         binding?.apply {
             try {

@@ -70,12 +70,10 @@ class SurveyDetailActivity : AppCompatActivity() {
             outletName.text = surveyItem.outletName
             outletAddress.text = surveyItem.outletAddress
 
-            adapter = QuestionsAnswerAdapter(questionsAnswerList, this@SurveyDetailActivity, "history")
+            adapter = QuestionsAnswerAdapter(questionsAnswerList, this@SurveyDetailActivity)
             answeredQuestionRv.adapter = adapter
             answeredQuestionRv.setHasFixedSize(true)
             answeredQuestionRv.layoutManager = LinearLayoutManager(this@SurveyDetailActivity)
-
-            Log.e("Check In-Out Data", surveyItem.toString())
 
             getAnswerListHistory()
         }

@@ -1,60 +1,151 @@
 package id.erela.surveyproduct.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
+import id.erela.surveyproduct.activities.StartSurveyActivity
+import id.erela.surveyproduct.adapters.recycler_view.QuestionSurveyAdapter
+import id.erela.surveyproduct.databinding.FragmentAnswerBinding
+import id.erela.surveyproduct.helpers.api.AppAPI
+import id.erela.surveyproduct.helpers.customs.CustomToast
+import id.erela.surveyproduct.objects.QuestionsItem
+import id.erela.surveyproduct.objects.SurveyListResponse
+import org.json.JSONException
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AnswerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class AnswerFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionClickListener {
+    private var binding: FragmentAnswerBinding? = null
+    private val activity: StartSurveyActivity by lazy {
+        requireActivity() as StartSurveyActivity
     }
+    private val surveyQuestionsList = ArrayList<QuestionsItem>()
+    private lateinit var adapter: QuestionSurveyAdapter
+    private var isInitialized = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_answer, container, false)
+    ): View {
+        binding = FragmentAnswerBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AnswerFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AnswerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding?.apply {
+            adapter = QuestionSurveyAdapter(surveyQuestionsList, requireContext())
+            answerFieldRv.adapter = adapter
+            answerFieldRv.setHasFixedSize(true)
+            answerFieldRv.layoutManager = LinearLayoutManager(context)
+
+            if (!isInitialized)
+                getSurveyQuestions()
+        }
+    }
+
+    fun saveState(outState: Bundle) {
+        outState.apply {
+            putParcelableArrayList("surveyQuestions", ArrayList(surveyQuestionsList))
+            binding?.answerFieldRv?.layoutManager?.let { layoutManager ->
+                if (layoutManager is LinearLayoutManager) {
+                    putInt("scrollPosition", layoutManager.findFirstVisibleItemPosition())
                 }
             }
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun restoreState(savedInstanceState: Bundle) {
+        savedInstanceState.getParcelableArrayList<QuestionsItem>("surveyQuestions")?.let {
+            surveyQuestionsList.clear()
+            surveyQuestionsList.addAll(it)
+            if (::adapter.isInitialized) {
+                adapter.notifyDataSetChanged()
+            }
+        }
+
+        // Restore scroll position after view is created
+        view?.post {
+            savedInstanceState.getInt("scrollPosition", 0).let { position ->
+                binding?.answerFieldRv?.layoutManager?.scrollToPosition(position)
+            }
+        }
+    }
+
+
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getSurveyQuestions() {
+        binding.apply {
+            try {
+                AppAPI.superEndpoint.showAllSurveys()
+                    .enqueue(object : Callback<SurveyListResponse> {
+                        override fun onResponse(
+                            call: Call<SurveyListResponse>,
+                            response: Response<SurveyListResponse>
+                        ) {
+                            isInitialized = true
+                            if (response.isSuccessful) {
+                                if (response.body() != null) {
+                                    val result = response.body()
+                                    when (result?.code) {
+                                        1 -> {
+                                            for (item in result.data!!) {
+                                                surveyQuestionsList.add(item!!)
+                                            }
+                                            adapter.notifyDataSetChanged()
+                                        }
+
+                                        0 -> {
+                                            CustomToast.getInstance(requireContext())
+                                                .setMessage("Something went wrong, please try again later")
+                                                .setBackgroundColor(
+                                                    ContextCompat.getColor(
+                                                        requireContext(),
+                                                        R.color.custom_toast_background_failed
+                                                    )
+                                                )
+                                                .setFontColor(
+                                                    ContextCompat.getColor(
+                                                        requireContext(),
+                                                        R.color.custom_toast_font_failed
+                                                    )
+                                                ).show()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        override fun onFailure(
+                            call: Call<SurveyListResponse>,
+                            throwable: Throwable
+                        ) {
+                            isInitialized = false
+                            Log.e("ERROR", throwable.toString())
+                            throwable.printStackTrace()
+                            activity.finish()
+                        }
+                    })
+            } catch (jsonException: JSONException) {
+                isInitialized = false
+                Log.e("ERROR", jsonException.toString())
+                jsonException.printStackTrace()
+                activity.finish()
+            }
+        }
+    }
+
+    override fun onTakePhotoButtonClick(position: Int) {
     }
 }

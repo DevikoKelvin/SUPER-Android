@@ -2,6 +2,7 @@ package id.erela.surveyproduct.adapters.recycler_view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +14,8 @@ import id.erela.surveyproduct.databinding.ListItemQuestionsBinding
 import id.erela.surveyproduct.objects.QuestionAnswersItem
 
 class QuestionsAnswerAdapter(
-    private val questions: ArrayList<QuestionAnswersItem>,
-    private val context: Context,
-    private val usage: String
-) :
-    RecyclerView.Adapter<QuestionsAnswerAdapter.ViewHolder>() {
+    private val questions: ArrayList<QuestionAnswersItem>, private val context: Context
+) : RecyclerView.Adapter<QuestionsAnswerAdapter.ViewHolder>() {
     private lateinit var adapter: SubQuestionsAnswerAdapter
     private lateinit var checkboxMultipleAdapter: CheckboxMultipleViewAdapter
 
@@ -36,67 +34,55 @@ class QuestionsAnswerAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = questions[position]
+        Log.e("Item ${position + 1}", item.toString())
 
         with(holder) {
             binding.apply {
                 questionNumbers.text = "Question ${position + 1}"
                 questions.text = item.question
 
-                when (usage) {
-                    "survey" -> {
-                        answerTitle.visibility = View.GONE
+                answerFieldLayout.visibility = View.GONE
+                takePhotoButton.visibility = View.GONE
+
+                if (item.answer != null) {
+                    if (item.questionType == "photo") {
                         answer.visibility = View.GONE
-                        if (item.questionType == "photo") {
-                            answerFieldLayout.visibility = View.GONE
-                            takePhotoButton.visibility = View.VISIBLE
-                        } else {
-                            answerFieldLayout.visibility = View.VISIBLE
-                            takePhotoButton.visibility = View.GONE
+                        imageAnswer.visibility = View.VISIBLE
+                        if (item.answer.isNotEmpty()) {
+                            Glide.with(context).load(BuildConfig.IMAGE_URL + item.answer[0]?.answer)
+                                .into(imageAnswer)
                         }
-                    }
-
-                    "history" -> {
-                        if (item.answer != null) {
+                    } else {
+                        if (item.answer.size > 1) {
+                            checkboxMultipleAdapter = CheckboxMultipleViewAdapter(item.answer)
+                            multipleCheckboxAnswerRv.adapter = checkboxMultipleAdapter
+                            multipleCheckboxAnswerRv.layoutManager = LinearLayoutManager(context)
+                            multipleCheckboxAnswerRv.setHasFixedSize(true)
+                            answer.visibility = View.GONE
+                            imageAnswer.visibility = View.GONE
+                            multipleCheckboxAnswerRv.visibility = View.VISIBLE
+                        } else {
+                            multipleCheckboxAnswerRv.visibility = View.GONE
                             answerContainer.visibility = View.VISIBLE
-                            answer.text = if (item.answer.size == 1)
-                                item.answer[0]?.answer
-                            else
-                                ""
-                            if (item.questionType == "photo") {
-                                answer.visibility = View.GONE
-                                imageAnswer.visibility = View.VISIBLE
-                                Glide.with(context)
-                                    .load(BuildConfig.IMAGE_URL + item.answer[0]?.answer)
-                                    .into(imageAnswer)
+                            if (item.answer.isNotEmpty()) {
+                                answer.visibility = View.VISIBLE
+                                answer.text = if (item.answer.size == 1) item.answer[0]?.answer
+                                else ""
                             } else {
-                                if (item.answer.size > 1) {
-                                    checkboxMultipleAdapter = CheckboxMultipleViewAdapter(item.answer)
-                                    multipleCheckboxAnswerRv.adapter = checkboxMultipleAdapter
-                                    multipleCheckboxAnswerRv.layoutManager =
-                                        LinearLayoutManager(context)
-                                    multipleCheckboxAnswerRv.setHasFixedSize(true)
-                                    answer.visibility = View.GONE
-                                    imageAnswer.visibility = View.GONE
-                                    multipleCheckboxAnswerRv.visibility = View.VISIBLE
-                                } else {
-                                    multipleCheckboxAnswerRv.visibility = View.GONE
-                                    answer.visibility = View.VISIBLE
-                                    imageAnswer.visibility = View.GONE
-                                }
+                                answer.visibility = View.GONE
                             }
-                        } else {
-                            answerContainer.visibility = View.GONE
+                            imageAnswer.visibility = View.GONE
                         }
-                        answerFieldLayout.visibility = View.GONE
-                        takePhotoButton.visibility = View.GONE
                     }
+                } else {
+                    answerContainer.visibility = View.GONE
                 }
-
-                takePhotoButton.setOnClickListener {  }
+                answerFieldLayout.visibility = View.GONE
+                takePhotoButton.visibility = View.GONE
 
                 if (item.subQuestions != null) {
                     subQuestionsRv.visibility = View.VISIBLE
-                    adapter = SubQuestionsAnswerAdapter(context, item.subQuestions, usage)
+                    adapter = SubQuestionsAnswerAdapter(context, item.subQuestions)
                     subQuestionsRv.adapter = adapter
                     subQuestionsRv.layoutManager = LinearLayoutManager(context)
                     subQuestionsRv.setHasFixedSize(true)

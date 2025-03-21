@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.LOCATION_SERVICE
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -41,6 +42,7 @@ class CheckInFragment(private val context: Context) : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var selectedOutlet = 0
     private var latitude: Double = 0.0
+    private var selectedOutletText: String? = null
     private var longitude: Double = 0.0
     private var cameraCaptureFileName: String = ""
     private var imageUri: Uri? = null
@@ -62,6 +64,15 @@ class CheckInFragment(private val context: Context) : Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Retain this fragment across configuration changes.
+        retainInstance = true
+        if (savedInstanceState != null) {
+            restoreState(savedInstanceState)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -73,71 +84,104 @@ class CheckInFragment(private val context: Context) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Restore UI state
+        restoreUIState()
+        setupListeners()
+    }
 
-        binding?.apply {
-            fusedLocationClient =
-                LocationServices.getFusedLocationProviderClient(context)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        saveState(outState)
+    }
 
-            if (!isLocationEnabled()) {
-                CustomToast(context.applicationContext)
-                    .setMessage("Please turn on your location first!")
-                    .setBackgroundColor(
-                        ContextCompat.getColor(
-                            context.applicationContext,
-                            R.color.custom_toast_background_failed
-                        )
-                    )
-                    .setFontColor(
-                        ContextCompat.getColor(
-                            context.applicationContext,
-                            R.color.custom_toast_font_failed
-                        )
-                    ).show()
-            } else {
-                getLastKnownLocation()
-            }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
+    }
 
-            refreshButton.setOnClickListener {
-                getLastKnownLocation()
-            }
-
-            chooseOutletButton.setOnClickListener {
-                val bottomSheet = SelectOutletBottomSheet(context).also {
-                    with(it) {
-                        setOnOutletSelectedListener(object :
-                            SelectOutletBottomSheet.OnOutletSelectedListener {
-                            @SuppressLint("SetTextI18n")
-                            override fun onOutletSelected(outlet: OutletItem) {
-                                selectedOutlet = outlet.iD!!.toInt()
-                                outletText.text = "${outlet.name} | OutletID: ${outlet.outletID}"
-                                activity.setCheckInData(selectedOutlet, latitude, longitude, imageUri)
-                            }
-                        })
+    fun restoreState(savedInstanceState: Bundle) {
+        with(savedInstanceState) {
+            selectedOutlet = getInt("selectedOutlet")
+            selectedOutletText = getString("selectedOutletText")
+            latitude = getDouble("latitude")
+            longitude = getDouble("longitude")
+            imageUri = getString("imageUri")?.toUri()
+            // Restore the state after view is created
+            view?.post {
+                binding?.apply {
+                    // Restore image preview if exists
+                    imageUri?.let {
+                        photoContainer.visibility = View.VISIBLE
+                        photoPlaceholder.visibility = View.GONE
+                        photoPreview.visibility = View.VISIBLE
+                        photoPreview.setImageURI(it)
                     }
-                }
-
-                if (bottomSheet.window != null)
-                    bottomSheet.show()
-            }
-
-            takePhotoButton.setOnClickListener {
-                if (PermissionHelper.isPermissionGranted(
-                        requireActivity(),
-                        PermissionHelper.CAMERA
-                    )
-                ) {
-                    openCamera()
-                } else {
-                    PermissionHelper.requestPermission(
-                        requireActivity(),
-                        arrayOf(PermissionHelper.CAMERA),
-                        PermissionHelper.REQUEST_CODE_CAMERA
-                    )
+                    // Restore outlet selection text
+                    selectedOutletText?.let {
+                        outletText.text = it
+                    }
+                    // Restore map position if needed
+                    if (latitude != 0.0 && longitude != 0.0) {
+                        setMapPreview()
+                    }
                 }
             }
         }
     }
 
+    fun saveState(outState: Bundle) {
+        outState.apply {
+            putInt("selectedOutlet", selectedOutlet)
+            putString("selectedOutletText", selectedOutletText)
+            putDouble("latitude", latitude)
+            putDouble("longitude", longitude)
+            putString("imageUri", imageUri?.toString())
+        }
+    }
+
+    private fun restoreUIState() {
+        binding?.apply {
+            // Restore outlet text
+            if (selectedOutletText != null) {
+                outletText.text = selectedOutletText
+            }
+            // Restore photo preview if exists
+            if (imageUri != null) {
+                photoContainer.visibility = View.VISIBLE
+                photoPlaceholder.visibility = View.GONE
+                photoPreview.visibility = View.VISIBLE
+                photoPreview.setImageURI(imageUri)
+            }
+            // Initialize location services
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+            // Check and restore location
+            if (!isLocationEnabled()) {
+                showLocationError()
+            } else if (latitude == 0.0 && longitude == 0.0) {
+                getLastKnownLocation()
+            } else {
+                setMapPreview()
+            }
+        }
+    }
+
+    private fun setupListeners() {
+        binding?.apply {
+            refreshButton.setOnClickListener {
+                getLastKnownLocation()
+            }
+
+            chooseOutletButton.setOnClickListener {
+                showOutletSelector()
+            }
+
+            takePhotoButton.setOnClickListener {
+                handlePhotoCapture()
+            }
+        }
+    }
+
+    // ... (rest of the existing methods remain the same)
     private fun setMapPreview() {
         binding?.apply {
             mapPreview.getMapAsync { map ->
@@ -224,5 +268,63 @@ class CheckInFragment(private val context: Context) : Fragment() {
                 }
             }
         )
+    }
+
+    private fun showLocationError() {
+        CustomToast(context.applicationContext)
+            .setMessage("Please turn on your location first!")
+            .setBackgroundColor(
+                ContextCompat.getColor(
+                    context.applicationContext,
+                    R.color.custom_toast_background_failed
+                )
+            )
+            .setFontColor(
+                ContextCompat.getColor(
+                    context.applicationContext,
+                    R.color.custom_toast_font_failed
+                )
+            ).show()
+    }
+
+    private fun showOutletSelector() {
+        val bottomSheet = SelectOutletBottomSheet(context).also {
+            with(it) {
+                setOnOutletSelectedListener(object :
+                    SelectOutletBottomSheet.OnOutletSelectedListener {
+                    @SuppressLint("SetTextI18n")
+                    override fun onOutletSelected(outlet: OutletItem) {
+                        selectedOutlet = outlet.iD!!.toInt()
+                        selectedOutletText = "${outlet.name} | OutletID: ${outlet.outletID}"
+                        binding?.outletText?.text = selectedOutletText
+                        activity.setCheckInData(
+                            selectedOutlet,
+                            latitude,
+                            longitude,
+                            imageUri
+                        )
+                    }
+                })
+            }
+        }
+
+        if (bottomSheet.window != null)
+            bottomSheet.show()
+    }
+
+    private fun handlePhotoCapture() {
+        if (PermissionHelper.isPermissionGranted(
+                requireActivity(),
+                PermissionHelper.CAMERA
+            )
+        ) {
+            openCamera()
+        } else {
+            PermissionHelper.requestPermission(
+                requireActivity(),
+                arrayOf(PermissionHelper.CAMERA),
+                PermissionHelper.REQUEST_CODE_CAMERA
+            )
+        }
     }
 }
