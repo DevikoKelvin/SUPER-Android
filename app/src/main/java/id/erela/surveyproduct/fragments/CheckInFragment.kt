@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.LOCATION_SERVICE
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -31,6 +32,7 @@ import id.erela.surveyproduct.bottom_sheets.SelectOutletBottomSheet
 import id.erela.surveyproduct.databinding.FragmentCheckInBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
 import id.erela.surveyproduct.helpers.PermissionHelper
+import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.OutletItem
 import java.text.SimpleDateFormat
@@ -64,13 +66,12 @@ class CheckInFragment(private val context: Context) : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // Retain this fragment across configuration changes.
-        retainInstance = true
-        if (savedInstanceState != null) {
-            restoreState(savedInstanceState)
-        }
+    companion object {
+        const val SELECTED_OUTLET = "CHECK_IN_SELECTED_OUTLET"
+        const val SELECTED_OUTLET_TEXT = "CHECK_IN_SELECTED_OUTLET_TEXT"
+        const val LATITUDE = "CHECK_IN_LATITUDE"
+        const val LONGITUDE = "CHECK_IN_LONGITUDE"
+        const val IMAGE_URI = "CHECK_IN_IMAGE_URI"
     }
 
     override fun onCreateView(
@@ -89,69 +90,34 @@ class CheckInFragment(private val context: Context) : Fragment() {
         setupListeners()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        saveState(outState)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
     }
 
-    fun restoreState(savedInstanceState: Bundle) {
-        with(savedInstanceState) {
-            selectedOutlet = getInt("selectedOutlet")
-            selectedOutletText = getString("selectedOutletText")
-            latitude = getDouble("latitude")
-            longitude = getDouble("longitude")
-            imageUri = getString("imageUri")?.toUri()
-            // Restore the state after view is created
-            view?.post {
-                binding?.apply {
-                    // Restore image preview if exists
-                    imageUri?.let {
-                        photoContainer.visibility = View.VISIBLE
-                        photoPlaceholder.visibility = View.GONE
-                        photoPreview.visibility = View.VISIBLE
-                        photoPreview.setImageURI(it)
-                    }
-                    // Restore outlet selection text
-                    selectedOutletText?.let {
-                        outletText.text = it
-                    }
-                    // Restore map position if needed
-                    if (latitude != 0.0 && longitude != 0.0) {
-                        setMapPreview()
-                    }
-                }
-            }
-        }
-    }
-
-    fun saveState(outState: Bundle) {
-        outState.apply {
-            putInt("selectedOutlet", selectedOutlet)
-            putString("selectedOutletText", selectedOutletText)
-            putDouble("latitude", latitude)
-            putDouble("longitude", longitude)
-            putString("imageUri", imageUri?.toString())
-        }
-    }
-
     private fun restoreUIState() {
         binding?.apply {
             // Restore outlet text
+            selectedOutlet = SharedPreferencesHelper.getSharedPreferences(context)
+                .getInt(SELECTED_OUTLET, 0)
+            selectedOutletText = SharedPreferencesHelper.getSharedPreferences(context)
+                .getString(SELECTED_OUTLET_TEXT, null)
             if (selectedOutletText != null) {
                 outletText.text = selectedOutletText
             }
             // Restore photo preview if exists
-            if (imageUri != null) {
+            imageUri = SharedPreferencesHelper.getSharedPreferences(context).getString(IMAGE_URI, null)?.toUri()
+            imageUri?.let {
                 photoContainer.visibility = View.VISIBLE
                 photoPlaceholder.visibility = View.GONE
                 photoPreview.visibility = View.VISIBLE
-                photoPreview.setImageURI(imageUri)
+                photoPreview.setImageURI(it)
             }
+            // Restore map position if needed
+            latitude = SharedPreferencesHelper.getSharedPreferences(context)
+                .getFloat(LATITUDE, 0f).toDouble()
+            longitude = SharedPreferencesHelper.getSharedPreferences(context)
+                .getFloat(LONGITUDE, 0f).toDouble()
             // Initialize location services
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
             // Check and restore location
@@ -181,7 +147,6 @@ class CheckInFragment(private val context: Context) : Fragment() {
         }
     }
 
-    // ... (rest of the existing methods remain the same)
     private fun setMapPreview() {
         binding?.apply {
             mapPreview.getMapAsync { map ->
@@ -239,7 +204,10 @@ class CheckInFragment(private val context: Context) : Fragment() {
                     if (location != null) {
                         latitude = location.latitude
                         longitude = location.longitude
-                        activity.setCheckInData(selectedOutlet, latitude, longitude, imageUri)
+                        SharedPreferencesHelper.getSharedPreferences(context).edit {
+                            putFloat(LATITUDE, latitude.toFloat())
+                            putFloat(LONGITUDE, longitude.toFloat())
+                        }
                         setMapPreview()
                     }
                 }
@@ -259,7 +227,9 @@ class CheckInFragment(private val context: Context) : Fragment() {
                 }
             }
         )!!
-        activity.setCheckInData(selectedOutlet, latitude, longitude, imageUri)
+        SharedPreferencesHelper.getSharedPreferences(context).edit {
+            putString(IMAGE_URI, imageUri.toString())
+        }
 
         cameraLauncher.launch(
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
@@ -297,12 +267,10 @@ class CheckInFragment(private val context: Context) : Fragment() {
                         selectedOutlet = outlet.iD!!.toInt()
                         selectedOutletText = "${outlet.name} | OutletID: ${outlet.outletID}"
                         binding?.outletText?.text = selectedOutletText
-                        activity.setCheckInData(
-                            selectedOutlet,
-                            latitude,
-                            longitude,
-                            imageUri
-                        )
+                        SharedPreferencesHelper.getSharedPreferences(context).edit {
+                            putInt(SELECTED_OUTLET, selectedOutlet)
+                            putString(SELECTED_OUTLET_TEXT, selectedOutletText)
+                        }
                     }
                 })
             }

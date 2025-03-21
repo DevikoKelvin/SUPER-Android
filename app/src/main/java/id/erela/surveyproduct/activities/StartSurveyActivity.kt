@@ -20,13 +20,7 @@ class StartSurveyActivity : AppCompatActivity() {
         ActivityStartSurveyBinding.inflate(layoutInflater)
     }
     private var currentFragment: Fragment? = null
-    private val fragmentData = mutableMapOf<Int, Bundle>()
-    private val checkInData = HashMap<String, String>()
     private var fragmentPosition = 1
-    private var selectedOutlet = 0
-    private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
-    private var imageUri: Uri? = null
 
     companion object {
         fun start(context: Context) {
@@ -53,71 +47,22 @@ class StartSurveyActivity : AppCompatActivity() {
             inflateFragment(1)
 
             previousButton.setOnClickListener {
-                if (fragmentPosition == 1) {
+                if (fragmentPosition == 1)
                     return@setOnClickListener
-                }
-                saveCurrentFragmentState()
                 fragmentPosition--
                 inflateFragment(fragmentPosition)
             }
 
             nextButton.setOnClickListener {
-                when (fragmentPosition) {
-                    1 -> {
-                        saveCheckInData()
-                    }
-
-                    3 -> {
-                        return@setOnClickListener
-                    }
-                }
-                saveCurrentFragmentState()
+                if (fragmentPosition == 3)
+                    return@setOnClickListener
                 fragmentPosition++
                 inflateFragment(fragmentPosition)
             }
         }
     }
 
-    private fun saveCurrentFragmentState() {
-        currentFragment?.let { fragment ->
-            val bundle = Bundle()
-            when (fragment) {
-                is CheckInFragment -> fragment.saveState(bundle)
-                is AnswerFragment -> fragment.saveState(bundle)
-            }
-            fragmentData[fragmentPosition] = bundle
-        }
-    }
-
-    private fun restoreFragmentState(fragment: Fragment, position: Int) {
-        fragmentData[position]?.let { bundle ->
-            when (fragment) {
-                is CheckInFragment -> fragment.restoreState(bundle)
-                is AnswerFragment -> fragment.restoreState(bundle)
-            }
-        }
-    }
-
-    private fun saveCheckInData() {
-        val set = HashSet<String>().apply {
-            add(selectedOutlet.toString())
-            add(latitude.toString())
-            add(longitude.toString())
-            add(imageUri.toString())
-        }
-        SharedPreferencesHelper.getSharedPreferences(applicationContext).edit {
-            putStringSet("check_in_data", set)
-        }
-        val data = SharedPreferencesHelper.getSharedPreferences(applicationContext)
-            .getStringSet("check_in_data", null)?.toList()
-        checkInData["outlet"] = data?.get(0).toString()
-        checkInData["latitude"] = data?.get(1).toString()
-        checkInData["longitude"] = data?.get(2).toString()
-        checkInData["image"] = data?.get(3).toString()
-    }
-
     private fun inflateFragment(position: Int) {
-        saveCurrentFragmentState()
         val fragment = when (position) {
             1 -> CheckInFragment(this)
             2 -> AnswerFragment()
@@ -145,19 +90,10 @@ class StartSurveyActivity : AppCompatActivity() {
             }
         }
 
-        restoreFragmentState(fragment, position)
-
         supportFragmentManager.commit {
             replace(R.id.fragmentContainer, fragment)
         }
         currentFragment = fragment
         fragmentPosition = position
-    }
-
-    fun setCheckInData(outlet: Int, lat: Double, long: Double, image: Uri?) {
-        selectedOutlet = outlet
-        latitude = lat
-        longitude = long
-        imageUri = image
     }
 }
