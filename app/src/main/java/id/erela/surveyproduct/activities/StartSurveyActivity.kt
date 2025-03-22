@@ -41,6 +41,7 @@ class StartSurveyActivity : AppCompatActivity() {
             onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     CheckInFragment.clearCheckInData(this@StartSurveyActivity)
+                    finish()
                 }
             })
 
