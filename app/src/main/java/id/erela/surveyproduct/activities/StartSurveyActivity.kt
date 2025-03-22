@@ -2,18 +2,15 @@ package id.erela.surveyproduct.activities
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityStartSurveyBinding
 import id.erela.surveyproduct.fragments.AnswerFragment
 import id.erela.surveyproduct.fragments.CheckInFragment
-import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 
 class StartSurveyActivity : AppCompatActivity() {
     private val binding: ActivityStartSurveyBinding by lazy {

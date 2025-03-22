@@ -27,7 +27,6 @@ import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
 import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
-import id.erela.surveyproduct.activities.StartSurveyActivity
 import id.erela.surveyproduct.bottom_sheets.SelectOutletBottomSheet
 import id.erela.surveyproduct.databinding.FragmentCheckInBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
@@ -48,9 +47,6 @@ class CheckInFragment(private val context: Context) : Fragment() {
     private var longitude: Double = 0.0
     private var cameraCaptureFileName: String = ""
     private var imageUri: Uri? = null
-    private val activity: StartSurveyActivity by lazy {
-        requireActivity() as StartSurveyActivity
-    }
     private val cameraLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -72,6 +68,16 @@ class CheckInFragment(private val context: Context) : Fragment() {
         const val LATITUDE = "CHECK_IN_LATITUDE"
         const val LONGITUDE = "CHECK_IN_LONGITUDE"
         const val IMAGE_URI = "CHECK_IN_IMAGE_URI"
+
+        fun clearCheckInData(context: Context) {
+            SharedPreferencesHelper.getSharedPreferences(context).edit {
+                remove(SELECTED_OUTLET)
+                remove(SELECTED_OUTLET_TEXT)
+                remove(LATITUDE)
+                remove(LONGITUDE)
+                remove(IMAGE_URI)
+            }
+        }
     }
 
     override fun onCreateView(
