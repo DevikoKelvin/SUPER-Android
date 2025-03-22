@@ -3,6 +3,7 @@ package id.erela.surveyproduct.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -37,6 +38,12 @@ class StartSurveyActivity : AppCompatActivity() {
 
     private fun init() {
         binding.apply {
+            onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    CheckInFragment.clearCheckInData(this@StartSurveyActivity)
+                }
+            })
+
             backButton.setOnClickListener {
                 onBackPressedDispatcher.onBackPressed()
             }
