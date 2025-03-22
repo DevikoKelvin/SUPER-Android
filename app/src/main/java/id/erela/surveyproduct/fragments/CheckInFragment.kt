@@ -112,7 +112,9 @@ class CheckInFragment(private val context: Context) : Fragment() {
                 outletText.text = selectedOutletText
             }
             // Restore photo preview if exists
-            imageUri = SharedPreferencesHelper.getSharedPreferences(context).getString(IMAGE_URI, null)?.toUri()
+            imageUri =
+                SharedPreferencesHelper.getSharedPreferences(context).getString(IMAGE_URI, null)
+                    ?.toUri()
             imageUri?.let {
                 photoContainer.visibility = View.VISIBLE
                 photoPlaceholder.visibility = View.GONE
@@ -223,7 +225,7 @@ class CheckInFragment(private val context: Context) : Fragment() {
     private fun openCamera() {
         val timeStamp =
             SimpleDateFormat("yyyyMMdd_HHmmss", Locale.forLanguageTag("id-ID")).format(Date())
-        cameraCaptureFileName = "FixMe_Capture_$timeStamp.jpg"
+        cameraCaptureFileName = "Super_CheckIn_Capture_$timeStamp.jpg"
         imageUri = context.contentResolver.insert(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             ContentValues().also {

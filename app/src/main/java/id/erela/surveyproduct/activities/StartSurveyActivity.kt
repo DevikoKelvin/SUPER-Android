@@ -40,8 +40,23 @@ class StartSurveyActivity : AppCompatActivity() {
         binding.apply {
             onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    CheckInFragment.clearCheckInData(this@StartSurveyActivity)
-                    finish()
+                    when (fragmentPosition) {
+                        1 -> {
+                            CheckInFragment.clearCheckInData(this@StartSurveyActivity)
+                            AnswerFragment.clearAnswerData(this@StartSurveyActivity)
+                            finish()
+                        }
+
+                        2 -> {
+                            fragmentPosition--
+                            inflateFragment(1)
+                        }
+
+                        3 -> {
+                            fragmentPosition--
+                            inflateFragment(2)
+                        }
+                    }
                 }
             })
 
@@ -88,7 +103,7 @@ class StartSurveyActivity : AppCompatActivity() {
                     nextButton.alpha = 1.0f
                 }
 
-                else -> {
+                3 -> {
                     nextButton.isEnabled = false
                     nextButton.alpha = 0.5f
                 }

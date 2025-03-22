@@ -38,7 +38,6 @@ class SubQuestionsAnswerAdapter(
             binding.apply {
                 subQuestions.text = "${position + 1}. ${item?.question}"
 
-
                 if (item?.answer != null) {
                     if (item.questionType == "photo") {
                         answer.visibility = View.GONE

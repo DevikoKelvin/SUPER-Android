@@ -5,9 +5,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import id.erela.surveyproduct.databinding.ListItemSubquestionsBinding
+import id.erela.surveyproduct.fragments.AnswerFragment
+import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.objects.CheckboxMultipleItem
 import id.erela.surveyproduct.objects.SubQuestionsItem
 
@@ -37,6 +41,16 @@ class SubQuestionsSurveyAdapter(
             binding.apply {
                 subQuestions.text = "${position + 1}. ${item?.question}"
                 answer.visibility = View.GONE
+                val questionID =
+                    SharedPreferencesHelper.getSharedPreferences(context).getInt(
+                        "${AnswerFragment.ANSWER_QUESTION_ID}_${item?.questionID}",
+                        0
+                    )
+                val subQuestionID =
+                    SharedPreferencesHelper.getSharedPreferences(context).getInt(
+                        "${AnswerFragment.ANSWER_SUBQUESTION_ID}_${item?.iD}",
+                        0
+                    )
 
                 when (item?.questionType) {
                     "photo" -> {
@@ -47,6 +61,7 @@ class SubQuestionsSurveyAdapter(
                     "checkbox" -> {
                         answerFieldLayout.visibility = View.GONE
                         takePhotoButton.visibility = View.GONE
+                        imageAnswer.visibility = View.GONE
                         val checkboxMultipleItem = ArrayList<CheckboxMultipleItem>()
                         for (i in item.checkboxOptions!!.indices) {
                             checkboxMultipleItem.add(
@@ -56,7 +71,7 @@ class SubQuestionsSurveyAdapter(
                             )
                         }
                         checkboxMultipleAdapter =
-                            CheckboxMultipleSurveyAdapter(checkboxMultipleItem, "checkbox")
+                            CheckboxMultipleSurveyAdapter(checkboxMultipleItem, "checkbox", context)
                         multipleCheckboxAnswerRv.adapter = checkboxMultipleAdapter
                         multipleCheckboxAnswerRv.layoutManager = LinearLayoutManager(context)
                         multipleCheckboxAnswerRv.setHasFixedSize(true)
@@ -65,6 +80,7 @@ class SubQuestionsSurveyAdapter(
                     "multiple" -> {
                         answerFieldLayout.visibility = View.GONE
                         takePhotoButton.visibility = View.GONE
+                        imageAnswer.visibility = View.GONE
                         val checkboxMultipleItem = ArrayList<CheckboxMultipleItem>()
                         for (i in item.checkboxOptions!!.indices) {
                             checkboxMultipleItem.add(
@@ -74,7 +90,7 @@ class SubQuestionsSurveyAdapter(
                             )
                         }
                         checkboxMultipleAdapter =
-                            CheckboxMultipleSurveyAdapter(checkboxMultipleItem, "multiple")
+                            CheckboxMultipleSurveyAdapter(checkboxMultipleItem, "multiple", context)
                         multipleCheckboxAnswerRv.adapter = checkboxMultipleAdapter
                         multipleCheckboxAnswerRv.layoutManager = LinearLayoutManager(context)
                         multipleCheckboxAnswerRv.setHasFixedSize(true)
@@ -83,11 +99,28 @@ class SubQuestionsSurveyAdapter(
                     else -> {
                         answerFieldLayout.visibility = View.VISIBLE
                         takePhotoButton.visibility = View.GONE
+                        imageAnswer.visibility = View.GONE
+                    }
+                }
+
+                answerField.addTextChangedListener { editable ->
+                    val answer = editable.toString()
+                    SharedPreferencesHelper.getSharedPreferences(context).edit {
+                        putInt(
+                            "${AnswerFragment.ANSWER_QUESTION_ID}_${item?.questionID}",
+                            item?.questionID!!.toInt()
+                        )
+                        putInt("${AnswerFragment.ANSWER_SUBQUESTION_ID}_${item.iD}", 0)
+                        putString("${AnswerFragment.ANSWER_TEXT}_${item.iD}_${null}", answer)
                     }
                 }
 
                 takePhotoButton.setOnClickListener {
-                    onSubQuestionItemActionClickListener.onTakePhotoButtonClick(position)
+                    onSubQuestionItemActionClickListener.onTakePhotoButtonClick(
+                        position,
+                        item?.questionID!!.toInt(),
+                        item.iD
+                    )
                 }
             }
         }
@@ -98,6 +131,6 @@ class SubQuestionsSurveyAdapter(
     }
 
     interface OnSubQuestionItemActionClickListener {
-        fun onTakePhotoButtonClick(position: Int)
+        fun onTakePhotoButtonClick(position: Int, questionID: Int, subQuestionID: Int?)
     }
 }

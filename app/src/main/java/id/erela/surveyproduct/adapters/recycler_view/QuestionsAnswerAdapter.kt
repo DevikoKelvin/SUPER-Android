@@ -77,8 +77,6 @@ class QuestionsAnswerAdapter(
                 } else {
                     answerContainer.visibility = View.GONE
                 }
-                answerFieldLayout.visibility = View.GONE
-                takePhotoButton.visibility = View.GONE
 
                 if (item.subQuestions != null) {
                     subQuestionsRv.visibility = View.VISIBLE
