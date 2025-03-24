@@ -19,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
@@ -103,23 +104,67 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
             for (questions in surveyQuestionsList) {
                 if (questions.subQuestions != null) {
                     for (subQuestions in questions.subQuestions) {
-                        val hasSubPhoto = sharedPreferences.getString(
-                            "${ANSWER_PHOTO}_${questions.iD}_${subQuestions?.iD}",
-                            null
-                        )
-                        val hasSubText = sharedPreferences.getString(
-                            "${ANSWER_TEXT}_${questions.iD}_${subQuestions?.iD}",
-                            null
-                        )
-                        val hasSubCheckbox = sharedPreferences.getBoolean(
-                            "${ANSWER_CHECKBOX_MULTIPLE}_${questions.iD}_${subQuestions?.iD}",
-                            false
-                        )
+                        var hasSubPhoto: Uri? = null
+                        var hasSubText: String? = null
+                        var hasSubCheckbox: Boolean? = null
+                        when (subQuestions?.questionType) {
+                            "photo" -> {
+                                hasSubPhoto = sharedPreferences.getString(
+                                    "${ANSWER_PHOTO}_${questions.iD}_${subQuestions.iD}",
+                                    null
+                                )?.toUri()
+                            }
 
-                        if (hasSubPhoto == null && hasSubText.isNullOrBlank() && !hasSubCheckbox) {
+                            "essay" -> {
+                                hasSubText = sharedPreferences.getString(
+                                    "${ANSWER_TEXT}_${questions.iD}_${subQuestions.iD}",
+                                    null
+                                )
+                            }
+
+                            "checkbox", "multiple" -> {
+                                hasSubCheckbox = sharedPreferences.getBoolean(
+                                    "${ANSWER_CHECKBOX_MULTIPLE}_${questions.iD}_${subQuestions.iD}",
+                                    false
+                                )
+                            }
+                        }
+
+                        if (hasSubPhoto == null && hasSubText.isNullOrBlank() && !hasSubCheckbox!!) {
                             allQuestionsAnswered = false
                             break
                         }
+                    }
+                } else {
+                    var hasSubPhoto: Uri? = null
+                    var hasSubText: String? = null
+                    var hasSubCheckbox: Boolean? = null
+                    when (questions.questionType) {
+                        "photo" -> {
+                            hasSubPhoto = sharedPreferences.getString(
+                                "${ANSWER_PHOTO}_${questions.iD}_0",
+                                null
+                            )?.toUri()
+                        }
+
+                        "essay" -> {
+                            hasSubText = sharedPreferences.getString(
+                                "${ANSWER_TEXT}_${questions.iD}_0",
+                                null
+                            )
+                        }
+
+                        "checkbox", "multiple" -> {
+                            hasSubCheckbox = sharedPreferences.getBoolean(
+                                "${ANSWER_CHECKBOX_MULTIPLE}_${questions.iD}_0",
+                                false
+                            )
+                        }
+                    }
+
+                    if (hasSubPhoto == null && hasSubText.isNullOrBlank() && !hasSubCheckbox!!) {
+                        allQuestionsAnswered = false
+                        break
                     }
                 }
             }

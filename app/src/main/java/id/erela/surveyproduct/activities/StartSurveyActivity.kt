@@ -99,8 +99,17 @@ class StartSurveyActivity : AppCompatActivity() {
                     }
 
                     is AnswerFragment -> {
-                        handleNextButtonClick()
-                        return@setOnClickListener
+                        if (AnswerFragment.validateAnswer(this@StartSurveyActivity)) {
+                            fragmentPosition++
+                            inflateFragment(fragmentPosition)
+                        } else {
+                            CustomToast(applicationContext).setMessage(
+                                "Please answer all questions!"
+                            ).setFontColor(getColor(R.color.custom_toast_font_failed))
+                                .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
+                                .show()
+                            return@setOnClickListener
+                        }
                     }
                 }
                 fragmentPosition++
