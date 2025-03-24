@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -53,6 +55,9 @@ class CheckInFragment(private val context: Context) : Fragment() {
         with(it) {
             binding?.apply {
                 if (resultCode == RESULT_OK) {
+                    SharedPreferencesHelper.getSharedPreferences(context).edit {
+                        putString(IMAGE_URI, imageUri.toString())
+                    }
                     photoContainer.visibility = View.VISIBLE
                     photoPlaceholder.visibility = View.GONE
                     photoPreview.visibility = View.VISIBLE
@@ -99,6 +104,48 @@ class CheckInFragment(private val context: Context) : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PermissionHelper.REQUEST_CODE_CAMERA) {
+            if (grantResults.isNotEmpty()) {
+                if (grantResults[0] == PERMISSION_GRANTED) {
+                    if (VERSION.SDK_INT <= VERSION_CODES.P) {
+                        handlePhotoCapture()
+                    } else {
+                        openCamera()
+                    }
+                }
+            }
+        }
+        if (requestCode == PermissionHelper.REQUEST_LOCATION_GPS) {
+            if (grantResults.isNotEmpty()) {
+                if (grantResults[0] == PERMISSION_GRANTED && grantResults[1] == PERMISSION_GRANTED) {
+                    if (!isLocationEnabled()) {
+                        showLocationError()
+                    } else if (latitude == 0.0 && longitude == 0.0) {
+                        getLastKnownLocation()
+                    } else {
+                        setMapPreview()
+                    }
+                } else {
+                    PermissionHelper.requestPermission(
+                        requireActivity(),
+                        arrayOf(
+                            PermissionHelper.ACCESS_COARSE_LOCATION,
+                            PermissionHelper.ACCESS_FINE_LOCATION
+                        ),
+                        PermissionHelper.REQUEST_LOCATION_GPS
+                    )
+                }
+            }
+        }
     }
 
     private fun restoreUIState() {
@@ -190,9 +237,9 @@ class CheckInFragment(private val context: Context) : Fragment() {
         if (
             ContextCompat.checkSelfPermission(
                 context, PermissionHelper.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            ) != PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
                 context, PermissionHelper.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+            ) != PERMISSION_GRANTED
         ) {
             PermissionHelper.requestPermission(
                 requireActivity(),
@@ -235,9 +282,6 @@ class CheckInFragment(private val context: Context) : Fragment() {
                 }
             }
         )!!
-        SharedPreferencesHelper.getSharedPreferences(context).edit {
-            putString(IMAGE_URI, imageUri.toString())
-        }
 
         cameraLauncher.launch(
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {

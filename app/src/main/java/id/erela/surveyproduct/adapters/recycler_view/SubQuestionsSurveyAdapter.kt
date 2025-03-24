@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -56,6 +57,20 @@ class SubQuestionsSurveyAdapter(
                     "photo" -> {
                         answerFieldLayout.visibility = View.GONE
                         takePhotoButton.visibility = View.VISIBLE
+                        multipleCheckboxAnswerRv.visibility = View.GONE
+                        val photo =
+                            SharedPreferencesHelper.getSharedPreferences(context).getString(
+                                "${AnswerFragment.ANSWER_PHOTO}_${questionID}_${subQuestionID}",
+                                null
+                            )?.toUri()
+                        if (questionID == item.iD) {
+                            if (photo != null) {
+                                imageAnswer.setImageURI(photo)
+                                imageAnswer.visibility = View.VISIBLE
+                            } else {
+                                imageAnswer.visibility = View.GONE
+                            }
+                        }
                     }
 
                     "checkbox" -> {
@@ -72,6 +87,8 @@ class SubQuestionsSurveyAdapter(
                         }
                         checkboxMultipleAdapter =
                             CheckboxMultipleSurveyAdapter(checkboxMultipleItem, "checkbox", context)
+                        multipleCheckboxAnswerRv.visibility = View.VISIBLE
+                        multipleCheckboxAnswerRv.setItemViewCacheSize(1000)
                         multipleCheckboxAnswerRv.adapter = checkboxMultipleAdapter
                         multipleCheckboxAnswerRv.layoutManager = LinearLayoutManager(context)
                         multipleCheckboxAnswerRv.setHasFixedSize(true)
@@ -91,6 +108,8 @@ class SubQuestionsSurveyAdapter(
                         }
                         checkboxMultipleAdapter =
                             CheckboxMultipleSurveyAdapter(checkboxMultipleItem, "multiple", context)
+                        multipleCheckboxAnswerRv.visibility = View.VISIBLE
+                        multipleCheckboxAnswerRv.setItemViewCacheSize(1000)
                         multipleCheckboxAnswerRv.adapter = checkboxMultipleAdapter
                         multipleCheckboxAnswerRv.layoutManager = LinearLayoutManager(context)
                         multipleCheckboxAnswerRv.setHasFixedSize(true)
@@ -99,7 +118,20 @@ class SubQuestionsSurveyAdapter(
                     else -> {
                         answerFieldLayout.visibility = View.VISIBLE
                         takePhotoButton.visibility = View.GONE
+                        multipleCheckboxAnswerRv.visibility = View.GONE
                         imageAnswer.visibility = View.GONE
+                        val answer =
+                            SharedPreferencesHelper.getSharedPreferences(context).getString(
+                                "${AnswerFragment.ANSWER_TEXT}_${questionID}_${subQuestionID}",
+                                ""
+                            )
+                        if (questionID == item!!.questionID) {
+                            if (subQuestionID == item.iD) {
+                                if (answer != null) {
+                                    answerField.setText(answer)
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -107,18 +139,24 @@ class SubQuestionsSurveyAdapter(
                     val answer = editable.toString()
                     SharedPreferencesHelper.getSharedPreferences(context).edit {
                         putInt(
-                            "${AnswerFragment.ANSWER_QUESTION_ID}_${item?.questionID}",
-                            item?.questionID!!.toInt()
+                            "${AnswerFragment.ANSWER_QUESTION_ID}_${item.questionID}",
+                            item.questionID!!.toInt()
                         )
-                        putInt("${AnswerFragment.ANSWER_SUBQUESTION_ID}_${item.iD}", 0)
-                        putString("${AnswerFragment.ANSWER_TEXT}_${item.iD}_${null}", answer)
+                        putInt(
+                            "${AnswerFragment.ANSWER_SUBQUESTION_ID}_${item.iD}",
+                            item.iD!!.toInt()
+                        )
+                        putString(
+                            "${AnswerFragment.ANSWER_TEXT}_${item.questionID}_${item.iD}",
+                            answer
+                        )
                     }
                 }
 
                 takePhotoButton.setOnClickListener {
                     onSubQuestionItemActionClickListener.onTakePhotoButtonClick(
                         position,
-                        item?.questionID!!.toInt(),
+                        item.questionID!!.toInt(),
                         item.iD
                     )
                 }

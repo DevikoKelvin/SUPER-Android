@@ -2,7 +2,6 @@ package id.erela.surveyproduct.adapters.recycler_view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,6 +102,7 @@ class QuestionSurveyAdapter(
                         checkboxMultipleAdapter =
                             CheckboxMultipleSurveyAdapter(checkboxMultipleItem, "checkbox", context)
                         multipleCheckboxAnswerRv.visibility = View.VISIBLE
+                        multipleCheckboxAnswerRv.setItemViewCacheSize(1000)
                         multipleCheckboxAnswerRv.adapter = checkboxMultipleAdapter
                         multipleCheckboxAnswerRv.layoutManager =
                             LinearLayoutManager(context)
@@ -125,6 +125,7 @@ class QuestionSurveyAdapter(
                         checkboxMultipleAdapter =
                             CheckboxMultipleSurveyAdapter(checkboxMultipleItem, "multiple", context)
                         multipleCheckboxAnswerRv.visibility = View.VISIBLE
+                        multipleCheckboxAnswerRv.setItemViewCacheSize(1000)
                         multipleCheckboxAnswerRv.adapter = checkboxMultipleAdapter
                         multipleCheckboxAnswerRv.layoutManager =
                             LinearLayoutManager(context)
@@ -142,16 +143,15 @@ class QuestionSurveyAdapter(
                                 ""
                             )
                         if (questionID == item.iD) {
-                            if (answer != null)
+                            if (answer != null) {
                                 answerField.setText(answer)
+                            }
                         }
                     }
                 }
 
                 answerField.addTextChangedListener { editable ->
                     val answer = editable.toString()
-                    Log.e("Answer [${item.iD}][0]", answer)
-                    Log.e("Question ID", item.iD.toString())
                     SharedPreferencesHelper.getSharedPreferences(context).edit {
                         putInt(
                             "${AnswerFragment.ANSWER_QUESTION_ID}_${item.iD}",
@@ -179,6 +179,7 @@ class QuestionSurveyAdapter(
                     }
                     subQuestionsRv.adapter = adapter
                     subQuestionsRv.layoutManager = LinearLayoutManager(context)
+                    subQuestionsRv.setItemViewCacheSize(1000)
                     subQuestionsRv.setHasFixedSize(true)
                 } else {
                     subQuestionsRv.visibility = View.GONE

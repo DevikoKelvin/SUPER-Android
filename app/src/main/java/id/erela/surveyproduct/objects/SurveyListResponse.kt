@@ -30,6 +30,15 @@ data class QuestionsItem(
 ) : Parcelable
 
 @Parcelize
+data class QuestionsAnswer(
+    var answerText: String? = null,
+    var answerPhoto: String? = null,
+    var answerCheckbox: List<CheckboxMultipleOptionsItem?>? = null,
+    var answerMultiple: List<CheckboxMultipleOptionsItem?>? = null,
+    val questionsItem: QuestionsItem? = null
+) : Parcelable
+
+@Parcelize
 data class SubQuestionsItem(
     @field:SerializedName("QuestionID")
     val questionID: Int? = null,
@@ -43,6 +52,15 @@ data class SubQuestionsItem(
     val multipleOptions: List<CheckboxMultipleOptionsItem?>? = null,
     @field:SerializedName("CheckboxOptions")
     val checkboxOptions: List<CheckboxMultipleOptionsItem?>? = null
+) : Parcelable
+
+@Parcelize
+data class SubQuestionsAnswer(
+    var answerText: String? = null,
+    var answerPhoto: String? = null,
+    var answerCheckbox: List<CheckboxMultipleOptionsItem?>? = null,
+    var answerMultiple: List<CheckboxMultipleOptionsItem?>? = null,
+    val subQuestionsItem: SubQuestionsItem? = null
 ) : Parcelable
 
 @Parcelize

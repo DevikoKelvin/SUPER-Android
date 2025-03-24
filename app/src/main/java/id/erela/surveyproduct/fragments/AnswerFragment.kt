@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -42,7 +45,8 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
     private val activity: StartSurveyActivity by lazy {
         requireActivity() as StartSurveyActivity
     }
-    private val surveyQuestionsList = ArrayList<QuestionsItem>()
+
+    /*private val surveyQuestionsList = ArrayList<QuestionsItem>()*/
     private lateinit var adapter: QuestionSurveyAdapter
     private var cameraCaptureFileName: String = ""
     private var imageUri: Uri? = null
@@ -69,7 +73,6 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
     }
 
     companion object {
-        const val IS_SURVEY_INITIALIZED = "IS_SURVEY_INITIALIZED"
         const val ANSWER_QUESTION_ID = "ANSWER_QUESTION_ID"
         const val ANSWER_SUBQUESTION_ID = "ANSWER_SUBQUESTION_ID"
         const val ANSWER_PHOTO = "ANSWER_PHOTO"
@@ -77,6 +80,7 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
         const val ANSWER_TEXT = "ANSWER_TEXT"
         var questionIdArray = ArrayList<Int>()
         var subQuestionIdArray = ArrayList<Int?>()
+        val surveyQuestionsList = ArrayList<QuestionsItem>()
 
         fun clearAnswerData(context: Context) {
             for (id in questionIdArray) {
@@ -90,6 +94,37 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                     }
                 }
             }
+        }
+
+        fun validateAnswer(context: Context): Boolean {
+            val sharedPreferences = SharedPreferencesHelper.getSharedPreferences(context)
+            var allQuestionsAnswered = true
+
+            for (questions in surveyQuestionsList) {
+                if (questions.subQuestions != null) {
+                    for (subQuestions in questions.subQuestions) {
+                        val hasSubPhoto = sharedPreferences.getString(
+                            "${ANSWER_PHOTO}_${questions.iD}_${subQuestions?.iD}",
+                            null
+                        )
+                        val hasSubText = sharedPreferences.getString(
+                            "${ANSWER_TEXT}_${questions.iD}_${subQuestions?.iD}",
+                            null
+                        )
+                        val hasSubCheckbox = sharedPreferences.getBoolean(
+                            "${ANSWER_CHECKBOX_MULTIPLE}_${questions.iD}_${subQuestions?.iD}",
+                            false
+                        )
+
+                        if (hasSubPhoto == null && hasSubText.isNullOrBlank() && !hasSubCheckbox) {
+                            allQuestionsAnswered = false
+                            break
+                        }
+                    }
+                }
+            }
+
+            return allQuestionsAnswered
         }
     }
 
@@ -111,10 +146,43 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                 }
             }
             answerFieldRv.adapter = adapter
+            answerFieldRv.setItemViewCacheSize(1000)
             answerFieldRv.setHasFixedSize(true)
             answerFieldRv.layoutManager = LinearLayoutManager(context)
 
             getSurveyQuestions()
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PermissionHelper.REQUEST_CODE_CAMERA) {
+            if (grantResults.isNotEmpty()) {
+                if (grantResults[0] == PERMISSION_GRANTED) {
+                    if (VERSION.SDK_INT <= VERSION_CODES.P) {
+                        if (PermissionHelper.isPermissionGranted(
+                                requireActivity(),
+                                PermissionHelper.CAMERA
+                            )
+                        ) {
+                            openCamera()
+                        } else {
+                            PermissionHelper.requestPermission(
+                                requireActivity(),
+                                arrayOf(PermissionHelper.CAMERA),
+                                PermissionHelper.REQUEST_CODE_CAMERA
+                            )
+                        }
+                    } else {
+                        openCamera()
+                    }
+                }
+            }
         }
     }
 
@@ -127,10 +195,6 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                             call: Call<SurveyListResponse>,
                             response: Response<SurveyListResponse>
                         ) {
-                            SharedPreferencesHelper.getSharedPreferences(requireContext())
-                                .edit {
-                                    putBoolean(IS_SURVEY_INITIALIZED, true)
-                                }
                             if (response.isSuccessful) {
                                 if (response.body() != null) {
                                     val result = response.body()
@@ -196,12 +260,14 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
     }
 
     override fun onTakePhotoButtonClick(position: Int, questionID: Int, subQuestionID: Int?) {
+        this.questionID = questionID
+        this.subQuestionID = subQuestionID
         if (PermissionHelper.isPermissionGranted(
                 requireActivity(),
                 PermissionHelper.CAMERA
             )
         ) {
-            openCamera(questionID, subQuestionID)
+            openCamera()
         } else {
             PermissionHelper.requestPermission(
                 requireActivity(),
@@ -211,7 +277,7 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
         }
     }
 
-    private fun openCamera(questionID: Int, subQuestionID: Int?) {
+    private fun openCamera() {
         val timeStamp =
             SimpleDateFormat("yyyyMMdd_HHmmss", Locale.forLanguageTag("id-ID")).format(Date())
         cameraCaptureFileName = "Super_Answer_${questionID}-${subQuestionID}_${timeStamp}.jpg"
@@ -224,11 +290,6 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                 }
             }
         )!!
-        /*SharedPreferencesHelper.getSharedPreferences(requireContext()).edit {
-            putString("${ANSWER_PHOTO}_${questionID}_${subQuestionID ?: 0}", imageUri.toString())
-        }*/
-        this.questionID = questionID
-        this.subQuestionID = subQuestionID
 
         cameraLauncher.launch(
             Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {

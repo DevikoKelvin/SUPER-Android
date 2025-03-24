@@ -21,16 +21,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="125dp"
                 android:layout_marginHorizontal="16dp"
-                android:fontFamily="@font/nucleo"
-                android:text="@string/choose_outlet"
-                android:textColor="@color/text_primary_color"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="125dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nucleo"
+                    android:text="@string/choose_outlet"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:fontFamily="@font/nucleo"
+                    android:text="*"
+                    android:textColor="@color/custom_toast_font_failed"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/chooseOutletButton"
@@ -148,16 +165,33 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
-                android:fontFamily="@font/nucleo"
-                android:text="@string/check_in_photo"
-                android:textColor="@color/text_primary_color"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/nucleo"
+                    android:text="@string/check_in_photo"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:fontFamily="@font/nucleo"
+                    android:text="*"
+                    android:textColor="@color/custom_toast_font_failed"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/photoContainer"

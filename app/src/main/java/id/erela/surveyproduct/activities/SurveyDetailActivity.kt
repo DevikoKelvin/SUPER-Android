@@ -35,14 +35,12 @@ class SurveyDetailActivity : AppCompatActivity() {
         fun start(context: Context, item: CheckInOutItem) {
             context.startActivity(
                 Intent(
-                    context,
-                    SurveyDetailActivity::class.java
+                    context, SurveyDetailActivity::class.java
                 ).also {
                     with(it) {
                         putExtra(DATA, item)
                     }
-                }
-            )
+                })
         }
     }
 
@@ -61,16 +59,19 @@ class SurveyDetailActivity : AppCompatActivity() {
                 onBackPressedDispatcher.onBackPressed()
             }
 
-            surveyItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                intent.getSerializableExtra(DATA, CheckInOutItem::class.java)!!
-            else
-                intent.getSerializableExtra(DATA) as CheckInOutItem
+            surveyItem =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) intent.getSerializableExtra(
+                    DATA,
+                    CheckInOutItem::class.java
+                )!!
+                else intent.getSerializableExtra(DATA) as CheckInOutItem
 
             surveyId.text = "Survey ${surveyItem.surveyID}"
             outletName.text = surveyItem.outletName
             outletAddress.text = surveyItem.outletAddress
 
             adapter = QuestionsAnswerAdapter(questionsAnswerList, this@SurveyDetailActivity)
+            answeredQuestionRv.setItemViewCacheSize(1000)
             answeredQuestionRv.adapter = adapter
             answeredQuestionRv.setHasFixedSize(true)
             answeredQuestionRv.layoutManager = LinearLayoutManager(this@SurveyDetailActivity)
@@ -87,8 +88,7 @@ class SurveyDetailActivity : AppCompatActivity() {
                     surveyItem.answerGroupID!!
                 ).enqueue(object : Callback<AnswerHistoryResponse> {
                     override fun onResponse(
-                        call: Call<AnswerHistoryResponse>,
-                        response: Response<AnswerHistoryResponse>
+                        call: Call<AnswerHistoryResponse>, response: Response<AnswerHistoryResponse>
                     ) {
                         questionsAnswerList.clear()
                         if (response.isSuccessful) {
@@ -123,8 +123,7 @@ class SurveyDetailActivity : AppCompatActivity() {
                     }
 
                     override fun onFailure(
-                        call: Call<AnswerHistoryResponse>,
-                        throwable: Throwable
+                        call: Call<AnswerHistoryResponse>, throwable: Throwable
                     ) {
                         Log.e("onFailure", throwable.message.toString())
                         answeredQuestionRv.visibility = View.GONE
