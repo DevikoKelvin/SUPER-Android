@@ -1,15 +1,25 @@
 package id.erela.surveyproduct.fragments
 
+import android.content.ContentValues
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.Intent
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.LocationManager
+import android.net.Uri
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.LOCATION_SERVICE
+import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -22,19 +32,43 @@ import id.erela.surveyproduct.dialogs.LoadingDialog
 import id.erela.surveyproduct.helpers.PermissionHelper
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.customs.CustomToast
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class CheckOutFragment(private val context: Context) : Fragment() {
     private var binding: FragmentCheckOutBinding? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
+    private var cameraCaptureFileName: String = ""
+    private var imageUri: Uri? = null
+    private val cameraLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        with(it) {
+            binding?.apply {
+                if (resultCode == RESULT_OK) {
+                    SharedPreferencesHelper.getSharedPreferences(context).edit {
+                        putString(IMAGE_URI, imageUri.toString())
+                    }
+                    photoContainer.visibility = View.VISIBLE
+                    photoPlaceholder.visibility = View.GONE
+                    photoPreview.visibility = View.VISIBLE
+                    photoPreview.setImageURI(imageUri)
+                }
+            }
+        }
+    }
 
     companion object {
         const val LATITUDE = "CHECK_OUT_LATITUDE"
         const val LONGITUDE = "CHECK_OUT_LONGITUDE"
+        const val IMAGE_URI = "CHECK_OUT_IMAGE_URI"
 
         fun clearCheckInData(context: Context) {
             SharedPreferencesHelper.getSharedPreferences(context).edit {
+                remove(IMAGE_URI)
                 remove(LATITUDE)
                 remove(LONGITUDE)
             }
@@ -56,8 +90,37 @@ class CheckOutFragment(private val context: Context) : Fragment() {
         setupListeners()
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PermissionHelper.REQUEST_CODE_CAMERA) {
+            if (grantResults.isNotEmpty()) {
+                if (grantResults[0] == PERMISSION_GRANTED) {
+                    if (VERSION.SDK_INT <= VERSION_CODES.P) {
+                        handlePhotoCapture()
+                    } else {
+                        openCamera()
+                    }
+                }
+            }
+        }
+    }
+
     private fun restoreUIState() {
         binding?.apply {
+            imageUri =
+                SharedPreferencesHelper.getSharedPreferences(context)
+                    .getString(IMAGE_URI, null)?.toUri()
+            imageUri?.let {
+                photoContainer.visibility = View.VISIBLE
+                photoPlaceholder.visibility = View.GONE
+                photoPreview.visibility = View.VISIBLE
+                photoPreview.setImageURI(it)
+            }
             latitude = SharedPreferencesHelper.getSharedPreferences(context)
                 .getFloat(LATITUDE, 0f).toDouble()
             longitude = SharedPreferencesHelper.getSharedPreferences(context)
@@ -77,6 +140,10 @@ class CheckOutFragment(private val context: Context) : Fragment() {
         binding?.apply {
             refreshButton.setOnClickListener {
                 getLastKnownLocation()
+            }
+
+            takePhotoButton.setOnClickListener {
+                handlePhotoCapture()
             }
         }
     }
@@ -116,9 +183,9 @@ class CheckOutFragment(private val context: Context) : Fragment() {
         if (
             ContextCompat.checkSelfPermission(
                 context, PermissionHelper.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            ) != PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
                 context, PermissionHelper.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
+            ) != PERMISSION_GRANTED
         ) {
             PermissionHelper.requestPermission(
                 requireActivity(),
@@ -163,5 +230,44 @@ class CheckOutFragment(private val context: Context) : Fragment() {
                     R.color.custom_toast_font_failed
                 )
             ).show()
+    }
+
+    private fun openCamera() {
+        val timeStamp =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.forLanguageTag("id-ID")).format(Date())
+        cameraCaptureFileName = "Super_CheckOut_Capture_$timeStamp.jpg"
+        imageUri = context.contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            ContentValues().also {
+                with(it) {
+                    put(MediaStore.Images.Media.TITLE, cameraCaptureFileName)
+                    put(MediaStore.Images.Media.DESCRIPTION, "Image capture by camera")
+                }
+            }
+        )!!
+
+        cameraLauncher.launch(
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
+                with(it) {
+                    putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+                }
+            }
+        )
+    }
+
+    private fun handlePhotoCapture() {
+        if (PermissionHelper.isPermissionGranted(
+                requireActivity(),
+                PermissionHelper.CAMERA
+            )
+        ) {
+            openCamera()
+        } else {
+            PermissionHelper.requestPermission(
+                requireActivity(),
+                arrayOf(PermissionHelper.CAMERA),
+                PermissionHelper.REQUEST_CODE_CAMERA
+            )
+        }
     }
 }

@@ -19,7 +19,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
@@ -46,8 +45,6 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
     private val activity: StartSurveyActivity by lazy {
         requireActivity() as StartSurveyActivity
     }
-
-    /*private val surveyQuestionsList = ArrayList<QuestionsItem>()*/
     private lateinit var adapter: QuestionSurveyAdapter
     private var cameraCaptureFileName: String = ""
     private var imageUri: Uri? = null
@@ -99,77 +96,114 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
 
         fun validateAnswer(context: Context): Boolean {
             val sharedPreferences = SharedPreferencesHelper.getSharedPreferences(context)
-            var allQuestionsAnswered = true
 
-            for (questions in surveyQuestionsList) {
-                if (questions.subQuestions != null) {
-                    for (subQuestions in questions.subQuestions) {
-                        var hasSubPhoto: Uri? = null
-                        var hasSubText: String? = null
-                        var hasSubCheckbox: Boolean? = null
-                        when (subQuestions?.questionType) {
-                            "photo" -> {
-                                hasSubPhoto = sharedPreferences.getString(
-                                    "${ANSWER_PHOTO}_${questions.iD}_${subQuestions.iD}",
-                                    null
-                                )?.toUri()
-                            }
+            surveyQuestionsList.forEach { question ->
+                val questionId = question.iD ?: return false
 
-                            "essay" -> {
-                                hasSubText = sharedPreferences.getString(
-                                    "${ANSWER_TEXT}_${questions.iD}_${subQuestions.iD}",
-                                    null
-                                )
-                            }
-
-                            "checkbox", "multiple" -> {
-                                hasSubCheckbox = sharedPreferences.getBoolean(
-                                    "${ANSWER_CHECKBOX_MULTIPLE}_${questions.iD}_${subQuestions.iD}",
-                                    false
-                                )
-                            }
-                        }
-
-                        if (hasSubPhoto == null && hasSubText.isNullOrBlank() && !hasSubCheckbox!!) {
-                            allQuestionsAnswered = false
-                            break
-                        }
-                    }
-                } else {
-                    var hasSubPhoto: Uri? = null
-                    var hasSubText: String? = null
-                    var hasSubCheckbox: Boolean? = null
-                    when (questions.questionType) {
+                if (question.subQuestions.isNullOrEmpty()) {
+                    // Validate main question
+                    when (question.questionType) {
                         "photo" -> {
-                            hasSubPhoto = sharedPreferences.getString(
-                                "${ANSWER_PHOTO}_${questions.iD}_0",
+                            val photoUri = sharedPreferences.getString(
+                                "${ANSWER_PHOTO}_${questionId}_0",
                                 null
-                            )?.toUri()
+                            )
+                            Log.e("Photo URI", "$photoUri")
+                            if (photoUri == null) return false
                         }
 
                         "essay" -> {
-                            hasSubText = sharedPreferences.getString(
-                                "${ANSWER_TEXT}_${questions.iD}_0",
+                            val text = sharedPreferences.getString(
+                                "${ANSWER_TEXT}_${questionId}_0",
                                 null
                             )
+                            Log.e("Text", "$text")
+                            if (text.isNullOrBlank()) return false
                         }
 
-                        "checkbox", "multiple" -> {
-                            hasSubCheckbox = sharedPreferences.getBoolean(
-                                "${ANSWER_CHECKBOX_MULTIPLE}_${questions.iD}_0",
-                                false
-                            )
+                        "checkbox" -> {
+                            var answeredCount = 0
+                            for (i in 0 until question.checkboxOptions?.size!!) {
+                                val isAnswered = sharedPreferences.getBoolean(
+                                    "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                    false
+                                )
+                                Log.e("Is Answered", "$isAnswered")
+                                if (isAnswered)
+                                    answeredCount++
+                            }
+                            if (answeredCount == 0) return false
+                        }
+
+                        "multiple" -> {
+                            var answeredCount = 0
+                            for (i in 0 until question.multipleOptions?.size!!) {
+                                val isAnswered = sharedPreferences.getBoolean(
+                                    "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                    false
+                                )
+                                Log.e("Is Answered", "$isAnswered")
+                                if (isAnswered)
+                                    answeredCount++
+                            }
+                            if (answeredCount == 0) return false
                         }
                     }
+                } else {
+                    // Validate sub questions
+                    question.subQuestions.forEach { subQuestion ->
+                        val subQuestionId = subQuestion?.iD ?: return false
 
-                    if (hasSubPhoto == null && hasSubText.isNullOrBlank() && !hasSubCheckbox!!) {
-                        allQuestionsAnswered = false
-                        break
+                        when (subQuestion.questionType) {
+                            "photo" -> {
+                                val photoUri = sharedPreferences.getString(
+                                    "${ANSWER_PHOTO}_${questionId}_${subQuestionId}",
+                                    null
+                                )
+                                if (photoUri == null) return false
+                            }
+
+                            "essay" -> {
+                                val text = sharedPreferences.getString(
+                                    "${ANSWER_TEXT}_${questionId}_${subQuestionId}",
+                                    null
+                                )
+                                if (text.isNullOrBlank()) return false
+                            }
+
+                            "checkbox" -> {
+                                var answeredCount = 0
+                                for (i in 0 until question.checkboxOptions?.size!!) {
+                                    val isAnswered = sharedPreferences.getBoolean(
+                                        "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_${subQuestionId}_${i}",
+                                        false
+                                    )
+                                    Log.e("Is Answered", "$isAnswered")
+                                    if (isAnswered)
+                                        answeredCount++
+                                }
+                                if (answeredCount == 0) return false
+                            }
+
+                            "multiple" -> {
+                                var answeredCount = 0
+                                for (i in 0 until question.multipleOptions?.size!!) {
+                                    val isAnswered = sharedPreferences.getBoolean(
+                                        "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_${subQuestionId}_${i}",
+                                        false
+                                    )
+                                    Log.e("Is Answered", "$isAnswered")
+                                    if (isAnswered)
+                                        answeredCount++
+                                }
+                                if (answeredCount == 0) return false
+                            }
+                        }
                     }
                 }
             }
 
-            return allQuestionsAnswered
+            return true
         }
     }
 
@@ -245,16 +279,18 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                                     val result = response.body()
                                     when (result?.code) {
                                         1 -> {
+                                            surveyQuestionsList.clear()
                                             questionIdArray.clear()
                                             subQuestionIdArray.clear()
                                             for (item in result.data!!) {
                                                 surveyQuestionsList.add(item!!)
-                                                questionIdArray.add(item.iD!!)
                                                 if (item.subQuestions != null) {
                                                     for (subItem in item.subQuestions) {
+                                                        questionIdArray.add(item.iD!!)
                                                         subQuestionIdArray.add(subItem?.iD)
                                                     }
                                                 } else {
+                                                    questionIdArray.add(item.iD!!)
                                                     subQuestionIdArray.add(0)
                                                 }
                                             }
