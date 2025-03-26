@@ -3,16 +3,16 @@ package id.erela.surveyproduct.objects
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class CheckInOutListResponse(
-	@field:SerializedName("code")
+data class CheckInOutHistoryListResponse(
+    @field:SerializedName("code")
     val code: Int? = null,
-	@field:SerializedName("data")
-    val data: List<CheckInOutItem?>? = null,
-	@field:SerializedName("message")
+    @field:SerializedName("data")
+    val data: List<CheckInOutHistoryItem?>? = null,
+    @field:SerializedName("message")
     val message: String? = null
 )
 
-data class CheckInOutItem(
+data class CheckInOutHistoryItem(
     @field:SerializedName("OutletID")
     val outletID: Int? = null,
     @field:SerializedName("LongIn")
@@ -27,6 +27,8 @@ data class CheckInOutItem(
     val answerGroupID: Int? = null,
     @field:SerializedName("PhotoIn")
     val photoIn: String? = null,
+    @field:SerializedName("PhotoOut")
+    val photoOut: String? = null,
     @field:SerializedName("LatOut")
     val latOut: String? = null,
     @field:SerializedName("LongOut")
@@ -41,4 +43,4 @@ data class CheckInOutItem(
     val iD: Int? = null,
     @field:SerializedName("CheckInTime")
     val checkInTime: String? = null
-): Serializable
+) : Serializable

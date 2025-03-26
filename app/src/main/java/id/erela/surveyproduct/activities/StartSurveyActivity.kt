@@ -10,15 +10,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import com.google.android.gms.common.api.Api
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityStartSurveyBinding
+import id.erela.surveyproduct.dialogs.LoadingDialog
 import id.erela.surveyproduct.fragments.AnswerFragment
 import id.erela.surveyproduct.fragments.CheckInFragment
 import id.erela.surveyproduct.fragments.CheckOutFragment
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
-import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
+import id.erela.surveyproduct.objects.SurveyAnswer
+import id.erela.surveyproduct.repository.SurveyRepository
+import id.erela.surveyproduct.viewmodels.SurveyState
+import id.erela.surveyproduct.viewmodels.SurveyViewModel
+import id.erela.surveyproduct.viewmodels.factories.SurveyViewModelFactory
+import kotlinx.coroutines.launch
 
 class StartSurveyActivity : AppCompatActivity() {
     private val binding: ActivityStartSurveyBinding by lazy {
@@ -26,10 +33,12 @@ class StartSurveyActivity : AppCompatActivity() {
     }
     private var currentFragment: Fragment? = null
     private var fragmentPosition = 1
+    private lateinit var viewModel: SurveyViewModel
 
     companion object {
         const val CHECK_IN_UPLOADED = "CHECK_IN_UPLOADED"
         const val ANSWER_UPLOADED = "ANSWER_UPLOADED"
+        var answerData: ArrayList<SurveyAnswer> = ArrayList()
 
         fun start(context: Context) {
             context.startActivity(
@@ -107,10 +116,59 @@ class StartSurveyActivity : AppCompatActivity() {
                 fragmentPosition++
                 inflateFragment(fragmentPosition)
             }
+            val repository = SurveyRepository(this@StartSurveyActivity, this@StartSurveyActivity)
+            viewModel = ViewModelProvider(
+                this@StartSurveyActivity,
+                SurveyViewModelFactory(repository)
+            )[SurveyViewModel::class.java]
+
+            lifecycleScope.launch {
+                val dialog = LoadingDialog(this@StartSurveyActivity)
+                viewModel.surveyState.collect { state ->
+                    when (state) {
+                        is SurveyState.Idle -> {
+                        }
+
+                        is SurveyState.Loading -> {
+                            if (dialog.window != null)
+                                dialog.show()
+                        }
+
+                        is SurveyState.Success -> {
+                            dialog.dismiss()
+                            CustomToast(applicationContext)
+                                .setMessage("Survey Successfully Submitted!")
+                                .setBackgroundColor(
+                                    getColor(R.color.custom_toast_background_success)
+                                )
+                                .setFontColor(
+                                    getColor(R.color.custom_toast_font_success)
+                                ).show()
+                            finish()
+                        }
+
+                        is SurveyState.Error -> {
+                            dialog.dismiss()
+                            CustomToast(applicationContext)
+                                .setMessage("Survey Submission Failed!")
+                                .setBackgroundColor(
+                                    getColor(R.color.custom_toast_background_failed)
+                                )
+                                .setFontColor(
+                                    getColor(R.color.custom_toast_font_failed)
+                                ).show()
+                        }
+                    }
+                }
+            }
 
             uploadButton.setOnClickListener {
-                if (currentFragment is CheckOutFragment) {
-                    (currentFragment as CheckOutFragment)
+                if (fragmentPosition == 3) {
+                    AnswerFragment.uploadData(
+                        answerData,
+                        this@StartSurveyActivity,
+                        viewModel
+                    )
                 }
             }
         }
@@ -150,15 +208,6 @@ class StartSurveyActivity : AppCompatActivity() {
                     uploadButtonContainer.visibility = View.VISIBLE
                 }
             }
-        }
-    }
-
-    private fun uploadData() {
-        val sharedPreferences =
-            SharedPreferencesHelper.getSharedPreferences(this@StartSurveyActivity)
-
-        if (sharedPreferences.getBoolean(CHECK_IN_UPLOADED, false)) {
-            AppAPI.superEndpoint.
         }
     }
 }

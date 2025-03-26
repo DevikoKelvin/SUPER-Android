@@ -1,9 +1,10 @@
 package id.erela.surveyproduct.helpers.api
 
 import id.erela.surveyproduct.objects.AnswerHistoryResponse
-import id.erela.surveyproduct.objects.CheckInOutListResponse
+import id.erela.surveyproduct.objects.CheckInOutHistoryListResponse
 import id.erela.surveyproduct.objects.CheckInResponse
 import id.erela.surveyproduct.objects.CheckOutResponse
+import id.erela.surveyproduct.objects.InsertAnswerResponse
 import id.erela.surveyproduct.objects.OutletCategoryResponse
 import id.erela.surveyproduct.objects.OutletCreationResponse
 import id.erela.surveyproduct.objects.OutletListResponse
@@ -15,6 +16,7 @@ import id.erela.surveyproduct.objects.UserDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Multipart
@@ -30,7 +32,6 @@ interface SuperEndpoint {
         @Field("UserName") username: String?
     ): Call<UserDetailResponse>
 
-
     // Surveys
     @POST("survey/getActive")
     fun showAllSurveys(): Call<SurveyListResponse>
@@ -39,7 +40,7 @@ interface SuperEndpoint {
     @FormUrlEncoded
     fun showTodayCheckInOut(
         @Field("UserID") userID: Int
-    ): Call<CheckInOutListResponse>
+    ): Call<CheckInOutHistoryListResponse>
 
     @POST("survey/getAllCheckInOut")
     @FormUrlEncoded
@@ -47,14 +48,13 @@ interface SuperEndpoint {
         @Field("UserID") userID: Int,
         @Field("StartDate") startDate: String?,
         @Field("EndDate") endDate: String?
-    ): Call<CheckInOutListResponse>
+    ): Call<CheckInOutHistoryListResponse>
 
     @POST("survey/getAnswerHistory")
     @FormUrlEncoded
     fun showAnswerHistory(
         @Field("AnswerGroupID") answerGroupID: Int
     ): Call<AnswerHistoryResponse>
-
 
     // Outlets
     @POST("outlet")
@@ -103,11 +103,17 @@ interface SuperEndpoint {
         @Part photoIn: MultipartBody.Part
     ): Call<CheckInResponse>
 
-    @POST
-    @FormUrlEncoded
+    @POST("survey/insertAnswer")
+    @Multipart
+    suspend fun insertAnswer(
+        @Part("AnswerGroupID") answerGroupId: RequestBody,
+        @Part answers: List<MultipartBody.Part>
+    ): Response<InsertAnswerResponse>
+
+    @POST("check/out")
+    @Multipart
     fun checkOut(
-        @Field("ID") checkInID: Int,
-        @Field("LatOut") latOut: Double,
-        @Field("LongOut") longOut: Double
+        @PartMap data: Map<String, RequestBody>,
+        @Part photoOut: MultipartBody.Part?
     ): Call<CheckOutResponse>
 }

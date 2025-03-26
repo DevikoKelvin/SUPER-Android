@@ -15,8 +15,8 @@ import id.erela.surveyproduct.bottom_sheets.FilterHistoryBottomSheet
 import id.erela.surveyproduct.databinding.FragmentHistoryBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
-import id.erela.surveyproduct.objects.CheckInOutItem
-import id.erela.surveyproduct.objects.CheckInOutListResponse
+import id.erela.surveyproduct.objects.CheckInOutHistoryItem
+import id.erela.surveyproduct.objects.CheckInOutHistoryListResponse
 import id.erela.surveyproduct.objects.UsersSuper
 import org.json.JSONException
 import retrofit2.Call
@@ -31,7 +31,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
     private var binding: FragmentHistoryBinding? = null
     private var isInitialized = false
     private lateinit var adapter: CheckInOutAdapter
-    private val checkInOutHistory = ArrayList<CheckInOutItem?>()
+    private val checkInOutHistory = ArrayList<CheckInOutHistoryItem?>()
     private val userData: UsersSuper by lazy {
         UserDataHelper(context).getData()
     }
@@ -113,7 +113,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
                 with(it) {
                     setOnTodayTrackingItemClickListener(object :
                         CheckInOutAdapter.OnCheckInOutItemClickListener {
-                        override fun onCheckInOutItemClick(item: CheckInOutItem?) {
+                        override fun onCheckInOutItemClick(item: CheckInOutHistoryItem?) {
                             SurveyDetailActivity.start(context, item!!)
                         }
                     })
@@ -149,10 +149,10 @@ class HistoryFragment(private val context: Context) : Fragment() {
         binding?.apply {
             try {
                 AppAPI.superEndpoint.showAllCheckInOut(userData.iD!!.toInt(), start, end)
-                    .enqueue(object : Callback<CheckInOutListResponse> {
+                    .enqueue(object : Callback<CheckInOutHistoryListResponse> {
                         override fun onResponse(
-                            call: Call<CheckInOutListResponse>,
-                            response: Response<CheckInOutListResponse>
+                            call: Call<CheckInOutHistoryListResponse>,
+                            response: Response<CheckInOutHistoryListResponse>
                         ) {
                             loadingManager(false)
                             isInitialized = true
@@ -195,7 +195,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
                         }
 
                         override fun onFailure(
-                            call: Call<CheckInOutListResponse>,
+                            call: Call<CheckInOutHistoryListResponse>,
                             throwable: Throwable
                         ) {
                             isInitialized = false

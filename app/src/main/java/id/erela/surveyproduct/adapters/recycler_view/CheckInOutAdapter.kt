@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import id.erela.surveyproduct.databinding.ListItemCheckInOutBinding
-import id.erela.surveyproduct.objects.CheckInOutItem
+import id.erela.surveyproduct.objects.CheckInOutHistoryItem
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class CheckInOutAdapter(
-    private val checkInOutItemList: ArrayList<CheckInOutItem?>
+    private val checkInOutHistoryItemList: ArrayList<CheckInOutHistoryItem?>
 ) : RecyclerView.Adapter<CheckInOutAdapter.ViewHolder>() {
     private lateinit var onCheckInOutItemClickListener: OnCheckInOutItemClickListener
 
@@ -27,11 +27,11 @@ class CheckInOutAdapter(
         ).root
     )
 
-    override fun getItemCount(): Int = checkInOutItemList.size
+    override fun getItemCount(): Int = checkInOutHistoryItemList.size
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = checkInOutItemList[position]
+        val item = checkInOutHistoryItemList[position]
 
         with(holder) {
             binding.apply {
@@ -65,6 +65,6 @@ class CheckInOutAdapter(
     }
 
     interface OnCheckInOutItemClickListener {
-        fun onCheckInOutItemClick(item: CheckInOutItem?)
+        fun onCheckInOutItemClick(item: CheckInOutHistoryItem?)
     }
 }

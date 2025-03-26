@@ -1,6 +1,7 @@
 package id.erela.surveyproduct.fragments
 
 import android.annotation.SuppressLint
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -10,6 +11,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
@@ -30,11 +33,19 @@ import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.QuestionsItem
+import id.erela.surveyproduct.objects.SurveyAnswer
 import id.erela.surveyproduct.objects.SurveyListResponse
+import id.erela.surveyproduct.viewmodels.SurveyViewModel
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -79,16 +90,71 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
         var questionIdArray = ArrayList<Int>()
         var subQuestionIdArray = ArrayList<Int?>()
         val surveyQuestionsList = ArrayList<QuestionsItem>()
+        private val answers: ArrayList<SurveyAnswer> = ArrayList()
+
+        fun uploadData(
+            answerData: List<SurveyAnswer>,
+            context: Context,
+            viewModel: SurveyViewModel
+        ) {
+            viewModel.submitSurvey(
+                answerData,
+                SharedPreferencesHelper.getSharedPreferences(context)
+                    .getString(CheckInFragment.IMAGE_URI, "")!!,
+                SharedPreferencesHelper.getSharedPreferences(context)
+                    .getString(CheckOutFragment.IMAGE_URI, "")!!
+            )
+        }
 
         fun clearAnswerData(context: Context) {
-            for (id in questionIdArray) {
-                for (subId in subQuestionIdArray) {
-                    SharedPreferencesHelper.getSharedPreferences(context).edit {
-                        remove("${ANSWER_QUESTION_ID}_${id}")
-                        remove("${ANSWER_SUBQUESTION_ID}_${subId}")
-                        remove("${ANSWER_PHOTO}_${id}_${subId}")
-                        remove("${ANSWER_CHECKBOX_MULTIPLE}_${id}_${subId}")
-                        remove("${ANSWER_TEXT}_${id}_${subId}")
+            SharedPreferencesHelper.getSharedPreferences(context).edit {
+                surveyQuestionsList.forEach { question ->
+                    if (question.subQuestions.isNullOrEmpty()) {
+                        when (question.questionType) {
+                            "photo" -> {
+                                remove("${ANSWER_PHOTO}_${question.iD}_0")
+                            }
+
+                            "essay" -> {
+                                remove("${ANSWER_TEXT}_${question.iD}_0")
+                            }
+
+                            "checkbox" -> {
+                                for (i in 0 until question.checkboxOptions?.size!!) {
+                                    remove("${ANSWER_CHECKBOX_MULTIPLE}_${question.iD}_0_${i}")
+                                }
+                            }
+
+                            "multiple" -> {
+                                for (i in 0 until question.multipleOptions?.size!!) {
+                                    remove("${ANSWER_CHECKBOX_MULTIPLE}_${question.iD}_0_${i}")
+                                }
+                            }
+                        }
+                    } else {
+                        question.subQuestions.forEach { subQuestion ->
+                            when (subQuestion!!.questionType) {
+                                "photo" -> {
+                                    remove("${ANSWER_PHOTO}_${subQuestion.questionID}_${subQuestion.iD}")
+                                }
+
+                                "essay" -> {
+                                    remove("${ANSWER_TEXT}_${subQuestion.questionID}_${subQuestion.iD}")
+                                }
+
+                                "checkbox" -> {
+                                    for (i in 0 until question.checkboxOptions?.size!!) {
+                                        remove("${ANSWER_CHECKBOX_MULTIPLE}_${subQuestion.questionID}_${subQuestion.iD}_${i}")
+                                    }
+                                }
+
+                                "multiple" -> {
+                                    for (i in 0 until question.multipleOptions?.size!!) {
+                                        remove("${ANSWER_CHECKBOX_MULTIPLE}_${subQuestion.questionID}_${subQuestion.iD}_${i}")
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -96,6 +162,7 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
 
         fun validateAnswer(context: Context): Boolean {
             val sharedPreferences = SharedPreferencesHelper.getSharedPreferences(context)
+            answers.clear()
 
             surveyQuestionsList.forEach { question ->
                 val questionId = question.iD ?: return false
@@ -108,8 +175,18 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                                 "${ANSWER_PHOTO}_${questionId}_0",
                                 null
                             )
-                            Log.e("Photo URI", "$photoUri")
-                            if (photoUri == null) return false
+                            if (photoUri == null) return false else {
+                                answers.add(
+                                    SurveyAnswer(
+                                        questionId,
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        createMultipartBody(photoUri.toUri(), context)
+                                    )
+                                )
+                            }
                         }
 
                         "essay" -> {
@@ -117,8 +194,18 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                                 "${ANSWER_TEXT}_${questionId}_0",
                                 null
                             )
-                            Log.e("Text", "$text")
-                            if (text.isNullOrBlank()) return false
+                            if (text.isNullOrBlank()) return false else {
+                                answers.add(
+                                    SurveyAnswer(
+                                        questionId,
+                                        text,
+                                        null,
+                                        null,
+                                        null,
+                                        null
+                                    )
+                                )
+                            }
                         }
 
                         "checkbox" -> {
@@ -128,11 +215,27 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                                     "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
                                     false
                                 )
-                                Log.e("Is Answered", "$isAnswered")
                                 if (isAnswered)
                                     answeredCount++
                             }
-                            if (answeredCount == 0) return false
+                            if (answeredCount == 0) return false else {
+                                for (i in 0 until question.checkboxOptions.size) {
+                                    val isAnswered = sharedPreferences.getBoolean(
+                                        "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                        false
+                                    )
+                                    answers.add(
+                                        SurveyAnswer(
+                                            questionId,
+                                            if (isAnswered) "1" else "0",
+                                            question.checkboxOptions[i]?.iD,
+                                            null,
+                                            null,
+                                            null
+                                        )
+                                    )
+                                }
+                            }
                         }
 
                         "multiple" -> {
@@ -142,11 +245,27 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                                     "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
                                     false
                                 )
-                                Log.e("Is Answered", "$isAnswered")
                                 if (isAnswered)
                                     answeredCount++
                             }
-                            if (answeredCount == 0) return false
+                            if (answeredCount == 0) return false else {
+                                for (i in 0 until question.multipleOptions.size) {
+                                    val isAnswered = sharedPreferences.getBoolean(
+                                        "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                        false
+                                    )
+                                    answers.add(
+                                        SurveyAnswer(
+                                            questionId,
+                                            if (isAnswered) "1" else "0",
+                                            null,
+                                            question.multipleOptions[i]?.iD,
+                                            null,
+                                            null
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                 } else {
@@ -160,7 +279,18 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                                     "${ANSWER_PHOTO}_${questionId}_${subQuestionId}",
                                     null
                                 )
-                                if (photoUri == null) return false
+                                if (photoUri == null) return false else {
+                                    answers.add(
+                                        SurveyAnswer(
+                                            questionId,
+                                            null,
+                                            null,
+                                            null,
+                                            subQuestionId,
+                                            createMultipartBody(photoUri.toUri(), context)
+                                        )
+                                    )
+                                }
                             }
 
                             "essay" -> {
@@ -168,7 +298,18 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                                     "${ANSWER_TEXT}_${questionId}_${subQuestionId}",
                                     null
                                 )
-                                if (text.isNullOrBlank()) return false
+                                if (text.isNullOrBlank()) return false else {
+                                    answers.add(
+                                        SurveyAnswer(
+                                            questionId,
+                                            text,
+                                            null,
+                                            null,
+                                            subQuestionId,
+                                            null
+                                        )
+                                    )
+                                }
                             }
 
                             "checkbox" -> {
@@ -182,7 +323,24 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                                     if (isAnswered)
                                         answeredCount++
                                 }
-                                if (answeredCount == 0) return false
+                                if (answeredCount == 0) return false else {
+                                    for (i in 0 until question.checkboxOptions.size) {
+                                        val isAnswered = sharedPreferences.getBoolean(
+                                            "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                            false
+                                        )
+                                        answers.add(
+                                            SurveyAnswer(
+                                                questionId,
+                                                if (isAnswered) "1" else "0",
+                                                question.checkboxOptions[i]?.iD,
+                                                null,
+                                                null,
+                                                null
+                                            )
+                                        )
+                                    }
+                                }
                             }
 
                             "multiple" -> {
@@ -196,14 +354,87 @@ class AnswerFragment : Fragment(), QuestionSurveyAdapter.OnQuestionItemActionCli
                                     if (isAnswered)
                                         answeredCount++
                                 }
-                                if (answeredCount == 0) return false
+                                if (answeredCount == 0) return false else {
+                                    for (i in 0 until question.multipleOptions.size) {
+                                        val isAnswered = sharedPreferences.getBoolean(
+                                            "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                            false
+                                        )
+                                        answers.add(
+                                            SurveyAnswer(
+                                                questionId,
+                                                if (isAnswered) "1" else "0",
+                                                null,
+                                                question.multipleOptions[i]?.iD,
+                                                null,
+                                                null
+                                            )
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
 
+            StartSurveyActivity.answerData = answers
+
             return true
+        }
+
+        private fun createMultipartBody(uri: Uri, context: Context): MultipartBody.Part? {
+            return try {
+                val file = File(getRealPathFromURI(uri, context)!!)
+                val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+                MultipartBody.Part.createFormData("foto[]", file.name, requestBody)
+            } catch (e: Exception) {
+                Log.e("createMultipartBody", "Error creating MultipartBody.Part", e)
+                null
+            }
+        }
+
+        private fun getFileName(contentResolver: ContentResolver, uri: Uri): String? {
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            if (cursor != null && cursor.moveToFirst()) {
+                val displayNameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (displayNameIndex != -1) {
+                    val fileName = cursor.getString(displayNameIndex)
+                    cursor.close()
+                    return fileName
+                }
+            }
+            cursor?.close()
+            return null
+        }
+
+        private fun getRealPathFromURI(uri: Uri, context: Context): String? {
+            val contentResolver = context.contentResolver
+            val fileName = getFileName(contentResolver!!, uri)
+
+            if (fileName != null) {
+                val file = File(context.cacheDir, fileName)
+                try {
+                    val inputStream = contentResolver.openInputStream(uri)
+                    val outputStream = FileOutputStream(file)
+                    val buffer = ByteArray(4 * 1024)
+                    var read: Int
+
+                    while (inputStream!!.read(buffer).also { read = it } != -1) {
+                        outputStream.write(buffer, 0, read)
+                    }
+
+                    outputStream.flush()
+                    outputStream.close()
+                    inputStream.close()
+
+                    return file.absolutePath
+                } catch (e: IOException) {
+                    Log.e("getRealPathFromURI", "Error: ${e.message}")
+                }
+            }
+
+            return null
         }
     }
 

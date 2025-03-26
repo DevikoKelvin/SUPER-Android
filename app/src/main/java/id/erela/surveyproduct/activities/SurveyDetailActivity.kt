@@ -14,7 +14,7 @@ import id.erela.surveyproduct.adapters.recycler_view.QuestionsAnswerAdapter
 import id.erela.surveyproduct.databinding.ActivitySurveyDetailBinding
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.objects.AnswerHistoryResponse
-import id.erela.surveyproduct.objects.CheckInOutItem
+import id.erela.surveyproduct.objects.CheckInOutHistoryItem
 import id.erela.surveyproduct.objects.QuestionAnswersItem
 import org.json.JSONException
 import retrofit2.Call
@@ -25,14 +25,14 @@ class SurveyDetailActivity : AppCompatActivity() {
     private val binding: ActivitySurveyDetailBinding by lazy {
         ActivitySurveyDetailBinding.inflate(layoutInflater)
     }
-    private lateinit var surveyItem: CheckInOutItem
+    private lateinit var surveyItem: CheckInOutHistoryItem
     private lateinit var adapter: QuestionsAnswerAdapter
     private val questionsAnswerList = ArrayList<QuestionAnswersItem>()
 
     companion object {
         private const val DATA = "DATA"
 
-        fun start(context: Context, item: CheckInOutItem) {
+        fun start(context: Context, item: CheckInOutHistoryItem) {
             context.startActivity(
                 Intent(
                     context, SurveyDetailActivity::class.java
@@ -62,9 +62,9 @@ class SurveyDetailActivity : AppCompatActivity() {
             surveyItem =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) intent.getSerializableExtra(
                     DATA,
-                    CheckInOutItem::class.java
+                    CheckInOutHistoryItem::class.java
                 )!!
-                else intent.getSerializableExtra(DATA) as CheckInOutItem
+                else intent.getSerializableExtra(DATA) as CheckInOutHistoryItem
 
             surveyId.text = "Survey ${surveyItem.surveyID}"
             outletName.text = surveyItem.outletName

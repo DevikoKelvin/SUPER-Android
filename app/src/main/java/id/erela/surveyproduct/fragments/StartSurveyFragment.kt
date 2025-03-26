@@ -9,14 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import id.erela.surveyproduct.activities.StartSurveyActivity
+import id.erela.surveyproduct.activities.CheckInActivity
 import id.erela.surveyproduct.activities.SurveyDetailActivity
 import id.erela.surveyproduct.adapters.recycler_view.CheckInOutAdapter
 import id.erela.surveyproduct.databinding.FragmentStartSurveyBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
-import id.erela.surveyproduct.objects.CheckInOutItem
-import id.erela.surveyproduct.objects.CheckInOutListResponse
+import id.erela.surveyproduct.objects.CheckInOutHistoryItem
+import id.erela.surveyproduct.objects.CheckInOutHistoryListResponse
 import id.erela.surveyproduct.objects.UsersSuper
 import org.json.JSONException
 import retrofit2.Call
@@ -28,7 +28,7 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
     private var binding: FragmentStartSurveyBinding? = null
     private var isInitialized = false
     private lateinit var adapter: CheckInOutAdapter
-    private val checkInOutHistory = ArrayList<CheckInOutItem?>()
+    private val checkInOutHistory = ArrayList<CheckInOutHistoryItem?>()
     private val userData: UsersSuper by lazy {
         UserDataHelper(context).getData()
     }
@@ -95,7 +95,7 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                 with(it) {
                     setOnTodayTrackingItemClickListener(object :
                         CheckInOutAdapter.OnCheckInOutItemClickListener {
-                        override fun onCheckInOutItemClick(item: CheckInOutItem?) {
+                        override fun onCheckInOutItemClick(item: CheckInOutHistoryItem?) {
                             SurveyDetailActivity.start(context, item!!)
                         }
                     })
@@ -106,7 +106,7 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
             checkInOutListRv.setHasFixedSize(true)
 
             startSurveyButton.setOnClickListener {
-                StartSurveyActivity.start(context)
+                CheckInActivity.start(context)
             }
         }
     }
@@ -116,10 +116,10 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
         binding?.apply {
             try {
                 AppAPI.superEndpoint.showTodayCheckInOut(userData.iD!!.toInt())
-                    .enqueue(object : Callback<CheckInOutListResponse> {
+                    .enqueue(object : Callback<CheckInOutHistoryListResponse> {
                         override fun onResponse(
-                            call: Call<CheckInOutListResponse>,
-                            response: Response<CheckInOutListResponse>
+                            call: Call<CheckInOutHistoryListResponse>,
+                            response: Response<CheckInOutHistoryListResponse>
                         ) {
                             loadingManager(false)
                             isInitialized = true
@@ -162,7 +162,7 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                         }
 
                         override fun onFailure(
-                            call: Call<CheckInOutListResponse>,
+                            call: Call<CheckInOutHistoryListResponse>,
                             throwable: Throwable
                         ) {
                             isInitialized = false
