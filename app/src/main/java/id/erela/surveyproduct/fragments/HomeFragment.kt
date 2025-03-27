@@ -2,11 +2,13 @@ package id.erela.surveyproduct.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import id.erela.surveyproduct.BuildConfig
@@ -69,7 +71,15 @@ class HomeFragment(private val context: Context) : Fragment() {
             }"
             fullName.text = "${userData.fullName}!"
 
-            erelaRedirect.setOnClickListener {  }
+            erelaRedirect.setOnClickListener {
+                startActivity(
+                    Intent(Intent.ACTION_VIEW).also {
+                        with(it) {
+                            data = "https://erela.co.id".toUri()
+                        }
+                    }
+                )
+            }
         }
     }
 }

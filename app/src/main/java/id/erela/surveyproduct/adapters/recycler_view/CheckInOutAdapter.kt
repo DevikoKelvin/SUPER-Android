@@ -40,18 +40,21 @@ class CheckInOutAdapter(
                 val dateOutputFormat =
                     SimpleDateFormat("dd MMMM yyyy", Locale.forLanguageTag("id-ID"))
                 val timeOutputFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-                val parsedDate = inputFormat.parse(item?.checkInTime ?: "")
-                val parsedCheckInTime = inputFormat.parse(item?.checkInTime ?: "-")
-                val parsedCheckOutTime = inputFormat.parse(item?.checkOutTime ?: "-")
+                val parsedDate = inputFormat.parse(item?.checkInTime.toString())
+                val parsedCheckInTime = inputFormat.parse(item?.checkInTime.toString())
                 val formattedDate = parsedDate?.let { dateOutputFormat.format(it) }
                 val formatedCheckInTime = parsedCheckInTime?.let { timeOutputFormat.format(it) }
-                val formatedCheckOutTime = parsedCheckOutTime?.let { timeOutputFormat.format(it) }
+                var formatedCheckOutTime = "-"
+                if (item?.checkOutTime != null) {
+                    val parsedCheckOutTime = inputFormat.parse(item.checkOutTime.toString())
+                    formatedCheckOutTime = parsedCheckOutTime?.let { timeOutputFormat.format(it) }.toString()
+                }
 
                 date.text = formattedDate
                 outletName.text = item?.outletName
                 outletAddress.text = item?.outletAddress
-                checkInTime.text = "Checked In\n$formatedCheckInTime"
-                checkOutTime.text = "Checked Out\n$formatedCheckOutTime"
+                checkInTime.text = "Checked In\n${formatedCheckInTime ?: "-"}"
+                checkOutTime.text = "Checked Out\n${formatedCheckOutTime}"
 
                 itemView.setOnClickListener {
                     onCheckInOutItemClickListener.onCheckInOutItemClick(item)

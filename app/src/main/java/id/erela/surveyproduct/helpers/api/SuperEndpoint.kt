@@ -26,8 +26,8 @@ import retrofit2.http.PartMap
 
 interface SuperEndpoint {
     // Users
-    @POST("user/getUserByUsername")
     @FormUrlEncoded
+    @POST("user/getUserByUsername")
     fun getUserByUsername(
         @Field("UserName") username: String?
     ): Call<UserDetailResponse>
@@ -36,22 +36,22 @@ interface SuperEndpoint {
     @POST("survey/getActive")
     fun showAllSurveys(): Call<SurveyListResponse>
 
-    @POST("survey/getTodayCheckInOut")
     @FormUrlEncoded
+    @POST("survey/getTodayCheckInOut")
     fun showTodayCheckInOut(
         @Field("UserID") userID: Int
     ): Call<CheckInOutHistoryListResponse>
 
-    @POST("survey/getAllCheckInOut")
     @FormUrlEncoded
+    @POST("survey/getAllCheckInOut")
     fun showAllCheckInOut(
         @Field("UserID") userID: Int,
         @Field("StartDate") startDate: String?,
         @Field("EndDate") endDate: String?
     ): Call<CheckInOutHistoryListResponse>
 
-    @POST("survey/getAnswerHistory")
     @FormUrlEncoded
+    @POST("survey/getAnswerHistory")
     fun showAnswerHistory(
         @Field("AnswerGroupID") answerGroupID: Int
     ): Call<AnswerHistoryResponse>
@@ -60,8 +60,8 @@ interface SuperEndpoint {
     @POST("outlet")
     fun showAllOutlets(): Call<OutletListResponse>
 
-    @POST("outlet/getOutletById")
     @FormUrlEncoded
+    @POST("outlet/getOutletById")
     fun showOutletById(
         @Field("id") id: Int
     ): Call<OutletResponse>
@@ -72,16 +72,16 @@ interface SuperEndpoint {
     @POST("outlet/provinceList")
     fun showAllProvinces(): Call<ProvinceListResponse>
 
-    @POST("outlet/regionList")
     @FormUrlEncoded
+    @POST("outlet/regionList")
     fun showRegionList(
         @Field("provinces_id") provincesId: Int,
         @Field("cities_id") citiesId: Int?,
         @Field("districts_id") districtsId: Int?
     ): Call<RegionListResponse>
 
-    @POST("outlet/store")
     @FormUrlEncoded
+    @POST("outlet/store")
     fun outletCreation(
         @Field("BranchID") branchID: Int,
         @Field("Name") outletName: String,
@@ -96,24 +96,30 @@ interface SuperEndpoint {
     ): Call<OutletCreationResponse>
 
     // Answers
-    @POST("check/in")
     @Multipart
+    @POST("check/in")
     fun checkIn(
-        @PartMap data: Map<String, RequestBody>,
+        @PartMap data: MutableMap<String, RequestBody>,
         @Part photoIn: MultipartBody.Part
     ): Call<CheckInResponse>
 
-    @POST("survey/insertAnswer")
     @Multipart
-    suspend fun insertAnswer(
+    @POST("survey/insertAnswer")
+    fun insertAnswer(
         @Part("AnswerGroupID") answerGroupId: RequestBody,
         @Part answers: List<MultipartBody.Part>
-    ): Response<InsertAnswerResponse>
+    ): Call<InsertAnswerResponse>
 
-    @POST("check/out")
     @Multipart
+    @POST("check/out")
     fun checkOut(
-        @PartMap data: Map<String, RequestBody>,
+        @PartMap data: MutableMap<String, RequestBody>,
         @Part photoOut: MultipartBody.Part?
+    ): Call<CheckOutResponse>
+
+    @Multipart
+    @POST("check/out")
+    fun checkOutNoPhoto(
+        @PartMap data: MutableMap<String, RequestBody>
     ): Call<CheckOutResponse>
 }

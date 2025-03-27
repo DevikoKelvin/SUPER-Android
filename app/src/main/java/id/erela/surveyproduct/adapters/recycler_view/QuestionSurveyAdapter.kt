@@ -10,8 +10,8 @@ import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import id.erela.surveyproduct.activities.AnswerActivity
 import id.erela.surveyproduct.databinding.ListItemQuestionsBinding
-import id.erela.surveyproduct.fragments.AnswerFragment
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.objects.CheckboxMultipleItem
 import id.erela.surveyproduct.objects.QuestionsItem
@@ -37,7 +37,7 @@ class QuestionSurveyAdapter(
 
     override fun getItemCount(): Int = questionsArrayList.size
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = questionsArrayList[position]
 
@@ -50,12 +50,12 @@ class QuestionSurveyAdapter(
                 answer.visibility = View.GONE
                 val questionID =
                     SharedPreferencesHelper.getSharedPreferences(context).getInt(
-                        "${AnswerFragment.ANSWER_QUESTION_ID}_${item.iD}",
+                        "${AnswerActivity.ANSWER_QUESTION_ID}_${item.iD}",
                         0
                     )
                 val subQuestionID =
                     SharedPreferencesHelper.getSharedPreferences(context).getInt(
-                        "${AnswerFragment.ANSWER_SUBQUESTION_ID}_0",
+                        "${AnswerActivity.ANSWER_SUBQUESTION_ID}_0",
                         0
                     )
 
@@ -73,7 +73,7 @@ class QuestionSurveyAdapter(
                         multipleCheckboxAnswerRv.visibility = View.GONE
                         val photo =
                             SharedPreferencesHelper.getSharedPreferences(context).getString(
-                                "${AnswerFragment.ANSWER_PHOTO}_${questionID}_${subQuestionID}",
+                                "${AnswerActivity.ANSWER_PHOTO}_${questionID}_${subQuestionID}",
                                 null
                             )?.toUri()
                         if (questionID == item.iD) {
@@ -139,13 +139,11 @@ class QuestionSurveyAdapter(
                         imageAnswer.visibility = View.GONE
                         val answer =
                             SharedPreferencesHelper.getSharedPreferences(context).getString(
-                                "${AnswerFragment.ANSWER_TEXT}_${questionID}_${subQuestionID}",
+                                "${AnswerActivity.ANSWER_TEXT}_${item.iD}_0",
                                 ""
                             )
                         if (questionID == item.iD) {
-                            if (answer != null) {
-                                answerField.setText(answer)
-                            }
+                            answerField.setText(answer)
                         }
                     }
                 }
@@ -154,11 +152,11 @@ class QuestionSurveyAdapter(
                     val answer = editable.toString()
                     SharedPreferencesHelper.getSharedPreferences(context).edit {
                         putInt(
-                            "${AnswerFragment.ANSWER_QUESTION_ID}_${item.iD}",
+                            "${AnswerActivity.ANSWER_QUESTION_ID}_${item.iD}",
                             item.iD!!
                         )
-                        putInt("${AnswerFragment.ANSWER_SUBQUESTION_ID}_0", 0)
-                        putString("${AnswerFragment.ANSWER_TEXT}_${item.iD}_0", answer)
+                        putInt("${AnswerActivity.ANSWER_SUBQUESTION_ID}_0", 0)
+                        putString("${AnswerActivity.ANSWER_TEXT}_${item.iD}_0", answer)
                     }
                 }
 

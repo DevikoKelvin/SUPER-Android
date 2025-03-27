@@ -1,15 +1,19 @@
 package id.erela.surveyproduct.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -24,14 +28,17 @@ import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
 import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
+import id.erela.surveyproduct.activities.AnswerActivity.Companion.ANSWER_CHECKBOX_MULTIPLE
+import id.erela.surveyproduct.activities.AnswerActivity.Companion.ANSWER_PHOTO
+import id.erela.surveyproduct.activities.AnswerActivity.Companion.ANSWER_TEXT
 import id.erela.surveyproduct.bottom_sheets.SelectOutletBottomSheet
 import id.erela.surveyproduct.databinding.ActivityCheckInBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
-import id.erela.surveyproduct.fragments.CheckInFragment
 import id.erela.surveyproduct.helpers.PermissionHelper
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.OutletItem
+import id.erela.surveyproduct.objects.QuestionsItem
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,8 +54,9 @@ class CheckInActivity : AppCompatActivity() {
     private var longitude: Double = 0.0
     private var cameraCaptureFileName: String = ""
     private var imageUri: Uri? = null
-    private val sharedPreferences =
-        SharedPreferencesHelper.getSharedPreferences(this@CheckInActivity)
+    private val sharedPreferences: SharedPreferences by lazy {
+        SharedPreferencesHelper.getSharedPreferences(applicationContext)
+    }
     private val cameraLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -75,11 +83,93 @@ class CheckInActivity : AppCompatActivity() {
         const val LATITUDE = "CHECK_IN_LATITUDE"
         const val LONGITUDE = "CHECK_IN_LONGITUDE"
         const val IMAGE_URI = "CHECK_IN_IMAGE_URI"
+        const val CHECK_IN_UPLOADED = "CHECK_IN_UPLOADED"
+        var questionIdArray = ArrayList<Int>()
+        var subQuestionIdArray = ArrayList<Int?>()
+        val surveyQuestionsList = ArrayList<QuestionsItem>()
+        @SuppressLint("StaticFieldLeak")
+        var activity: Activity? = null
 
         fun start(context: Context) {
             context.startActivity(
                 Intent(context, CheckInActivity::class.java)
             )
+        }
+
+        fun clearCheckInData(context: Context) {
+            SharedPreferencesHelper.getSharedPreferences(context).edit {
+                remove(CHECK_IN_ID)
+                remove(ANSWER_GROUP_ID)
+                remove(SELECTED_OUTLET)
+                remove(SELECTED_OUTLET_TEXT)
+                remove(LATITUDE)
+                remove(LONGITUDE)
+                remove(IMAGE_URI)
+                remove(CHECK_IN_UPLOADED)
+            }
+        }
+
+        fun clearCheckOutData(context: Context) {
+            SharedPreferencesHelper.getSharedPreferences(context).edit {
+                remove(CheckOutActivity.IMAGE_URI)
+                remove(CheckOutActivity.LATITUDE)
+                remove(CheckOutActivity.LONGITUDE)
+            }
+        }
+
+        fun clearAnswerData(context: Context) {
+            SharedPreferencesHelper.getSharedPreferences(context).edit {
+                remove(AnswerActivity.ANSWER_UPLOADED)
+                surveyQuestionsList.forEach { question ->
+                    if (question.subQuestions.isNullOrEmpty()) {
+                        when (question.questionType) {
+                            "photo" -> {
+                                remove("${ANSWER_PHOTO}_${question.iD}_0")
+                            }
+
+                            "essay" -> {
+                                remove("${ANSWER_TEXT}_${question.iD}_0")
+                            }
+
+                            "checkbox" -> {
+                                for (i in 0 until question.checkboxOptions?.size!!) {
+                                    remove("${ANSWER_CHECKBOX_MULTIPLE}_${question.iD}_0_${i}")
+                                }
+                            }
+
+                            "multiple" -> {
+                                for (i in 0 until question.multipleOptions?.size!!) {
+                                    remove("${ANSWER_CHECKBOX_MULTIPLE}_${question.iD}_0_${i}")
+                                }
+                            }
+                        }
+                    } else {
+                        question.subQuestions.forEach { subQuestion ->
+                            when (subQuestion!!.questionType) {
+                                "photo" -> {
+                                    remove("${ANSWER_PHOTO}_${subQuestion.questionID}_${subQuestion.iD}")
+                                }
+
+                                "essay" -> {
+                                    remove("${ANSWER_TEXT}_${subQuestion.questionID}_${subQuestion.iD}")
+                                }
+
+                                "checkbox" -> {
+                                    for (i in 0 until question.checkboxOptions?.size!!) {
+                                        remove("${ANSWER_CHECKBOX_MULTIPLE}_${subQuestion.questionID}_${subQuestion.iD}_${i}")
+                                    }
+                                }
+
+                                "multiple" -> {
+                                    for (i in 0 until question.multipleOptions?.size!!) {
+                                        remove("${ANSWER_CHECKBOX_MULTIPLE}_${subQuestion.questionID}_${subQuestion.iD}_${i}")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -92,17 +182,53 @@ class CheckInActivity : AppCompatActivity() {
         init()
     }
 
+    override fun onResume() {
+        super.onResume()
+        activity = this
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activity = null
+    }
+
     private fun init() {
         binding.apply {
+            onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    clearCheckInData(this@CheckInActivity)
+                    clearAnswerData(this@CheckInActivity)
+                    CheckOutActivity.clearCheckOutData(this@CheckInActivity)
+                    finish()
+                }
+            })
+
+            val isCheckInUploaded = sharedPreferences.getBoolean(CHECK_IN_UPLOADED, false)
+            Log.e("isCheckInUploaded", "$isCheckInUploaded")
+            if (isCheckInUploaded) {
+                AnswerActivity.start(
+                    this@CheckInActivity,
+                    sharedPreferences.getInt(SELECTED_OUTLET, 0),
+                    imageUri,
+                    sharedPreferences.getFloat(LATITUDE, 0f).toDouble(),
+                    sharedPreferences.getFloat(LONGITUDE, 0f).toDouble()
+                )
+                finish()
+            }
+
+            backButton.setOnClickListener {
+                onBackPressedDispatcher.onBackPressed()
+            }
+
             // Restore outlet text
-            selectedOutlet = sharedPreferences.getInt(CheckInFragment.SELECTED_OUTLET, 0)
+            selectedOutlet = sharedPreferences.getInt(SELECTED_OUTLET, 0)
             selectedOutletText =
-                sharedPreferences.getString(CheckInFragment.SELECTED_OUTLET_TEXT, null)
+                sharedPreferences.getString(SELECTED_OUTLET_TEXT, null)
             if (selectedOutletText != null) {
                 outletText.text = selectedOutletText
             }
             // Restore photo preview if exists
-            imageUri = sharedPreferences.getString(CheckInFragment.IMAGE_URI, null)
+            imageUri = sharedPreferences.getString(IMAGE_URI, null)
                 ?.toUri()
             imageUri?.let {
                 photoContainer.visibility = View.VISIBLE
@@ -111,8 +237,8 @@ class CheckInActivity : AppCompatActivity() {
                 photoPreview.setImageURI(it)
             }
             // Restore map position if needed
-            latitude = sharedPreferences.getFloat(CheckInFragment.LATITUDE, 0f).toDouble()
-            longitude = sharedPreferences.getFloat(CheckInFragment.LONGITUDE, 0f).toDouble()
+            latitude = sharedPreferences.getFloat(LATITUDE, 0f).toDouble()
+            longitude = sharedPreferences.getFloat(LONGITUDE, 0f).toDouble()
             // Initialize location services
             fusedLocationClient =
                 LocationServices.getFusedLocationProviderClient(this@CheckInActivity)
@@ -135,6 +261,26 @@ class CheckInActivity : AppCompatActivity() {
 
             takePhotoButton.setOnClickListener {
                 handlePhotoCapture()
+            }
+
+            nextButton.setOnClickListener {
+                if (selectedOutlet == 0 || imageUri == null) {
+                    CustomToast(applicationContext).setMessage(
+                        if (selectedOutlet == 0) "Please select outlet first!"
+                        else "Please take photo first!"
+                    ).setFontColor(getColor(R.color.custom_toast_font_failed))
+                        .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
+                        .show()
+                    return@setOnClickListener
+                } else {
+                    AnswerActivity.start(
+                        this@CheckInActivity,
+                        sharedPreferences.getInt(SELECTED_OUTLET, 0),
+                        imageUri!!,
+                        sharedPreferences.getFloat(LATITUDE, 0f).toDouble(),
+                        sharedPreferences.getFloat(LONGITUDE, 0f).toDouble()
+                    )
+                }
             }
         }
     }
@@ -187,7 +333,7 @@ class CheckInActivity : AppCompatActivity() {
                 PermissionHelper.REQUEST_LOCATION_GPS
             )
         } else {
-            val dialog = LoadingDialog(applicationContext)
+            val dialog = LoadingDialog(this@CheckInActivity)
             if (dialog.window != null)
                 dialog.show()
             fusedLocationClient.lastLocation
@@ -248,7 +394,7 @@ class CheckInActivity : AppCompatActivity() {
 
     private fun showOutletSelector() {
         binding.apply {
-            val bottomSheet = SelectOutletBottomSheet(applicationContext).also {
+            val bottomSheet = SelectOutletBottomSheet(this@CheckInActivity).also {
                 with(it) {
                     setOnOutletSelectedListener(object :
                         SelectOutletBottomSheet.OnOutletSelectedListener {

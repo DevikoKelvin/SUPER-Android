@@ -10,8 +10,8 @@ import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import id.erela.surveyproduct.activities.AnswerActivity
 import id.erela.surveyproduct.databinding.ListItemSubquestionsBinding
-import id.erela.surveyproduct.fragments.AnswerFragment
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.objects.CheckboxMultipleItem
 import id.erela.surveyproduct.objects.SubQuestionsItem
@@ -34,7 +34,7 @@ class SubQuestionsSurveyAdapter(
 
     override fun getItemCount(): Int = subQuestions.size
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = subQuestions[position]
 
@@ -44,12 +44,12 @@ class SubQuestionsSurveyAdapter(
                 answer.visibility = View.GONE
                 val questionID =
                     SharedPreferencesHelper.getSharedPreferences(context).getInt(
-                        "${AnswerFragment.ANSWER_QUESTION_ID}_${item?.questionID}",
+                        "${AnswerActivity.ANSWER_QUESTION_ID}_${item?.questionID}",
                         0
                     )
                 val subQuestionID =
                     SharedPreferencesHelper.getSharedPreferences(context).getInt(
-                        "${AnswerFragment.ANSWER_SUBQUESTION_ID}_${item?.iD}",
+                        "${AnswerActivity.ANSWER_SUBQUESTION_ID}_${item?.iD}",
                         0
                     )
 
@@ -60,7 +60,7 @@ class SubQuestionsSurveyAdapter(
                         multipleCheckboxAnswerRv.visibility = View.GONE
                         val photo =
                             SharedPreferencesHelper.getSharedPreferences(context).getString(
-                                "${AnswerFragment.ANSWER_PHOTO}_${questionID}_${subQuestionID}",
+                                "${AnswerActivity.ANSWER_PHOTO}_${questionID}_${subQuestionID}",
                                 null
                             )?.toUri()
                         if (questionID == item.iD) {
@@ -122,14 +122,12 @@ class SubQuestionsSurveyAdapter(
                         imageAnswer.visibility = View.GONE
                         val answer =
                             SharedPreferencesHelper.getSharedPreferences(context).getString(
-                                "${AnswerFragment.ANSWER_TEXT}_${questionID}_${subQuestionID}",
+                                "${AnswerActivity.ANSWER_TEXT}_${questionID}_${subQuestionID}",
                                 ""
                             )
                         if (questionID == item!!.questionID) {
                             if (subQuestionID == item.iD) {
-                                if (answer != null) {
-                                    answerField.setText(answer)
-                                }
+                                answerField.setText(answer)
                             }
                         }
                     }
@@ -139,15 +137,15 @@ class SubQuestionsSurveyAdapter(
                     val answer = editable.toString()
                     SharedPreferencesHelper.getSharedPreferences(context).edit {
                         putInt(
-                            "${AnswerFragment.ANSWER_QUESTION_ID}_${item.questionID}",
+                            "${AnswerActivity.ANSWER_QUESTION_ID}_${item.questionID}",
                             item.questionID!!.toInt()
                         )
                         putInt(
-                            "${AnswerFragment.ANSWER_SUBQUESTION_ID}_${item.iD}",
+                            "${AnswerActivity.ANSWER_SUBQUESTION_ID}_${item.iD}",
                             item.iD!!.toInt()
                         )
                         putString(
-                            "${AnswerFragment.ANSWER_TEXT}_${item.questionID}_${item.iD}",
+                            "${AnswerActivity.ANSWER_TEXT}_${item.questionID}_${item.iD}",
                             answer
                         )
                     }

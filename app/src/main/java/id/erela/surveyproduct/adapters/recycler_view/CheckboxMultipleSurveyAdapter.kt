@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
+import id.erela.surveyproduct.activities.AnswerActivity
 import id.erela.surveyproduct.databinding.ListItemHistoryCheckboxMultipleBinding
-import id.erela.surveyproduct.fragments.AnswerFragment
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.objects.CheckboxMultipleItem
 
@@ -37,11 +37,11 @@ class CheckboxMultipleSurveyAdapter(
             binding.apply {
                 checkboxMultipleViewContainer.visibility = View.GONE
                 val questionID = SharedPreferencesHelper.getSharedPreferences(context).getInt(
-                    "${AnswerFragment.ANSWER_QUESTION_ID}_${item?.checkboxMultipleOptions?.questionID}",
+                    "${AnswerActivity.ANSWER_QUESTION_ID}_${item?.checkboxMultipleOptions?.questionID}",
                     0
                 )
                 val subQuestionID = SharedPreferencesHelper.getSharedPreferences(context).getInt(
-                    "${AnswerFragment.ANSWER_SUBQUESTION_ID}_${item?.checkboxMultipleOptions?.questionID}",
+                    "${AnswerActivity.ANSWER_SUBQUESTION_ID}_${item?.checkboxMultipleOptions?.questionID}",
                     0
                 )
 
@@ -54,7 +54,7 @@ class CheckboxMultipleSurveyAdapter(
                             checkboxOptionText.text = item.checkboxMultipleOptions?.options
                             val checkbox =
                                 SharedPreferencesHelper.getSharedPreferences(context).getBoolean(
-                                    "${AnswerFragment.ANSWER_CHECKBOX_MULTIPLE}_${questionID}_" +
+                                    "${AnswerActivity.ANSWER_CHECKBOX_MULTIPLE}_${questionID}_" +
                                             "${subQuestionID}_${position}",
                                     false
                                 )
@@ -66,17 +66,17 @@ class CheckboxMultipleSurveyAdapter(
                                 notifyDataSetChanged()
                                 SharedPreferencesHelper.getSharedPreferences(context).edit {
                                     putInt(
-                                        "${AnswerFragment.ANSWER_QUESTION_ID}_${item.checkboxMultipleOptions?.questionID}",
+                                        "${AnswerActivity.ANSWER_QUESTION_ID}_${item.checkboxMultipleOptions?.questionID}",
                                         item.checkboxMultipleOptions?.questionID!!
                                     )
                                     val subQuestionId =
                                         item.checkboxMultipleOptions.subQuestionID ?: 0
                                     putInt(
-                                        "${AnswerFragment.ANSWER_SUBQUESTION_ID}_${item.checkboxMultipleOptions.questionID}",
+                                        "${AnswerActivity.ANSWER_SUBQUESTION_ID}_${item.checkboxMultipleOptions.questionID}",
                                         subQuestionId
                                     )
                                     putBoolean(
-                                        "${AnswerFragment.ANSWER_CHECKBOX_MULTIPLE}_${item.checkboxMultipleOptions.questionID}_" +
+                                        "${AnswerActivity.ANSWER_CHECKBOX_MULTIPLE}_${item.checkboxMultipleOptions.questionID}_" +
                                                 "${subQuestionId}_${position}",
                                         item.isChecked
                                     )
@@ -91,7 +91,7 @@ class CheckboxMultipleSurveyAdapter(
                             multipleOptionText.text = item.checkboxMultipleOptions?.options
                             val radio =
                                 SharedPreferencesHelper.getSharedPreferences(context).getBoolean(
-                                    "${AnswerFragment.ANSWER_CHECKBOX_MULTIPLE}_${questionID}_${subQuestionID}_${position}",
+                                    "${AnswerActivity.ANSWER_CHECKBOX_MULTIPLE}_${questionID}_${subQuestionID}_${position}",
                                     false
                                 )
                             if (
@@ -105,17 +105,17 @@ class CheckboxMultipleSurveyAdapter(
                                 notifyDataSetChanged()
                                 SharedPreferencesHelper.getSharedPreferences(context).edit {
                                     putInt(
-                                        "${AnswerFragment.ANSWER_QUESTION_ID}_${item.checkboxMultipleOptions?.questionID}",
+                                        "${AnswerActivity.ANSWER_QUESTION_ID}_${item.checkboxMultipleOptions?.questionID}",
                                         item.checkboxMultipleOptions?.questionID!!
                                     )
                                     val subQuestionId =
                                         item.checkboxMultipleOptions.subQuestionID ?: 0
                                     putInt(
-                                        "${AnswerFragment.ANSWER_SUBQUESTION_ID}_${item.checkboxMultipleOptions.subQuestionID}",
+                                        "${AnswerActivity.ANSWER_SUBQUESTION_ID}_${item.checkboxMultipleOptions.subQuestionID}",
                                         subQuestionId
                                     )
                                     putBoolean(
-                                        "${AnswerFragment.ANSWER_CHECKBOX_MULTIPLE}_${item.checkboxMultipleOptions.questionID}_" +
+                                        "${AnswerActivity.ANSWER_CHECKBOX_MULTIPLE}_${item.checkboxMultipleOptions.questionID}_" +
                                                 "${subQuestionId}_${position}",
                                         radioItem.isChecked
                                     )
