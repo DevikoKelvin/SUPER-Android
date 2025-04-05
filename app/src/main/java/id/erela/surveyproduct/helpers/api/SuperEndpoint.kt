@@ -27,23 +27,23 @@ import retrofit2.http.PartMap
 interface SuperEndpoint {
     // Users
     @FormUrlEncoded
-    @POST("user/getUserByUsername")
+    @POST("user/byUsername")
     fun getUserByUsername(
         @Field("UserName") username: String?
     ): Call<UserDetailResponse>
 
     // Surveys
-    @POST("survey/getActive")
+    @POST("survey/active")
     fun showAllSurveys(): Call<SurveyListResponse>
 
     @FormUrlEncoded
-    @POST("survey/getTodayCheckInOut")
+    @POST("survey/today")
     fun showTodayCheckInOut(
         @Field("UserID") userID: Int
     ): Call<CheckInOutHistoryListResponse>
 
     @FormUrlEncoded
-    @POST("survey/getAllCheckInOut")
+    @POST("survey")
     fun showAllCheckInOut(
         @Field("UserID") userID: Int,
         @Field("StartDate") startDate: String?,
@@ -51,7 +51,7 @@ interface SuperEndpoint {
     ): Call<CheckInOutHistoryListResponse>
 
     @FormUrlEncoded
-    @POST("survey/getAnswerHistory")
+    @POST("survey/history")
     fun showAnswerHistory(
         @Field("AnswerGroupID") answerGroupID: Int
     ): Call<AnswerHistoryResponse>
@@ -61,7 +61,7 @@ interface SuperEndpoint {
     fun showAllOutlets(): Call<OutletListResponse>
 
     @FormUrlEncoded
-    @POST("outlet/getOutletById")
+    @POST("outlet/byId")
     fun showOutletById(
         @Field("id") id: Int
     ): Call<OutletResponse>
@@ -104,7 +104,7 @@ interface SuperEndpoint {
     ): Call<CheckInResponse>
 
     @Multipart
-    @POST("survey/insertAnswer")
+    @POST("survey/insert")
     fun insertAnswer(
         @Part("AnswerGroupID") answerGroupId: RequestBody,
         @Part answers: List<MultipartBody.Part>
