@@ -62,6 +62,7 @@
     <!-- Survey Detail -->
     <string name="survey_detail_title">Survey Detail</string>
     <string name="survey_data">Survey Data</string>
+    <string name="surveyors">Surveyor</string>
     <string name="survey_answer">Answer</string>
 
     <!-- Survey History Menu -->

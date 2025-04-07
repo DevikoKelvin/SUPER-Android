@@ -15,6 +15,7 @@ constraintlayout = "2.2.1"
 blurview = "version-2.0.6"
 blurkitAndroid = "1.1.1"
 realtimeblurview = "-SNAPSHOT"
+fkBlurViewAndroid = "1.0.1"
 supergradienttextview = "1.1"
 glide = "4.16.0"
 swipeRefreshLayout = "1.1.0"
@@ -48,6 +49,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 blurview = { module = "com.github.Dimezis:BlurView", version.ref = "blurview" }
 blurkit-android = { module = "com.github.wonderkiln:blurkit-android", version.ref = "blurkitAndroid" }
 realtimeblurview = { module = "com.github.mmin18:RealtimeBlurView", version.ref = "realtimeblurview" }
+fk-blur-view-android = { module = "com.github.furkankaplan:fk-blur-view-android", version.ref = "fkBlurViewAndroid" }
 supergradienttextview = { module = "com.github.veeyaarVR:SuperGradientTextView", version.ref = "supergradienttextview" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 swipeRefreshLayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swipeRefreshLayout" }

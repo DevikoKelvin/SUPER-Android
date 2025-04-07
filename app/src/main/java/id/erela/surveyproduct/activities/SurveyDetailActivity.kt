@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.adapters.recycler_view.QuestionsAnswerAdapter
 import id.erela.surveyproduct.databinding.ActivitySurveyDetailBinding
+import id.erela.surveyproduct.dialogs.PhotoPreviewDialog
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.objects.AnswerHistoryResponse
 import id.erela.surveyproduct.objects.CheckInOutHistoryItem
@@ -69,6 +70,21 @@ class SurveyDetailActivity : AppCompatActivity() {
             surveyId.text = "Survey ${surveyItem.surveyID}"
             outletName.text = surveyItem.outletName
             outletAddress.text = surveyItem.outletAddress
+            surveyorName.text = "${surveyItem.surveyorName} (ID: ${surveyItem.userID})"
+
+            checkInPhotoButton.setOnClickListener {
+                val dialog = PhotoPreviewDialog(this@SurveyDetailActivity, surveyItem.photoIn)
+
+                if (dialog.window != null)
+                    dialog.show()
+            }
+
+            checkOutPhotoButton.setOnClickListener {
+                val dialog = PhotoPreviewDialog(this@SurveyDetailActivity, surveyItem.photoOut)
+
+                if (dialog.window != null)
+                    dialog.show()
+            }
 
             adapter = QuestionsAnswerAdapter(questionsAnswerList, this@SurveyDetailActivity)
             answeredQuestionRv.setItemViewCacheSize(1000)

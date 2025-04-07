@@ -37,24 +37,17 @@ interface SuperEndpoint {
     fun showAllSurveys(): Call<SurveyListResponse>
 
     @FormUrlEncoded
-    @POST("survey/today")
-    fun showTodayCheckInOut(
-        @Field("UserID") userID: Int
-    ): Call<CheckInOutHistoryListResponse>
-
-    @FormUrlEncoded
-    @POST("survey")
-    fun showAllCheckInOut(
-        @Field("UserID") userID: Int,
-        @Field("StartDate") startDate: String?,
-        @Field("EndDate") endDate: String?
-    ): Call<CheckInOutHistoryListResponse>
-
-    @FormUrlEncoded
     @POST("survey/history")
     fun showAnswerHistory(
         @Field("AnswerGroupID") answerGroupID: Int
     ): Call<AnswerHistoryResponse>
+
+    @Multipart
+    @POST("survey/insert")
+    fun insertAnswer(
+        @Part("AnswerGroupID") answerGroupId: RequestBody,
+        @Part answers: List<MultipartBody.Part>
+    ): Call<InsertAnswerResponse>
 
     // Outlets
     @POST("outlet")
@@ -95,20 +88,27 @@ interface SuperEndpoint {
         @Field("Longitude") longitude: Double
     ): Call<OutletCreationResponse>
 
-    // Answers
+    // Check
+    @FormUrlEncoded
+    @POST("check")
+    fun showAllCheckInOut(
+        @Field("UserID") userID: Int,
+        @Field("StartDate") startDate: String?,
+        @Field("EndDate") endDate: String?
+    ): Call<CheckInOutHistoryListResponse>
+
+    @FormUrlEncoded
+    @POST("check/today")
+    fun showTodayCheckInOut(
+        @Field("UserID") userID: Int
+    ): Call<CheckInOutHistoryListResponse>
+
     @Multipart
     @POST("check/in")
     fun checkIn(
         @PartMap data: MutableMap<String, RequestBody>,
         @Part photoIn: MultipartBody.Part
     ): Call<CheckInResponse>
-
-    @Multipart
-    @POST("survey/insert")
-    fun insertAnswer(
-        @Part("AnswerGroupID") answerGroupId: RequestBody,
-        @Part answers: List<MultipartBody.Part>
-    ): Call<InsertAnswerResponse>
 
     @Multipart
     @POST("check/out")

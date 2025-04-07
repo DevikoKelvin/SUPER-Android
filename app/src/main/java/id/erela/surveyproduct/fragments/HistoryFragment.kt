@@ -3,6 +3,7 @@ package id.erela.surveyproduct.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -31,12 +32,18 @@ class HistoryFragment(private val context: Context) : Fragment() {
     private var binding: FragmentHistoryBinding? = null
     private var isInitialized = false
     private lateinit var adapter: CheckInOutAdapter
+    private var scrollState: Parcelable? = null
     private val checkInOutHistory = ArrayList<CheckInOutHistoryItem?>()
     private val userData: UsersSuper by lazy {
         UserDataHelper(context).getData()
     }
     private var start = ""
     private var end = ""
+
+    companion object {
+        private const val KEY_START = "start_value"
+        private const val KEY_END = "end_value"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +61,16 @@ class HistoryFragment(private val context: Context) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        scrollState = savedInstanceState?.getParcelable("SCROLL_STATE")
         prepareView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(
+            "SCROLL_STATE",
+            binding?.checkInOutListRv?.layoutManager?.onSaveInstanceState()
+        )
     }
 
     override fun onResume() {
@@ -73,8 +89,6 @@ class HistoryFragment(private val context: Context) : Fragment() {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
             prepareView()
-            if (!isInitialized)
-                callNetwork(start, end)
         }
     }
 
@@ -85,6 +99,9 @@ class HistoryFragment(private val context: Context) : Fragment() {
 
     private fun prepareView() {
         binding?.apply {
+            scrollState?.let {
+                checkInOutListRv.layoutManager?.onRestoreInstanceState(it)
+            }
             val startCalendar = Calendar.getInstance()
             startCalendar.set(Calendar.DAY_OF_MONTH, 1)
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.forLanguageTag("id-ID"))
@@ -96,11 +113,11 @@ class HistoryFragment(private val context: Context) : Fragment() {
                 if (checkInOutHistory.isEmpty()) {
                     emptyAnimation.visibility = View.VISIBLE
                     checkInOutListRv.visibility = View.GONE
+                    callNetwork(start, end)
                 } else {
                     emptyAnimation.visibility = View.GONE
                     checkInOutListRv.visibility = View.VISIBLE
                 }
-                loadingManager(false)
             } else {
                 callNetwork(start, end)
             }

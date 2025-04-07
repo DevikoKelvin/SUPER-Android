@@ -42,5 +42,7 @@ data class CheckInOutHistoryItem(
     @field:SerializedName("ID")
     val iD: Int? = null,
     @field:SerializedName("CheckInTime")
-    val checkInTime: String? = null
+    val checkInTime: String? = null,
+    @field:SerializedName("SurveyorName")
+    val surveyorName: String? = null
 ) : Serializable

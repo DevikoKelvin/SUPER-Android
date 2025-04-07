@@ -757,13 +757,14 @@ class AddOutletActivity : AppCompatActivity() {
                                                                 position - 1
                                                             )?.id!!.toInt()
                                                         isFormEmpty[2] = selectedProvince != 0
-                                                        if (selectedProvince != 0)
+                                                        if (selectedProvince != 0) {
                                                             provinceDropdownLayout.strokeColor =
                                                                 ContextCompat.getColor(
                                                                     this@AddOutletActivity,
                                                                     R.color.form_field_stroke
                                                                 )
-                                                        getRegionList(selectedProvince, null, null)
+                                                            getRegionList(selectedProvince, null, null)
+                                                        }
                                                     }
 
                                                     override fun onNothingSelected(adapterView: AdapterView<*>?) {
@@ -928,17 +929,27 @@ class AddOutletActivity : AppCompatActivity() {
                                                     selectedCityRegency =
                                                         if (position == 0) 0 else result.regionsData?.cities!![position - 1]?.id!!.toInt()
                                                     isFormEmpty[3] = selectedCityRegency != 0
-                                                    if (selectedCityRegency != 0)
+                                                    if (selectedCityRegency != 0) {
                                                         cityRegencyDropdownLayout.strokeColor =
                                                             ContextCompat.getColor(
                                                                 this@AddOutletActivity,
                                                                 R.color.form_field_stroke
                                                             )
-                                                    getRegionList(
-                                                        selectedProvince,
-                                                        selectedCityRegency,
-                                                        null
-                                                    )
+                                                        getRegionList(
+                                                            selectedProvince,
+                                                            selectedCityRegency,
+                                                            null
+                                                        )
+                                                    } else {
+                                                        subDistrictList.clear()
+                                                        subDistrictList.add("-")
+                                                        subDistrictDropdownAdapter.notifyDataSetChanged()
+                                                        subDistrictDropdown.setSelection(0)
+                                                        villageList.clear()
+                                                        villageList.add("-")
+                                                        villageDropdownAdapter.notifyDataSetChanged()
+                                                        villageDropdown.setSelection(0)
+                                                    }
                                                 }
 
                                                 override fun onNothingSelected(adapterView: AdapterView<*>?) {
@@ -991,17 +1002,23 @@ class AddOutletActivity : AppCompatActivity() {
                                                         selectedSubDistrict =
                                                             if (position == 0) 0 else result.regionsData.districts[position - 1]?.id!!.toInt()
                                                         isFormEmpty[4] = selectedSubDistrict != 0
-                                                        if (selectedSubDistrict != 0)
+                                                        if (selectedSubDistrict != 0) {
                                                             subDistrictDropdownLayout.strokeColor =
                                                                 ContextCompat.getColor(
                                                                     this@AddOutletActivity,
                                                                     R.color.form_field_stroke
                                                                 )
-                                                        getRegionList(
-                                                            selectedProvince,
-                                                            selectedCityRegency,
-                                                            selectedSubDistrict
-                                                        )
+                                                            getRegionList(
+                                                                selectedProvince,
+                                                                selectedCityRegency,
+                                                                selectedSubDistrict
+                                                            )
+                                                        } else {
+                                                            villageList.clear()
+                                                            villageList.add("-")
+                                                            villageDropdownAdapter.notifyDataSetChanged()
+                                                            villageDropdown.setSelection(0)
+                                                        }
                                                     }
 
                                                     override fun onNothingSelected(adapterView: AdapterView<*>?) {

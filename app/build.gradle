@@ -12,8 +12,8 @@ android {
         applicationId "id.erela.surveyproduct"
         minSdk 26
         targetSdk 36
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,8 +39,8 @@ android {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""
             buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:3000/super/api/\""
             /*buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.18.2:3000/super/api/\""*/
-            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:3000/super/assets/\""
-            /*buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.18.2:3000/super/assets/\""*/
+            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:3000/super/assets/img/\""
+            /*buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.18.2:3000/super/assets/img/\""*/
             buildConfigField 'String', 'MAP_URL', "\"https://api.maptiler.com/maps/streets-v2/style.json?key=\""
             buildConfigField 'String', 'KEY', "\"x-superapp-authorized\""
             buildConfigField 'String', 'VALUE', "\"2025::Er3L@n2e1pZVYgz8\""
@@ -55,8 +55,8 @@ android {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""
             buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.3.245:3000/super/api/\""
             /*buildConfigField 'String', 'SUPER_BASE_URL', "\"http://192.168.18.2:3000/super/api/\""*/
-            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:3000/super/assets/\""
-            /*buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.18.2:3000/super/assets/\""*/
+            buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.3.245:3000/super/assets/img/\""
+            /*buildConfigField 'String', 'IMAGE_URL', "\"http://192.168.18.2:3000/super/assets/img/\""*/
             buildConfigField 'String', 'MAP_URL', "\"https://api.maptiler.com/maps/streets-v2/style.json?key=\""
             buildConfigField 'String', 'KEY', "\"x-superapp-authorized\""
             buildConfigField 'String', 'VALUE', "\"2025::Er3L@n2e1pZVYgz8\""
@@ -99,6 +99,7 @@ dependencies {
     implementation libs.blurview
     implementation libs.blurkit.android
     implementation libs.realtimeblurview
+    implementation libs.fk.blur.view.android
     implementation libs.supergradienttextview
     implementation libs.glide
     implementation libs.swipeRefreshLayout
