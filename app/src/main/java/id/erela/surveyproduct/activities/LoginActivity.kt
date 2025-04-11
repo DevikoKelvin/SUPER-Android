@@ -185,7 +185,7 @@ class LoginActivity : AppCompatActivity() {
                                                             }
                                                         } else {
                                                             Log.e("ERROR", "Response body is null")
-                                                            Log.e("Response", response.toString())
+                                                            Log.e("Response", response1.toString())
                                                             CustomToast.getInstance(applicationContext)
                                                                 .setMessage("Something went wrong, please try again.")
                                                                 .setFontColor(
@@ -203,7 +203,7 @@ class LoginActivity : AppCompatActivity() {
                                                         }
                                                     } else {
                                                         Log.e("ERROR", "Response not successful")
-                                                        Log.e("Response", response.toString())
+                                                        Log.e("Response", response1.toString())
                                                         CustomToast.getInstance(applicationContext)
                                                             .setMessage("Something went wrong, please try again.")
                                                             .setFontColor(

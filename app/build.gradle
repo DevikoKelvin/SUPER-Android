@@ -20,7 +20,8 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('D:\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore.jks')
+            storeFile file('\\media\\devikokelvin\\DATA\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore,jks')
+            /*storeFile file('D:\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore.jks')*/
             /*storeFile file('D:\\Coding\\Android_Studio_Projects\\ERELA\\SUPER-Android\\keystore.jks')*/
             storePassword "erelasuper"
             keyAlias "supererela"
