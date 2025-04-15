@@ -2,6 +2,7 @@ package id.erela.surveyproduct.adapters.recycler_view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,16 +49,6 @@ class QuestionSurveyAdapter(
 
                 answerContainer.visibility = View.VISIBLE
                 answer.visibility = View.GONE
-                val questionID =
-                    SharedPreferencesHelper.getSharedPreferences(context).getInt(
-                        "${AnswerActivity.ANSWER_QUESTION_ID}_${item.iD}",
-                        0
-                    )
-                val subQuestionID =
-                    SharedPreferencesHelper.getSharedPreferences(context).getInt(
-                        "${AnswerActivity.ANSWER_SUBQUESTION_ID}_0",
-                        0
-                    )
 
                 when (item.questionType) {
                     "sub" -> {
@@ -73,16 +64,15 @@ class QuestionSurveyAdapter(
                         multipleCheckboxAnswerRv.visibility = View.GONE
                         val photo =
                             SharedPreferencesHelper.getSharedPreferences(context).getString(
-                                "${AnswerActivity.ANSWER_PHOTO}_${questionID}_${subQuestionID}",
+                                "${AnswerActivity.ANSWER_PHOTO}_${item.iD}_0",
                                 null
                             )?.toUri()
-                        if (questionID == item.iD) {
-                            if (photo != null) {
-                                imageAnswer.setImageURI(photo)
-                                imageAnswer.visibility = View.VISIBLE
-                            } else {
-                                imageAnswer.visibility = View.GONE
-                            }
+                        Log.e("Photo answer [${item.iD}][0]", photo.toString())
+                        if (photo != null) {
+                            imageAnswer.setImageURI(photo)
+                            imageAnswer.visibility = View.VISIBLE
+                        } else {
+                            imageAnswer.visibility = View.GONE
                         }
                     }
 
@@ -132,7 +122,7 @@ class QuestionSurveyAdapter(
                         multipleCheckboxAnswerRv.setHasFixedSize(true)
                     }
 
-                    else -> {
+                    "essay" -> {
                         answerFieldLayout.visibility = View.VISIBLE
                         takePhotoButton.visibility = View.GONE
                         multipleCheckboxAnswerRv.visibility = View.GONE
@@ -140,22 +130,16 @@ class QuestionSurveyAdapter(
                         val answer =
                             SharedPreferencesHelper.getSharedPreferences(context).getString(
                                 "${AnswerActivity.ANSWER_TEXT}_${item.iD}_0",
-                                ""
+                                null
                             )
-                        if (questionID == item.iD) {
-                            answerField.setText(answer)
-                        }
+                        Log.e("Answer [${item.iD}][0]", answer.toString())
+                        answerField.setText(answer)
                     }
                 }
 
                 answerField.addTextChangedListener { editable ->
                     val answer = editable.toString()
                     SharedPreferencesHelper.getSharedPreferences(context).edit {
-                        putInt(
-                            "${AnswerActivity.ANSWER_QUESTION_ID}_${item.iD}",
-                            item.iD!!
-                        )
-                        putInt("${AnswerActivity.ANSWER_SUBQUESTION_ID}_0", 0)
                         putString("${AnswerActivity.ANSWER_TEXT}_${item.iD}_0", answer)
                     }
                 }

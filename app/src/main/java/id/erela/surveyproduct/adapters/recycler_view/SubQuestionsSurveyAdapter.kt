@@ -2,6 +2,7 @@ package id.erela.surveyproduct.adapters.recycler_view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,16 +43,6 @@ class SubQuestionsSurveyAdapter(
             binding.apply {
                 subQuestions.text = "${position + 1}. ${item?.question}"
                 answer.visibility = View.GONE
-                val questionID =
-                    SharedPreferencesHelper.getSharedPreferences(context).getInt(
-                        "${AnswerActivity.ANSWER_QUESTION_ID}_${item?.questionID}",
-                        0
-                    )
-                val subQuestionID =
-                    SharedPreferencesHelper.getSharedPreferences(context).getInt(
-                        "${AnswerActivity.ANSWER_SUBQUESTION_ID}_${item?.iD}",
-                        0
-                    )
 
                 when (item?.questionType) {
                     "photo" -> {
@@ -60,16 +51,15 @@ class SubQuestionsSurveyAdapter(
                         multipleCheckboxAnswerRv.visibility = View.GONE
                         val photo =
                             SharedPreferencesHelper.getSharedPreferences(context).getString(
-                                "${AnswerActivity.ANSWER_PHOTO}_${questionID}_${subQuestionID}",
+                                "${AnswerActivity.ANSWER_PHOTO}_${item.questionID}_${item.iD}",
                                 null
                             )?.toUri()
-                        if (questionID == item.iD) {
-                            if (photo != null) {
-                                imageAnswer.setImageURI(photo)
-                                imageAnswer.visibility = View.VISIBLE
-                            } else {
-                                imageAnswer.visibility = View.GONE
-                            }
+                        Log.e("Photo answer [${item.questionID}][${item.iD}]", photo.toString())
+                        if (photo != null) {
+                            imageAnswer.setImageURI(photo)
+                            imageAnswer.visibility = View.VISIBLE
+                        } else {
+                            imageAnswer.visibility = View.GONE
                         }
                     }
 
@@ -122,41 +112,34 @@ class SubQuestionsSurveyAdapter(
                         imageAnswer.visibility = View.GONE
                         val answer =
                             SharedPreferencesHelper.getSharedPreferences(context).getString(
-                                "${AnswerActivity.ANSWER_TEXT}_${questionID}_${subQuestionID}",
-                                ""
+                                "${AnswerActivity.ANSWER_TEXT}_${item?.questionID}_${item?.iD}",
+                                null
                             )
-                        if (questionID == item!!.questionID) {
-                            if (subQuestionID == item.iD) {
-                                answerField.setText(answer)
-                            }
-                        }
+                        Log.e("Answer [${item?.questionID}][${item?.iD}]", answer.toString())
+                        answerField.setText(answer)
                     }
                 }
 
                 answerField.addTextChangedListener { editable ->
                     val answer = editable.toString()
                     SharedPreferencesHelper.getSharedPreferences(context).edit {
-                        putInt(
-                            "${AnswerActivity.ANSWER_QUESTION_ID}_${item.questionID}",
-                            item.questionID!!.toInt()
-                        )
-                        putInt(
-                            "${AnswerActivity.ANSWER_SUBQUESTION_ID}_${item.iD}",
-                            item.iD!!.toInt()
-                        )
-                        putString(
-                            "${AnswerActivity.ANSWER_TEXT}_${item.questionID}_${item.iD}",
-                            answer
-                        )
+                        if (item != null) {
+                            putString(
+                                "${AnswerActivity.ANSWER_TEXT}_${item.questionID}_${item.iD}",
+                                answer
+                            )
+                        }
                     }
                 }
 
                 takePhotoButton.setOnClickListener {
-                    onSubQuestionItemActionClickListener.onTakePhotoButtonClick(
-                        position,
-                        item.questionID!!.toInt(),
-                        item.iD
-                    )
+                    if (item != null) {
+                        onSubQuestionItemActionClickListener.onTakePhotoButtonClick(
+                            position,
+                            item.questionID!!.toInt(),
+                            item.iD
+                        )
+                    }
                 }
             }
         }

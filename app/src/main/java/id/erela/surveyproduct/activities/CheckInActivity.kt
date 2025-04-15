@@ -125,21 +125,25 @@ class CheckInActivity : AppCompatActivity() {
                         when (question.questionType) {
                             "photo" -> {
                                 remove("${ANSWER_PHOTO}_${question.iD}_0")
+                                Log.e("Photo answer [${question.iD}][0]", "Removed!")
                             }
 
                             "essay" -> {
                                 remove("${ANSWER_TEXT}_${question.iD}_0")
+                                Log.e("Answer [${question.iD}][0]", "Removed!")
                             }
 
                             "checkbox" -> {
                                 for (i in 0 until question.checkboxOptions?.size!!) {
                                     remove("${ANSWER_CHECKBOX_MULTIPLE}_${question.iD}_0_${i}")
+                                    Log.e("Checkbox answer [${question.iD}][0]", "Removed!")
                                 }
                             }
 
                             "multiple" -> {
                                 for (i in 0 until question.multipleOptions?.size!!) {
                                     remove("${ANSWER_CHECKBOX_MULTIPLE}_${question.iD}_0_${i}")
+                                    Log.e("Multiple answer [${question.iD}][0]", "Removed!")
                                 }
                             }
                         }
@@ -148,21 +152,25 @@ class CheckInActivity : AppCompatActivity() {
                             when (subQuestion!!.questionType) {
                                 "photo" -> {
                                     remove("${ANSWER_PHOTO}_${subQuestion.questionID}_${subQuestion.iD}")
+                                    Log.e("Photo answer [${subQuestion.questionID}][${subQuestion.iD}]", "Removed!")
                                 }
 
                                 "essay" -> {
                                     remove("${ANSWER_TEXT}_${subQuestion.questionID}_${subQuestion.iD}")
+                                    Log.e("Answer [${subQuestion.questionID}][${subQuestion.iD}]", "Removed!")
                                 }
 
                                 "checkbox" -> {
                                     for (i in 0 until question.checkboxOptions?.size!!) {
                                         remove("${ANSWER_CHECKBOX_MULTIPLE}_${subQuestion.questionID}_${subQuestion.iD}_${i}")
+                                        Log.e("Checkbox answer [${subQuestion.questionID}][${subQuestion.iD}]", "Removed!")
                                     }
                                 }
 
                                 "multiple" -> {
                                     for (i in 0 until question.multipleOptions?.size!!) {
                                         remove("${ANSWER_CHECKBOX_MULTIPLE}_${subQuestion.questionID}_${subQuestion.iD}_${i}")
+                                        Log.e("Multiple answer [${subQuestion.questionID}][${subQuestion.iD}]", "Removed!")
                                     }
                                 }
                             }

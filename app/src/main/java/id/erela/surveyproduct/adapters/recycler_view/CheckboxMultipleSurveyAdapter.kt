@@ -2,6 +2,7 @@ package id.erela.surveyproduct.adapters.recycler_view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,6 +59,7 @@ class CheckboxMultipleSurveyAdapter(
                                             "${subQuestionID}_${position}",
                                     false
                                 )
+                            Log.e("Checkbox answer [${questionID}][${subQuestionID}] Pos [${position+1}]", checkbox.toString())
                             checkBoxItem.isChecked = checkbox
 
                             checkboxContainer.setOnClickListener {
@@ -94,6 +96,7 @@ class CheckboxMultipleSurveyAdapter(
                                     "${AnswerActivity.ANSWER_CHECKBOX_MULTIPLE}_${questionID}_${subQuestionID}_${position}",
                                     false
                                 )
+                            Log.e("Multiple answer [${questionID}][${subQuestionID}] Pos [${position+1}]", radio.toString())
                             if (
                                 questionID == item.checkboxMultipleOptions?.questionID
                                 && subQuestionID == item.checkboxMultipleOptions.subQuestionID

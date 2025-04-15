@@ -60,8 +60,6 @@ class AnswerActivity : AppCompatActivity(),
             binding.apply {
                 if (resultCode == RESULT_OK) {
                     sharedPreferences.edit {
-                        putInt("${ANSWER_QUESTION_ID}_${questionID}", questionID!!)
-                        putInt("${ANSWER_SUBQUESTION_ID}_${subQuestionID}", subQuestionID ?: 0)
                         putString(
                             "${ANSWER_PHOTO}_${questionID}_${subQuestionID ?: 0}",
                             imageUri.toString()
