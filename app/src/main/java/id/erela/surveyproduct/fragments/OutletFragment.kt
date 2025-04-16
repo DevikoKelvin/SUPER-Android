@@ -2,21 +2,16 @@ package id.erela.surveyproduct.fragments
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
-import id.erela.surveyproduct.activities.AddOutletActivity
 import id.erela.surveyproduct.activities.DetailOutletActivity
 import id.erela.surveyproduct.adapters.recycler_view.OutletAdapter
 import id.erela.surveyproduct.databinding.FragmentOutletBinding
@@ -36,13 +31,6 @@ class OutletFragment(private val context: Context) : Fragment() {
     private lateinit var adapter: OutletAdapter
     private var outletList = ArrayList<OutletItem>()
     private var isInitialized = false
-    private val activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == RESULT_OK) {
-            callNetwork()
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,11 +63,9 @@ class OutletFragment(private val context: Context) : Fragment() {
         binding?.apply {
             if (isVisibleToUser) {
                 prepareView()
-                addNewOutletButton.isEnabled = true
                 if (!isInitialized)
                     callNetwork()
-            } else
-                addNewOutletButton.isEnabled = false
+            }
         }
     }
 
@@ -107,16 +93,10 @@ class OutletFragment(private val context: Context) : Fragment() {
                 callNetwork()
                 mainContainerRefresh.isRefreshing = false
             }
-
-            addNewOutletButton.setOnClickListener {
-                activityResultLauncher.launch(
-                    Intent(context, AddOutletActivity::class.java)
-                )
-            }
         }
     }
 
-    private fun callNetwork() {
+    fun callNetwork() {
         loadingManager(true)
         binding?.apply {
             searchInput.addTextChangedListener { editable ->

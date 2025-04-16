@@ -72,6 +72,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/addButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/add_outlet_title"
+        app:icon="@drawable/baseline_add_24"
+        app:backgroundTint="#CEF2E8"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="ContentDescription" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
@@ -105,7 +118,7 @@
                 <com.google.android.material.bottomnavigation.BottomNavigationView
                     android:id="@+id/bottomNavMenu"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:background="@android:color/transparent"
                     app:itemActiveIndicatorStyle="@style/Custom.Indicator"

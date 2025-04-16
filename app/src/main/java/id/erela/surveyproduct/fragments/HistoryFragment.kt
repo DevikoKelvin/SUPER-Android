@@ -8,12 +8,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.activities.SurveyDetailActivity
 import id.erela.surveyproduct.adapters.recycler_view.CheckInOutAdapter
 import id.erela.surveyproduct.bottom_sheets.FilterHistoryBottomSheet
 import id.erela.surveyproduct.databinding.FragmentHistoryBinding
+import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.objects.CheckInOutHistoryItem
@@ -41,8 +43,8 @@ class HistoryFragment(private val context: Context) : Fragment() {
     private var end = ""
 
     companion object {
-        private const val KEY_START = "start_value"
-        private const val KEY_END = "end_value"
+        const val KEY_START = "start_value"
+        const val KEY_END = "end_value"
     }
 
     override fun onCreateView(
@@ -102,22 +104,35 @@ class HistoryFragment(private val context: Context) : Fragment() {
             scrollState?.let {
                 checkInOutListRv.layoutManager?.onRestoreInstanceState(it)
             }
-            val startCalendar = Calendar.getInstance()
-            startCalendar.set(Calendar.DAY_OF_MONTH, 1)
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.forLanguageTag("id-ID"))
-            start = dateFormat.format(startCalendar.time)
-            val endCalendar = Calendar.getInstance()
-            end = dateFormat.format(endCalendar.time)
+
+            start = SharedPreferencesHelper.getSharedPreferences(context).getString(KEY_START, "")!!
+            end = SharedPreferencesHelper.getSharedPreferences(context).getString(KEY_END, "")!!
+
+            if (start == "" || end == "") {
+                val startCalendar = Calendar.getInstance()
+                startCalendar.set(Calendar.DAY_OF_MONTH, 1)
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.forLanguageTag("id-ID"))
+                start = dateFormat.format(startCalendar.time)
+                val endCalendar = Calendar.getInstance()
+                end = dateFormat.format(endCalendar.time)
+
+                SharedPreferencesHelper.getSharedPreferences(context).edit {
+                    putString(KEY_START, start)
+                    putString(KEY_END, end)
+                }
+            }
 
             if (isInitialized) {
                 if (checkInOutHistory.isEmpty()) {
                     emptyAnimation.visibility = View.VISIBLE
                     checkInOutListRv.visibility = View.GONE
-                    callNetwork(start, end)
                 } else {
+                    checkInOutHistory.clear()
+                    callNetwork(start, end)
                     emptyAnimation.visibility = View.GONE
                     checkInOutListRv.visibility = View.VISIBLE
                 }
+                loadingManager(false)
             } else {
                 callNetwork(start, end)
             }
@@ -149,6 +164,10 @@ class HistoryFragment(private val context: Context) : Fragment() {
                                 override fun onFilterOk(start: String, end: String) {
                                     this@HistoryFragment.start = start
                                     this@HistoryFragment.end = end
+                                    SharedPreferencesHelper.getSharedPreferences(context).edit {
+                                        putString(KEY_START, start)
+                                        putString(KEY_END, end)
+                                    }
                                     callNetwork(start, end)
                                 }
                             })

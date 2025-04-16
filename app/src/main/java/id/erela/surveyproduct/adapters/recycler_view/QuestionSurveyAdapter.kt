@@ -127,13 +127,14 @@ class QuestionSurveyAdapter(
                         takePhotoButton.visibility = View.GONE
                         multipleCheckboxAnswerRv.visibility = View.GONE
                         imageAnswer.visibility = View.GONE
-                        val answer =
-                            SharedPreferencesHelper.getSharedPreferences(context).getString(
-                                "${AnswerActivity.ANSWER_TEXT}_${item.iD}_0",
-                                null
-                            )
-                        Log.e("Answer [${item.iD}][0]", answer.toString())
-                        answerField.setText(answer)
+                        val savedAnswer = SharedPreferencesHelper.getSharedPreferences(context).getString(
+                            "${AnswerActivity.ANSWER_TEXT}_${item.iD}_0",
+                            null
+                        )
+                        Log.e("Answer [${item.iD}][0]", savedAnswer.toString())
+                        if (answerField.text.toString() != savedAnswer) {
+                            answerField.setText(savedAnswer)
+                        }
                     }
                 }
 
@@ -141,6 +142,7 @@ class QuestionSurveyAdapter(
                     val answer = editable.toString()
                     SharedPreferencesHelper.getSharedPreferences(context).edit {
                         putString("${AnswerActivity.ANSWER_TEXT}_${item.iD}_0", answer)
+                        apply()  // Force immediate write to SharedPreferences
                     }
                 }
 

@@ -18,6 +18,9 @@ import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.Insets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.mapbox.mapboxsdk.Mapbox
@@ -82,6 +85,12 @@ class AddOutletActivity : AppCompatActivity() {
 
         fusedLocationClient =
             LocationServices.getFusedLocationProviderClient(this@AddOutletActivity)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val systemBars: Insets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, 0, 0, systemBars.bottom)
+            insets
+        }
 
         init()
     }

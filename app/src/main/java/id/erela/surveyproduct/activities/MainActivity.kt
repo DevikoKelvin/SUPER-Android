@@ -2,12 +2,21 @@ package id.erela.surveyproduct.activities
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.content.edit
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.viewpager2.widget.ViewPager2
 import app.rive.runtime.kotlin.core.Rive
 import id.erela.surveyproduct.R
@@ -20,12 +29,23 @@ import id.erela.surveyproduct.fragments.OutletFragment
 import id.erela.surveyproduct.fragments.ProfileFragment
 import id.erela.surveyproduct.fragments.StartSurveyFragment
 import id.erela.surveyproduct.helpers.UserDataHelper
+import androidx.core.graphics.toColorInt
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton.OnChangedCallback
+import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 
 class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionListener {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private lateinit var adapter: HomeNavPagerAdapter
+    private val activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == RESULT_OK) {
+            OutletFragment(this@MainActivity).callNetwork()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +72,10 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                                         ConfirmationDialog.ConfirmationDialogListener {
                                         override fun onConfirm() {
                                             finish()
+                                            SharedPreferencesHelper.getSharedPreferences(applicationContext).edit {
+                                                remove(HistoryFragment.KEY_START)
+                                                remove(HistoryFragment.KEY_END)
+                                            }
                                         }
                                     })
                                 }
@@ -95,37 +119,51 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                     when (position) {
                         0 -> {
                             titleBar.alpha = 1f
-                            /*addNewOutletButton.alpha = positionOffset
-                            if (positionOffset == 0f)
-                                addNewOutletButton.visibility = View.GONE
-                            else
-                                addNewOutletButton.visibility = View.VISIBLE
-                            addNewOutletButton.isEnabled = positionOffset >= 0.90f*/
+                            addButton.hide()
                         }
 
                         1 -> {
                             titleBar.alpha = 1f
-                            /*addNewOutletButton.alpha = 1 - positionOffset
-                            addNewOutletButton.visibility = View.VISIBLE
-                            addNewOutletButton.isEnabled = positionOffset <= 0.1f*/
+                            if (addButton.isExtended)
+                                addButton.shrink()
+                            addButton.text = getString(R.string.add_outlet_title)
+                            addButton.backgroundTintList = ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    this@MainActivity, R.color.custom_toast_background_success
+                                )
+                            )
+                            if (!addButton.isShown)
+                                addButton.show()
+                            addButton.setOnClickListener {
+                                activityResultLauncher.launch(
+                                    Intent(this@MainActivity, AddOutletActivity::class.java)
+                                )
+                            }
                         }
 
                         2 -> {
                             titleBar.alpha = 1f
-                            /*addNewOutletButton.alpha = 0f
-                            addNewOutletButton.visibility = View.GONE*/
+                            if (!addButton.isExtended)
+                                addButton.extend()
+                            addButton.text = getString(R.string.start_survey_now)
+                            addButton.backgroundTintList = ColorStateList.valueOf(
+                                "#5899EF".toColorInt()
+                            )
+                            if (!addButton.isShown)
+                                addButton.show()
+                            addButton.setOnClickListener {
+                                CheckInActivity.start(this@MainActivity)
+                            }
                         }
 
                         3 -> {
                             titleBar.alpha = 1 - positionOffset
-                            /*addNewOutletButton.alpha = 0f
-                            addNewOutletButton.visibility = View.GONE*/
+                            addButton.hide()
                         }
 
                         4 -> {
                             titleBar.alpha = 0f
-                            /*addNewOutletButton.alpha = 0f
-                            addNewOutletButton.visibility = View.GONE*/
+                            addButton.hide()
                         }
                     }
                 }
@@ -146,22 +184,43 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                 when (it.itemId) {
                     R.id.home -> {
                         fragmentsContainer.setCurrentItem(0, false)
+                        addButton.hide()
                     }
 
                     R.id.outlet -> {
                         fragmentsContainer.setCurrentItem(1, false)
+                        if (addButton.isExtended)
+                            addButton.shrink()
+                        addButton.text = getString(R.string.add_outlet_title)
+                        addButton.backgroundTintList = ColorStateList.valueOf(
+                            ContextCompat.getColor(
+                                this@MainActivity, R.color.custom_toast_background_success
+                            )
+                        )
+                        if (!addButton.isShown)
+                            addButton.show()
                     }
 
                     R.id.start_survey -> {
                         fragmentsContainer.setCurrentItem(2, false)
+                        if (!addButton.isExtended)
+                            addButton.extend()
+                        addButton.text = getString(R.string.start_survey_now)
+                        addButton.backgroundTintList = ColorStateList.valueOf(
+                            "#5899EF".toColorInt()
+                        )
+                        if (!addButton.isShown)
+                            addButton.show()
                     }
 
                     R.id.history -> {
                         fragmentsContainer.setCurrentItem(3, false)
+                        addButton.hide()
                     }
 
                     R.id.profile -> {
                         fragmentsContainer.setCurrentItem(4, false)
+                        addButton.hide()
                     }
                 }
                 false

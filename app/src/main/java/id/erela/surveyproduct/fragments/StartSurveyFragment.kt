@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import id.erela.surveyproduct.activities.CheckInActivity
 import id.erela.surveyproduct.activities.SurveyDetailActivity
 import id.erela.surveyproduct.adapters.recycler_view.CheckInOutAdapter
 import id.erela.surveyproduct.databinding.FragmentStartSurveyBinding
@@ -59,11 +58,9 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
         binding?.apply {
             if (isVisibleToUser) {
                 prepareView()
-                startSurveyButton.isEnabled = true
                 if (!isInitialized)
                     callNetwork()
-            } else
-                startSurveyButton.isEnabled = false
+            }
         }
     }
 
@@ -104,10 +101,6 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
             checkInOutListRv.adapter = adapter
             checkInOutListRv.layoutManager = LinearLayoutManager(context)
             checkInOutListRv.setHasFixedSize(true)
-
-            startSurveyButton.setOnClickListener {
-                CheckInActivity.start(context)
-            }
         }
     }
 

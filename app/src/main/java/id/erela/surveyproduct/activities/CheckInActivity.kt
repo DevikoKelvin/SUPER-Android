@@ -20,7 +20,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.graphics.Insets
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.mapbox.mapboxsdk.Mapbox
@@ -186,6 +189,12 @@ class CheckInActivity : AppCompatActivity() {
         enableEdgeToEdge()
         Mapbox.getInstance(this@CheckInActivity)
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val systemBars: Insets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, 0, 0, systemBars.bottom)
+            insets
+        }
 
         init()
     }

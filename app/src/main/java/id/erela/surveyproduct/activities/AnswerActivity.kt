@@ -19,7 +19,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.graphics.Insets
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.adapters.recycler_view.QuestionSurveyAdapter
@@ -65,7 +68,11 @@ class AnswerActivity : AppCompatActivity(),
                             imageUri.toString()
                         )
                     }
-                    adapter.notifyDataSetChanged()
+                    // Find the position of the item with this questionID
+                    val position = CheckInActivity.surveyQuestionsList.indexOfFirst { it.iD == questionID }
+                    if (position != -1) {
+                        adapter.notifyItemChanged(position)
+                    }
                 }
             }
         }
@@ -100,6 +107,12 @@ class AnswerActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val systemBars: Insets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, 0, 0, systemBars.bottom)
+            insets
+        }
 
         init()
     }
