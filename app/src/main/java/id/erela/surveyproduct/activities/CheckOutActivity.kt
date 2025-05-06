@@ -282,7 +282,7 @@ class CheckOutActivity : AppCompatActivity() {
 
                                 0 -> {
                                     CustomToast(applicationContext)
-                                        .setMessage("Check In Failed!")
+                                        .setMessage("Check In Failed! ${result.message}")
                                         .setBackgroundColor(
                                             getColor(R.color.custom_toast_background_failed)
                                         )
@@ -312,6 +312,7 @@ class CheckOutActivity : AppCompatActivity() {
                                     false
                                 )
                             }
+                            Log.e("ERROR", "Check In Response body is null")
                         }
                     } else {
                         CustomToast(applicationContext)
@@ -328,6 +329,10 @@ class CheckOutActivity : AppCompatActivity() {
                                 false
                             )
                         }
+                        Log.e(
+                            "ERROR",
+                            "Check In is not successful. ${response.code()}: ${response.message()}"
+                        )
                     }
                 }
 
@@ -348,6 +353,7 @@ class CheckOutActivity : AppCompatActivity() {
                             false
                         )
                     }
+                    Log.e("ERROR", "Check In Failure. ${throwable.message}")
                 }
             })
     }
@@ -402,13 +408,15 @@ class CheckOutActivity : AppCompatActivity() {
                                 answers[i].SubQuestionID.toString()
                             )
                         )
-                    if (answers[i].Photo != null)
+                    if (answers[i].Photo != null) {
                         add(
                             createMultipartBody(
                                 answers[i].Photo!!.toUri(),
                                 "Answers[$i][Photo]"
                             )!!
                         )
+                        Log.e("Photo [$i]", answers[i].Photo!!.toUri().toString())
+                    }
                 }
             }
 
@@ -445,7 +453,7 @@ class CheckOutActivity : AppCompatActivity() {
 
                                 0 -> {
                                     CustomToast(applicationContext)
-                                        .setMessage("Survey Submission Failed!")
+                                        .setMessage("Survey Answer Submission Failed! ${result.message}")
                                         .setBackgroundColor(
                                             getColor(R.color.custom_toast_background_failed)
                                         )
@@ -462,7 +470,7 @@ class CheckOutActivity : AppCompatActivity() {
                             }
                         } else {
                             CustomToast(applicationContext)
-                                .setMessage("Survey Submission Failed!")
+                                .setMessage("Survey Answer Submission Failed!")
                                 .setBackgroundColor(
                                     getColor(R.color.custom_toast_background_failed)
                                 )
@@ -475,10 +483,11 @@ class CheckOutActivity : AppCompatActivity() {
                                     false
                                 )
                             }
+                            Log.e("ERROR", "Survey Answer Submission response body is null")
                         }
                     } else {
                         CustomToast(applicationContext)
-                            .setMessage("Survey Submission Failed!")
+                            .setMessage("Survey Answer Submission Failed!")
                             .setBackgroundColor(
                                 getColor(R.color.custom_toast_background_failed)
                             )
@@ -491,6 +500,10 @@ class CheckOutActivity : AppCompatActivity() {
                                 false
                             )
                         }
+                        Log.e(
+                            "ERROR",
+                            "Survey Answer Submission response is not successful. ${response.code()}: ${response.message()}"
+                        )
                     }
                 }
 
@@ -503,9 +516,9 @@ class CheckOutActivity : AppCompatActivity() {
                         )
                     }
                     throwable.printStackTrace()
-                    Log.e("SurveyRepository", "API call failed: ${throwable.message}")
+                    Log.e("ERROR", "Survey Answer Submission failure. ${throwable.message}")
                     CustomToast(applicationContext)
-                        .setMessage("Survey Submission Failed!")
+                        .setMessage("Survey Answer Submission Failed!")
                         .setBackgroundColor(
                             getColor(R.color.custom_toast_background_failed)
                         )
@@ -523,9 +536,9 @@ class CheckOutActivity : AppCompatActivity() {
                 )
             }
             e.printStackTrace()
-            Log.e("SurveyRepository", "Exception: ${e.message}")
+            Log.e("ERROR", "Survey Answer Submission Exception: ${e.message}")
             CustomToast(applicationContext)
-                .setMessage("Survey Submission Failed!")
+                .setMessage("Survey Answer Submission Failed!")
                 .setBackgroundColor(
                     getColor(R.color.custom_toast_background_failed)
                 )
@@ -565,7 +578,10 @@ class CheckOutActivity : AppCompatActivity() {
                 "PhotoOut"
             )
         else null
-        (if (photoCheckOut != null) AppAPI.superEndpoint.checkOut(data, photoCheckOut) else AppAPI.superEndpoint.checkOutNoPhoto(data)).enqueue(
+        (if (photoCheckOut != null) AppAPI.superEndpoint.checkOut(
+            data,
+            photoCheckOut
+        ) else AppAPI.superEndpoint.checkOutNoPhoto(data)).enqueue(
             object : Callback<CheckOutResponse> {
                 override fun onResponse(
                     call: Call<CheckOutResponse>,
@@ -599,7 +615,7 @@ class CheckOutActivity : AppCompatActivity() {
 
                                 0 -> {
                                     CustomToast(applicationContext)
-                                        .setMessage("Survey Submission Failed!")
+                                        .setMessage("Check Out Failed! ${result.message}")
                                         .setBackgroundColor(
                                             getColor(R.color.custom_toast_background_failed)
                                         )
@@ -609,9 +625,9 @@ class CheckOutActivity : AppCompatActivity() {
                                 }
                             }
                         } else {
-                            Log.e("SurveyRepository", "Response body is null")
+                            Log.e("ERROR", "Check Out Response body is null")
                             CustomToast(applicationContext)
-                                .setMessage("Survey Submission Failed!")
+                                .setMessage("Check Out Failed!")
                                 .setBackgroundColor(
                                     getColor(R.color.custom_toast_background_failed)
                                 )
@@ -620,9 +636,12 @@ class CheckOutActivity : AppCompatActivity() {
                                 ).show()
                         }
                     } else {
-                        Log.e("SurveyRepository", "API call failed with code: ${response.code()}")
+                        Log.e(
+                            "ERROR",
+                            "Check Out Response is not successful. ${response.code()}: ${response.message()}"
+                        )
                         CustomToast(applicationContext)
-                            .setMessage("Survey Submission Failed!")
+                            .setMessage("Check Out Failed!")
                             .setBackgroundColor(
                                 getColor(R.color.custom_toast_background_failed)
                             )
@@ -635,9 +654,9 @@ class CheckOutActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<CheckOutResponse>, throwable: Throwable) {
                     dialog.dismiss()
                     throwable.printStackTrace()
-                    Log.e("SurveyRepository", "API call failed: ${throwable.message}")
+                    Log.e("ERROR", "Check Out failure! ${throwable.message}")
                     CustomToast(applicationContext)
-                        .setMessage("Survey Submission Failed!")
+                        .setMessage("Check Out Failed!")
                         .setBackgroundColor(
                             getColor(R.color.custom_toast_background_failed)
                         )

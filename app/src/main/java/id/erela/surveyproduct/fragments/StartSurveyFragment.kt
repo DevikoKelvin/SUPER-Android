@@ -76,6 +76,8 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                     emptyAnimation.visibility = View.VISIBLE
                     checkInOutListRv.visibility = View.GONE
                 } else {
+                    checkInOutHistory.clear()
+                    callNetwork()
                     emptyAnimation.visibility = View.GONE
                     checkInOutListRv.visibility = View.VISIBLE
                 }

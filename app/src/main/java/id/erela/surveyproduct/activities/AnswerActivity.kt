@@ -312,7 +312,7 @@ class AnswerActivity : AppCompatActivity(),
                             null
                         )
                         if (photoUri == null) {
-                            Log.e("Empty", "")
+                            Log.e("Photo [$questionId][0]", "Empty")
                             return false
                         } else {
                             answers.add(
@@ -333,7 +333,10 @@ class AnswerActivity : AppCompatActivity(),
                             "${ANSWER_TEXT}_${questionId}_0",
                             null
                         )
-                        if (text.isNullOrBlank()) return false else {
+                        if (text.isNullOrBlank()) {
+                            Log.e("Essay [$questionId][0]", "Empty")
+                            return false
+                        } else {
                             answers.add(
                                 SurveyAnswer(
                                     questionId,
@@ -357,7 +360,10 @@ class AnswerActivity : AppCompatActivity(),
                             if (isAnswered)
                                 answeredCount++
                         }
-                        if (answeredCount == 0) return false else {
+                        if (answeredCount == 0) {
+                            Log.e("Checkbox [$questionId][0]", "Empty")
+                            return false
+                        } else {
                             for (i in 0 until question.checkboxOptions.size) {
                                 val isAnswered = sharedPreferences.getBoolean(
                                     "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
@@ -387,7 +393,10 @@ class AnswerActivity : AppCompatActivity(),
                             if (isAnswered)
                                 answeredCount++
                         }
-                        if (answeredCount == 0) return false else {
+                        if (answeredCount == 0) {
+                            Log.e("Multiple [$questionId][0]", "Empty")
+                            return false
+                        } else {
                             for (i in 0 until question.multipleOptions.size) {
                                 val isAnswered = sharedPreferences.getBoolean(
                                     "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
@@ -418,7 +427,10 @@ class AnswerActivity : AppCompatActivity(),
                                 "${ANSWER_PHOTO}_${questionId}_${subQuestionId}",
                                 null
                             )
-                            if (photoUri == null) return false else {
+                            if (photoUri == null) {
+                                Log.e("Photo [$questionId][$subQuestionId]", "Empty")
+                                return false
+                            } else {
                                 answers.add(
                                     SurveyAnswer(
                                         questionId,
@@ -437,7 +449,10 @@ class AnswerActivity : AppCompatActivity(),
                                 "${ANSWER_TEXT}_${questionId}_${subQuestionId}",
                                 null
                             )
-                            if (text.isNullOrBlank()) return false else {
+                            if (text.isNullOrBlank()) {
+                                Log.e("Essay [$questionId][$subQuestionId]", "Empty")
+                                return false
+                            } else {
                                 answers.add(
                                     SurveyAnswer(
                                         questionId,
@@ -458,11 +473,13 @@ class AnswerActivity : AppCompatActivity(),
                                     "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_${subQuestionId}_${i}",
                                     false
                                 )
-                                Log.e("Is Answered", "$isAnswered")
                                 if (isAnswered)
                                     answeredCount++
                             }
-                            if (answeredCount == 0) return false else {
+                            if (answeredCount == 0) {
+                                Log.e("Checkbox [$questionId][$subQuestionId]", "Empty")
+                                return false
+                            } else {
                                 for (i in 0 until question.checkboxOptions.size) {
                                     val isAnswered = sharedPreferences.getBoolean(
                                         "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
@@ -489,11 +506,13 @@ class AnswerActivity : AppCompatActivity(),
                                     "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_${subQuestionId}_${i}",
                                     false
                                 )
-                                Log.e("Is Answered", "$isAnswered")
                                 if (isAnswered)
                                     answeredCount++
                             }
-                            if (answeredCount == 0) return false else {
+                            if (answeredCount == 0) {
+                                Log.e("Multiple [$questionId][$subQuestionId]", "Empty")
+                                return false
+                            } else {
                                 for (i in 0 until question.multipleOptions.size) {
                                     val isAnswered = sharedPreferences.getBoolean(
                                         "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",

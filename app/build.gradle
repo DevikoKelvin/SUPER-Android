@@ -12,16 +12,16 @@ android {
         applicationId "id.erela.surveyproduct"
         minSdk 26
         targetSdk 36
-        versionCode 150
-        versionName "1.2"
+        versionCode 175
+        versionName "1.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
         release {
-            storeFile file('\\media\\devikokelvin\\DATA\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore,jks')
-            /*storeFile file('D:\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore.jks')*/
+            /*storeFile file('\\media\\devikokelvin\\DATA\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore,jks')*/
+            storeFile file('D:\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore.jks')
             /*storeFile file('D:\\Coding\\Android_Studio_Projects\\ERELA\\SUPER-Android\\keystore.jks')*/
             storePassword "erelasuper"
             keyAlias "supererela"
