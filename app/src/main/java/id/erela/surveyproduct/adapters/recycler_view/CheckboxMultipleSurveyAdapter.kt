@@ -83,6 +83,7 @@ class CheckboxMultipleSurveyAdapter(
                                         item.isChecked
                                     )
                                 }
+                                Log.e("Checkbox [${questionID}][${subQuestionID}] Pos [${position+1}]", item.isChecked.toString())
                             }
                         }
 
