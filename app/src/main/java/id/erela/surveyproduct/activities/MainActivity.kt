@@ -3,7 +3,6 @@ package id.erela.surveyproduct.activities
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
@@ -14,9 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
+import androidx.core.graphics.toColorInt
 import androidx.viewpager2.widget.ViewPager2
 import app.rive.runtime.kotlin.core.Rive
 import id.erela.surveyproduct.R
@@ -28,11 +25,8 @@ import id.erela.surveyproduct.fragments.HomeFragment
 import id.erela.surveyproduct.fragments.OutletFragment
 import id.erela.surveyproduct.fragments.ProfileFragment
 import id.erela.surveyproduct.fragments.StartSurveyFragment
-import id.erela.surveyproduct.helpers.UserDataHelper
-import androidx.core.graphics.toColorInt
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton.OnChangedCallback
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
+import id.erela.surveyproduct.helpers.UserDataHelper
 
 class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionListener {
     private val binding: ActivityMainBinding by lazy {
@@ -43,7 +37,10 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == RESULT_OK) {
-            OutletFragment(this@MainActivity).callNetwork()
+            val outletFragment = supportFragmentManager.fragments.find { fragment ->
+                fragment is OutletFragment
+            } as? OutletFragment
+            outletFragment?.callNetwork()
         }
     }
 

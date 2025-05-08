@@ -58,7 +58,7 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                 "id-ID"
                             )
                         )?.indexOf(searchText) != -1
-                        || outletList[i].cityRegency?.lowercase(Locale.forLanguageTag("id-ID"))
+                        || outletList[i].cityRegencyName?.lowercase(Locale.forLanguageTag("id-ID"))
                             ?.indexOf(searchText) != -1
                         || outletList[i].outletID?.lowercase(Locale.forLanguageTag("id-ID"))
                             ?.indexOf(searchText) != -1
@@ -72,7 +72,7 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                         setOnOutletItemClickListener(object :
                             OutletAdapter.OnOutletItemClickListener {
                             override fun onOutletForDetailItemClick(
-                                outlet: OutletItem
+                                id: Int
                             ) {
                             }
 
@@ -105,23 +105,35 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                         1 -> {
                                             outletList.clear()
                                             result.data?.forEach {
-                                                outletList.add(
-                                                    OutletItem(
-                                                        it?.outletID,
-                                                        it?.address,
-                                                        it?.village,
-                                                        it?.createdAt,
-                                                        it?.latitude,
-                                                        it?.longitude,
-                                                        it?.updatedAt,
-                                                        it?.province,
-                                                        it?.name,
-                                                        it?.type,
-                                                        it?.subDistrict,
-                                                        it?.cityRegency,
-                                                        it?.iD
-                                                    )
-                                                )
+                                                if (it?.status == 1) {
+                                                    it.apply {
+                                                        outletList.add(
+                                                            OutletItem(
+                                                                status,
+                                                                outletID,
+                                                                typeName,
+                                                                address,
+                                                                village,
+                                                                creatorID,
+                                                                createdAt,
+                                                                latitude,
+                                                                creator,
+                                                                subDistrictName,
+                                                                longitude,
+                                                                updatedAt,
+                                                                province,
+                                                                name,
+                                                                provinceName,
+                                                                type,
+                                                                subDistrict,
+                                                                villageName,
+                                                                cityRegencyName,
+                                                                cityRegency,
+                                                                iD
+                                                            )
+                                                        )
+                                                    }
+                                                }
                                             }
                                             if (outletList.isEmpty())
                                                 outletListRv.visibility = View.GONE
@@ -135,7 +147,7 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                                     setOnOutletItemClickListener(object :
                                                         OutletAdapter.OnOutletItemClickListener {
                                                         override fun onOutletForDetailItemClick(
-                                                            outlet: OutletItem
+                                                            id: Int
                                                         ) {
                                                         }
 
@@ -174,7 +186,6 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                     }
                                 } else {
                                     Log.e("ERROR", "Response body is null")
-                                    Log.e("Response", response.toString())
                                     CustomToast.getInstance(context)
                                         .setMessage("Something went wrong, please try again.")
                                         .setFontColor(
@@ -193,7 +204,6 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
-                                Log.e("Response", response.toString())
                                 CustomToast.getInstance(context)
                                     .setMessage("Something went wrong, please try again.")
                                     .setFontColor(

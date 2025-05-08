@@ -54,7 +54,6 @@ class SubQuestionsSurveyAdapter(
                                 "${AnswerActivity.ANSWER_PHOTO}_${item.questionID}_${item.iD}",
                                 null
                             )?.toUri()
-                        Log.e("Photo answer [${item.questionID}][${item.iD}]", photo.toString())
                         if (photo != null) {
                             imageAnswer.setImageURI(photo)
                             imageAnswer.visibility = View.VISIBLE
@@ -115,7 +114,6 @@ class SubQuestionsSurveyAdapter(
                                 "${AnswerActivity.ANSWER_TEXT}_${item?.questionID}_${item?.iD}",
                                 null
                             )
-                        Log.e("Answer [${item?.questionID}][${item?.iD}]", answer.toString())
                         answerField.setText(answer)
                     }
                 }

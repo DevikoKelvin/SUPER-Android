@@ -67,7 +67,6 @@ class QuestionSurveyAdapter(
                                 "${AnswerActivity.ANSWER_PHOTO}_${item.iD}_0",
                                 null
                             )?.toUri()
-                        Log.e("Photo answer [${item.iD}][0]", photo.toString())
                         if (photo != null) {
                             imageAnswer.setImageURI(photo)
                             imageAnswer.visibility = View.VISIBLE
@@ -131,7 +130,6 @@ class QuestionSurveyAdapter(
                             "${AnswerActivity.ANSWER_TEXT}_${item.iD}_0",
                             null
                         )
-                        Log.e("Answer [${item.iD}][0]", savedAnswer.toString())
                         if (answerField.text.toString() != savedAnswer) {
                             answerField.setText(savedAnswer)
                         }

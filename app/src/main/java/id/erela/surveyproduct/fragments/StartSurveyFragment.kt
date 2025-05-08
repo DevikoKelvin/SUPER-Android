@@ -144,13 +144,11 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                                     }
                                 } else {
                                     Log.e("ERROR", "Response body is null")
-                                    Log.e("Response", response.toString())
                                     emptyAnimation.visibility = View.VISIBLE
                                     checkInOutListRv.visibility = View.GONE
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
-                                Log.e("Response", response.toString())
                                 emptyAnimation.visibility = View.VISIBLE
                                 checkInOutListRv.visibility = View.GONE
                             }

@@ -415,7 +415,6 @@ class CheckOutActivity : AppCompatActivity() {
                                 "Answers[$i][Photo]"
                             )!!
                         )
-                        Log.e("Photo [$i]", answers[i].Photo!!.toUri().toString())
                     }
                 }
             }
@@ -725,8 +724,8 @@ class CheckOutActivity : AppCompatActivity() {
                         latitude = location.latitude
                         longitude = location.longitude
                         sharedPreferences.edit {
-                            putFloat(CheckInActivity.LATITUDE, latitude.toFloat())
-                            putFloat(CheckInActivity.LONGITUDE, longitude.toFloat())
+                            putFloat(LATITUDE, latitude.toFloat())
+                            putFloat(LONGITUDE, longitude.toFloat())
                         }
                         setMapPreview()
                     }

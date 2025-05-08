@@ -79,6 +79,7 @@ interface SuperEndpoint {
         @Field("BranchID") branchID: Int,
         @Field("Name") outletName: String,
         @Field("OutletType") outletType: Int,
+        @Field("UserID") userID: Int,
         @Field("Address") outletAddress: String,
         @Field("Province") outletProvince: Int,
         @Field("CityRegency") outletCityRegency: Int,

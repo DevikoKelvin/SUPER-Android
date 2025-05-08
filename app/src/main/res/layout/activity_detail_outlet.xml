@@ -29,205 +29,274 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/mainContainerRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="125dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/outletName"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="125dp"
-                android:fontFamily="@font/nucleo"
-                android:textColor="@color/text_primary_color"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                tools:text="APOTEK BOROBUDUR SEMARANG" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/outletID"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/nucleo"
-                android:textColor="@color/custom_toast_font_success"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                tools:text="ID: 00.XX-00000" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nucleo"
-                android:text="@string/outlet_detail_address"
-                android:textColor="@color/text_primary_color"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/nucleo"
-                android:textColor="@color/text_primary_color"
-                android:textSize="14sp"
-                tools:text="Jl. Borobudur Utara Raya No.18, Manyaran, Kec. Semarang Barat, Kota Semarang, Jawa Tengah 50147" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nucleo"
-                android:text="@string/outlet_detail_village"
-                android:textColor="@color/text_primary_color"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/village"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/nucleo"
-                android:textColor="@color/text_primary_color"
-                android:textSize="14sp"
-                tools:text="Manyaran" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nucleo"
-                android:text="@string/outlet_detail_sub_district"
-                android:textColor="@color/text_primary_color"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/subDistrict"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/text_primary_color"
-                android:textSize="14sp"
-                tools:text="Semarang Barat" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nucleo"
-                android:text="@string/outlet_detail_city_regency"
-                android:textColor="@color/text_primary_color"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/cityRegency"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/nucleo"
-                android:textColor="@color/text_primary_color"
-                android:textSize="14sp"
-                tools:text="Kota Semarang" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nucleo"
-                android:text="@string/outlet_detail_province"
-                android:textColor="@color/text_primary_color"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/province"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="4dp"
-                android:fontFamily="@font/nucleo"
-                android:textColor="@color/text_primary_color"
-                android:textSize="14sp"
-                tools:text="Jawa Tengah" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/nucleo"
-                android:text="@string/map_location"
-                android:textColor="@color/text_primary_color"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mapContainer"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="4dp"
-                app:cardBackgroundColor="@android:color/transparent"
-                app:cardCornerRadius="25dp"
-                app:cardElevation="2dp"
-                app:strokeWidth="0dp">
-
-                <com.mapbox.mapboxsdk.maps.MapView
-                    android:id="@+id/mapPreview"
+                <TextView
+                    android:id="@+id/outletName"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    map:cameraZoom="15"
-                    map:liteMode="true"
-                    map:mapType="normal" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    tools:text="APOTEK BOROBUDUR SEMARANG" />
+
+                <TextView
+                    android:id="@+id/outletID"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/custom_toast_font_success"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="ID: 00.XX-00000" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nucleo"
+                    android:text="@string/outlet_detail_address"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="14sp"
+                    tools:text="Jl. Borobudur Utara Raya No.18, Manyaran, Kec. Semarang Barat, Kota Semarang, Jawa Tengah 50147" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nucleo"
+                    android:text="@string/outlet_detail_village"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/village"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="14sp"
+                    tools:text="Manyaran" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nucleo"
+                    android:text="@string/outlet_detail_sub_district"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/subDistrict"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="14sp"
+                    tools:text="Semarang Barat" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nucleo"
+                    android:text="@string/outlet_detail_city_regency"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/cityRegency"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="14sp"
+                    tools:text="Kota Semarang" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nucleo"
+                    android:text="@string/outlet_detail_province"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/province"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="14sp"
+                    tools:text="Jawa Tengah" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nucleo"
+                    android:text="@string/map_location"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mapContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="25dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp">
+
+                    <com.mapbox.mapboxsdk.maps.MapView
+                        android:id="@+id/mapPreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        map:cameraZoom="15"
+                        map:liteMode="true"
+                        map:mapType="normal" />
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="20dp"
+                        android:src="@drawable/map_pin_icon"
+                        tools:ignore="ContentDescription" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="56dp"
+                    android:fontFamily="@font/nucleo"
+                    android:text="@string/map_click_caption"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="56dp"
+        android:visibility="visible"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:strokeWidth="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <com.github.mmin18.widget.RealtimeBlurView
+                android:id="@+id/editButtonBlur"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:realtimeBlurRadius="50dp"
+                app:realtimeOverlayColor="#65D5E6FB" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="4dp"
+                android:paddingVertical="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="50dp"
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="20dp"
-                    android:src="@drawable/map_pin_icon"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="-12dp"
+                    android:src="@drawable/baseline_edit_24"
                     tools:ignore="ContentDescription" />
-            </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="56dp"
-                android:fontFamily="@font/nucleo"
-                android:text="@string/map_click_caption"
-                android:textAlignment="center"
-                android:textColor="@color/text_primary_color"
-                android:textSize="14sp" />
-        </LinearLayout>
-    </ScrollView>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/nucleo"
+                    android:gravity="center"
+                    android:text="@string/edit_outlet_title"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"

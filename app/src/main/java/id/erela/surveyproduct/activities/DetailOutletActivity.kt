@@ -2,38 +2,50 @@ package id.erela.surveyproduct.activities
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.Insets
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
 import id.erela.surveyproduct.BuildConfig
+import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityDetailOutletBinding
-import id.erela.surveyproduct.objects.OutletItem
+import id.erela.surveyproduct.dialogs.LoadingDialog
+import id.erela.surveyproduct.helpers.api.AppAPI
+import id.erela.surveyproduct.helpers.customs.CustomToast
+import id.erela.surveyproduct.objects.OutletResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.Locale
 
 class DetailOutletActivity : AppCompatActivity() {
     private val binding: ActivityDetailOutletBinding by lazy {
         ActivityDetailOutletBinding.inflate(layoutInflater)
     }
-    private lateinit var outlet: OutletItem
+    private var id: Int = 0
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
+    private lateinit var dialog: LoadingDialog
 
     companion object {
-        private const val DATA = "DATA"
+        private const val OUTLET_ID = "OUTLET_ID"
 
-        fun start(context: Context, outlet: OutletItem) {
+        fun start(context: Context, id: Int) {
             context.startActivity(
                 Intent(
                     context,
                     DetailOutletActivity::class.java
                 ).also {
                     with(it) {
-                        putExtra(DATA, outlet)
+                        putExtra(OUTLET_ID, id)
                     }
                 }
             )
@@ -46,31 +58,151 @@ class DetailOutletActivity : AppCompatActivity() {
         Mapbox.getInstance(this@DetailOutletActivity)
         setContentView(binding.root)
 
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val systemBars: Insets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, 0, 0, systemBars.bottom)
+            insets
+        }
+
         init()
     }
 
     private fun init() {
         binding.apply {
+            dialog = LoadingDialog(this@DetailOutletActivity)
             backButton.setOnClickListener {
                 onBackPressedDispatcher.onBackPressed()
             }
 
-            outlet = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                intent.getSerializableExtra(DATA, OutletItem::class.java)!!
-            else
-                intent.getSerializableExtra(DATA) as OutletItem
+            id = intent.getIntExtra(OUTLET_ID, 0)
 
-            outletName.text = outlet.name
-            outletID.text = outlet.outletID
-            address.text = outlet.address
-            village.text = outlet.village
-            subDistrict.text = outlet.subDistrict
-            cityRegency.text = outlet.cityRegency
-            province.text = outlet.province
-            latitude = outlet.latitude!!
-            longitude = outlet.longitude!!
+            mainContainerRefresh.setOnRefreshListener {
+                callNetwork()
+                mainContainerRefresh.isRefreshing = false
+            }
 
-            setMapPreview()
+            callNetwork()
+
+            editButton.setOnClickListener { }
+        }
+    }
+
+    private fun callNetwork() {
+        binding.apply {
+            if (dialog.window != null)
+                dialog.show()
+            try {
+                AppAPI.superEndpoint.showOutletById(id).enqueue(object : Callback<OutletResponse> {
+                    override fun onResponse(
+                        call: Call<OutletResponse>,
+                        response: Response<OutletResponse>
+                    ) {
+                        dialog.dismiss()
+                        if (response.isSuccessful) {
+                            if (response.body() != null) {
+                                val result = response.body()
+                                when (result?.code) {
+                                    1 -> {
+                                        val outlet = result.data
+                                        outletName.text = outlet?.name
+                                        outletID.text = outlet?.outletID
+                                        address.text = outlet?.address
+                                        village.text = outlet?.villageName
+                                        subDistrict.text = outlet?.subDistrictName
+                                        cityRegency.text = outlet?.cityRegencyName
+                                        province.text = outlet?.provinceName
+                                        latitude = outlet?.latitude?.toDouble() ?: 0.toDouble()
+                                        longitude = outlet?.longitude?.toDouble() ?: 0.toDouble()
+
+                                        setMapPreview()
+                                    }
+                                    0 -> {
+                                        finish()
+                                        CustomToast.getInstance(applicationContext)
+                                            .setMessage(result.message!!)
+                                            .setFontColor(
+                                                ContextCompat.getColor(
+                                                    applicationContext,
+                                                    R.color.custom_toast_font_failed
+                                                )
+                                            )
+                                            .setBackgroundColor(
+                                                ContextCompat.getColor(
+                                                    applicationContext,
+                                                    R.color.custom_toast_background_failed
+                                                )
+                                            ).show()
+                                    }
+                                }
+                            } else {
+                                Log.e(
+                                    "ERROR (Outlet Detail)",
+                                    "Response body is null. ${response.code()}: ${response.message()}"
+                                )
+                                finish()
+                                CustomToast.getInstance(applicationContext)
+                                    .setMessage("Something went wrong, please try again.")
+                                    .setFontColor(
+                                        ContextCompat.getColor(
+                                            applicationContext,
+                                            R.color.custom_toast_font_failed
+                                        )
+                                    )
+                                    .setBackgroundColor(
+                                        ContextCompat.getColor(
+                                            applicationContext,
+                                            R.color.custom_toast_background_failed
+                                        )
+                                    ).show()
+                            }
+                        } else {
+                            Log.e(
+                                "ERROR (Outlet Detail)",
+                                "Response not successful. ${response.code()}: ${response.message()}"
+                            )
+                            finish()
+                            CustomToast.getInstance(applicationContext)
+                                .setMessage("Something went wrong, please try again.")
+                                .setFontColor(
+                                    ContextCompat.getColor(
+                                        applicationContext,
+                                        R.color.custom_toast_font_failed
+                                    )
+                                )
+                                .setBackgroundColor(
+                                    ContextCompat.getColor(
+                                        applicationContext,
+                                        R.color.custom_toast_background_failed
+                                    )
+                                ).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<OutletResponse>, throwable: Throwable) {
+                        dialog.dismiss()
+                    }
+
+                })
+            } catch (jsonException: Exception) {
+                dialog.dismiss()
+                jsonException.printStackTrace()
+                Log.e("ERROR (Outlet Detail)", jsonException.toString())
+                finish()
+                CustomToast.getInstance(applicationContext)
+                    .setMessage("Something went wrong, please try again.")
+                    .setFontColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.custom_toast_font_failed
+                        )
+                    )
+                    .setBackgroundColor(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.custom_toast_background_failed
+                        )
+                    ).show()
+            }
         }
     }
 
@@ -94,7 +226,10 @@ class DetailOutletActivity : AppCompatActivity() {
                         startActivity(
                             Intent(
                                 Intent.ACTION_VIEW,
-                                String.format(Locale.getDefault(), "http://maps.google.com/maps?q=loc:$latitude,$longitude")
+                                String.format(
+                                    Locale.getDefault(),
+                                    "http://maps.google.com/maps?q=loc:$latitude,$longitude"
+                                )
                                     .toUri()
                             )
                         )

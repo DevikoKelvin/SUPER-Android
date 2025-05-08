@@ -123,7 +123,6 @@ class LoginActivity : AppCompatActivity() {
                                                     if (response1.isSuccessful) {
                                                         if (response1.body() != null) {
                                                             val result1 = response1.body()
-                                                            Log.e("Response", result1.toString())
                                                             when (result1?.code) {
                                                                 1 -> {
                                                                     CustomToast.getInstance(applicationContext)
@@ -185,7 +184,6 @@ class LoginActivity : AppCompatActivity() {
                                                             }
                                                         } else {
                                                             Log.e("ERROR", "Response body is null")
-                                                            Log.e("Response", response1.toString())
                                                             CustomToast.getInstance(applicationContext)
                                                                 .setMessage("Something went wrong, please try again.")
                                                                 .setFontColor(
@@ -203,7 +201,6 @@ class LoginActivity : AppCompatActivity() {
                                                         }
                                                     } else {
                                                         Log.e("ERROR", "Response not successful")
-                                                        Log.e("Response", response1.toString())
                                                         CustomToast.getInstance(applicationContext)
                                                             .setMessage("Something went wrong, please try again.")
                                                             .setFontColor(

@@ -34,7 +34,6 @@ class QuestionsAnswerAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = questions[position]
-        Log.e("Item ${position + 1}", item.toString())
 
         with(holder) {
             binding.apply {

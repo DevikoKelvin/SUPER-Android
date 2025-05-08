@@ -1,6 +1,7 @@
 package id.erela.surveyproduct.activities
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -36,6 +37,7 @@ import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.OutletCategoryResponse
 import id.erela.surveyproduct.objects.OutletCreationResponse
+import id.erela.surveyproduct.objects.OutletItem
 import id.erela.surveyproduct.objects.ProvinceListResponse
 import id.erela.surveyproduct.objects.RegionListResponse
 import id.erela.surveyproduct.objects.UsersSuper
@@ -53,6 +55,7 @@ class AddOutletActivity : AppCompatActivity() {
         UserDataHelper(applicationContext).getData()
     }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var editedData: OutletItem
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private var selectedType: Int = 0
@@ -77,6 +80,20 @@ class AddOutletActivity : AppCompatActivity() {
     )
     private lateinit var dialog: LoadingDialog
 
+    companion object {
+        private const val DATA = "DATA"
+
+        fun start(context: Context, data: OutletItem) {
+            context.startActivity(
+                Intent(context, AddOutletActivity::class.java).also {
+                    it.apply {
+                        putExtra(DATA, data)
+                    }
+                }
+            )
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -95,8 +112,30 @@ class AddOutletActivity : AppCompatActivity() {
         init()
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PermissionHelper.REQUEST_LOCATION_GPS) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastKnownLocation()
+            } else {
+                showLocationError()
+                getLastKnownLocation()
+            }
+        }
+    }
+
     private fun init() {
         binding.apply {
+            editedData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getSerializableExtra(DATA, OutletItem::class.java)!!
+            } else {
+                intent.getSerializableExtra(DATA)!! as OutletItem
+            }
+
             backButton.setOnClickListener {
                 onBackPressedDispatcher.onBackPressed()
             }
@@ -157,6 +196,7 @@ class AddOutletActivity : AppCompatActivity() {
                             userData.branchID ?: 0,
                             outletNameField.text.toString(),
                             selectedType,
+                            userData.iD!!,
                             addressField.text.toString(),
                             selectedProvince,
                             selectedCityRegency,
@@ -212,7 +252,6 @@ class AddOutletActivity : AppCompatActivity() {
                                         }
                                     } else {
                                         Log.e("ERROR (Creation)", "Response body is null")
-                                        Log.e("Response", response.toString())
                                         CustomToast.getInstance(applicationContext)
                                             .setMessage("Something went wrong, please try again.")
                                             .setFontColor(
@@ -230,7 +269,6 @@ class AddOutletActivity : AppCompatActivity() {
                                     }
                                 } else {
                                     Log.e("ERROR (Creation)", "Response not successful")
-                                    Log.e("Response", response.toString())
                                     CustomToast.getInstance(applicationContext)
                                         .setMessage("Something went wrong, please try again.")
                                         .setFontColor(
@@ -405,6 +443,23 @@ class AddOutletActivity : AppCompatActivity() {
         }
     }
 
+    private fun showLocationError() {
+        CustomToast(applicationContext)
+            .setMessage("Please turn on your location first!")
+            .setBackgroundColor(
+                ContextCompat.getColor(
+                    applicationContext,
+                    R.color.custom_toast_background_failed
+                )
+            )
+            .setFontColor(
+                ContextCompat.getColor(
+                    applicationContext,
+                    R.color.custom_toast_font_failed
+                )
+            ).show()
+    }
+
     private fun setMapPreview() {
         binding.apply {
             mapPreview.getMapAsync { map ->
@@ -486,7 +541,6 @@ class AddOutletActivity : AppCompatActivity() {
                     longitude,
                     1
                 )!!
-                Log.e("Addresses", "Addresses: $addresses")
                 if (addressField.text!!.isEmpty())
                     addressField.setText(addresses[0].getAddressLine(0) ?: "")
             }

@@ -90,6 +90,7 @@ class CheckInActivity : AppCompatActivity() {
         var questionIdArray = ArrayList<Int>()
         var subQuestionIdArray = ArrayList<Int?>()
         val surveyQuestionsList = ArrayList<QuestionsItem>()
+
         @SuppressLint("StaticFieldLeak")
         var activity: Activity? = null
 
@@ -128,25 +129,21 @@ class CheckInActivity : AppCompatActivity() {
                         when (question.questionType) {
                             "photo" -> {
                                 remove("${ANSWER_PHOTO}_${question.iD}_0")
-                                Log.e("Photo answer [${question.iD}][0]", "Removed!")
                             }
 
                             "essay" -> {
                                 remove("${ANSWER_TEXT}_${question.iD}_0")
-                                Log.e("Answer [${question.iD}][0]", "Removed!")
                             }
 
                             "checkbox" -> {
                                 for (i in 0 until question.checkboxOptions?.size!!) {
                                     remove("${ANSWER_CHECKBOX_MULTIPLE}_${question.iD}_0_${i}")
-                                    Log.e("Checkbox answer [${question.iD}][0]", "Removed!")
                                 }
                             }
 
                             "multiple" -> {
                                 for (i in 0 until question.multipleOptions?.size!!) {
                                     remove("${ANSWER_CHECKBOX_MULTIPLE}_${question.iD}_0_${i}")
-                                    Log.e("Multiple answer [${question.iD}][0]", "Removed!")
                                 }
                             }
                         }
@@ -155,25 +152,21 @@ class CheckInActivity : AppCompatActivity() {
                             when (subQuestion!!.questionType) {
                                 "photo" -> {
                                     remove("${ANSWER_PHOTO}_${subQuestion.questionID}_${subQuestion.iD}")
-                                    Log.e("Photo answer [${subQuestion.questionID}][${subQuestion.iD}]", "Removed!")
                                 }
 
                                 "essay" -> {
                                     remove("${ANSWER_TEXT}_${subQuestion.questionID}_${subQuestion.iD}")
-                                    Log.e("Answer [${subQuestion.questionID}][${subQuestion.iD}]", "Removed!")
                                 }
 
                                 "checkbox" -> {
                                     for (i in 0 until question.checkboxOptions?.size!!) {
                                         remove("${ANSWER_CHECKBOX_MULTIPLE}_${subQuestion.questionID}_${subQuestion.iD}_${i}")
-                                        Log.e("Checkbox answer [${subQuestion.questionID}][${subQuestion.iD}]", "Removed!")
                                     }
                                 }
 
                                 "multiple" -> {
                                     for (i in 0 until question.multipleOptions?.size!!) {
                                         remove("${ANSWER_CHECKBOX_MULTIPLE}_${subQuestion.questionID}_${subQuestion.iD}_${i}")
-                                        Log.e("Multiple answer [${subQuestion.questionID}][${subQuestion.iD}]", "Removed!")
                                     }
                                 }
                             }
@@ -209,6 +202,37 @@ class CheckInActivity : AppCompatActivity() {
         activity = null
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PermissionHelper.REQUEST_CODE_CAMERA) {
+            if (PermissionHelper.isPermissionGranted(
+                    this@CheckInActivity,
+                    PermissionHelper.CAMERA
+                )
+            ) {
+                openCamera()
+            } else {
+                PermissionHelper.requestPermission(
+                    this@CheckInActivity,
+                    arrayOf(PermissionHelper.CAMERA),
+                    PermissionHelper.REQUEST_CODE_CAMERA
+                )
+            }
+        }
+        if (requestCode == PermissionHelper.REQUEST_LOCATION_GPS) {
+            if (isLocationEnabled()) {
+                getLastKnownLocation()
+            } else {
+                showLocationError()
+                getLastKnownLocation()
+            }
+        }
+    }
+
     private fun init() {
         binding.apply {
             onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
@@ -221,7 +245,6 @@ class CheckInActivity : AppCompatActivity() {
             })
 
             val isCheckInUploaded = sharedPreferences.getBoolean(CHECK_IN_UPLOADED, false)
-            Log.e("isCheckInUploaded", "$isCheckInUploaded")
             if (isCheckInUploaded) {
                 AnswerActivity.start(
                     this@CheckInActivity,

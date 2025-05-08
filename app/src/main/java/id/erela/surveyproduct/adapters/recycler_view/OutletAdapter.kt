@@ -33,11 +33,11 @@ class OutletAdapter(private val outlets: ArrayList<OutletItem>, private val usag
                 outletName.text = item.name
                 outletID.text = item.outletID
                 address.text = item.address
-                cityName.text = item.cityRegency
+                cityName.text = item.provinceName
 
                 itemView.setOnClickListener {
                     when (usage) {
-                        "detail" -> onOutletItemClickListener.onOutletForDetailItemClick(item)
+                        "detail" -> onOutletItemClickListener.onOutletForDetailItemClick(item.iD!!)
                         "survey" -> onOutletItemClickListener.onOutletForSurveyItemClick(item)
                     }
                 }
@@ -50,7 +50,7 @@ class OutletAdapter(private val outlets: ArrayList<OutletItem>, private val usag
     }
 
     interface OnOutletItemClickListener {
-        fun onOutletForDetailItemClick(outlet: OutletItem)
+        fun onOutletForDetailItemClick(id: Int)
         fun onOutletForSurveyItemClick(outlet: OutletItem)
     }
 }
