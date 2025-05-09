@@ -7,6 +7,7 @@ import id.erela.surveyproduct.objects.CheckOutResponse
 import id.erela.surveyproduct.objects.InsertAnswerResponse
 import id.erela.surveyproduct.objects.OutletCategoryResponse
 import id.erela.surveyproduct.objects.OutletCreationResponse
+import id.erela.surveyproduct.objects.OutletEditResponse
 import id.erela.surveyproduct.objects.OutletListResponse
 import id.erela.surveyproduct.objects.OutletResponse
 import id.erela.surveyproduct.objects.ProvinceListResponse
@@ -88,6 +89,21 @@ interface SuperEndpoint {
         @Field("Latitude") latitude: Double,
         @Field("Longitude") longitude: Double
     ): Call<OutletCreationResponse>
+
+    @FormUrlEncoded
+    @POST("outlet/update")
+    fun outletUpdate(
+        @Field("ID") id: Int,
+        @Field("Name") name: String,
+        @Field("Type") type: Int,
+        @Field("Province") province: Int,
+        @Field("CityRegency") cityRegency: Int,
+        @Field("SubDistrict") subDistrict: Int,
+        @Field("Village") village: Long,
+        @Field("Address") address: String,
+        @Field("Latitude") latitude: Double,
+        @Field("Longitude") longitude: Double
+    ): Call<OutletEditResponse>
 
     // Check
     @FormUrlEncoded

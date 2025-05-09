@@ -37,6 +37,7 @@ import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.OutletCategoryResponse
 import id.erela.surveyproduct.objects.OutletCreationResponse
+import id.erela.surveyproduct.objects.OutletEditResponse
 import id.erela.surveyproduct.objects.OutletItem
 import id.erela.surveyproduct.objects.ProvinceListResponse
 import id.erela.surveyproduct.objects.RegionListResponse
@@ -216,67 +217,84 @@ class AddOutletActivity : AppCompatActivity() {
                             )
                         ).show()
                 } else {
-                    try {
-                        AppAPI.superEndpoint.outletCreation(
-                            userData.branchID ?: 0,
-                            outletNameField.text.toString(),
-                            selectedType,
-                            userData.iD!!,
-                            addressField.text.toString(),
-                            selectedProvince,
-                            selectedCityRegency,
-                            selectedSubDistrict,
-                            selectedVillage,
-                            latitude,
-                            longitude
-                        ).enqueue(object : Callback<OutletCreationResponse> {
-                            override fun onResponse(
-                                call: Call<OutletCreationResponse>,
-                                response: Response<OutletCreationResponse>
-                            ) {
-                                loadingBar.visibility = View.GONE
-                                if (response.isSuccessful) {
-                                    if (response.body() != null) {
-                                        val result = response.body()
-                                        when (result?.code) {
-                                            1 -> {
-                                                CustomToast.getInstance(applicationContext)
-                                                    .setMessage("New outlet data has been created!")
-                                                    .setFontColor(
-                                                        ContextCompat.getColor(
-                                                            applicationContext,
-                                                            R.color.custom_toast_font_success
+                    if (isEdit) {
+                        try {
+                            AppAPI.superEndpoint.outletUpdate(
+                                editedData?.iD!!,
+                                outletNameField.text.toString(),
+                                selectedType,
+                                selectedProvince,
+                                selectedCityRegency,
+                                selectedSubDistrict,
+                                selectedVillage,
+                                addressField.text.toString(),
+                                latitude,
+                                longitude
+                            ).enqueue(object : Callback<OutletEditResponse> {
+                                override fun onResponse(
+                                    call: Call<OutletEditResponse>,
+                                    response: Response<OutletEditResponse>
+                                ) {
+                                    loadingBar.visibility = View.GONE
+                                    if (response.isSuccessful) {
+                                        if (response.body() != null) {
+                                            val result = response.body()
+                                            when (result?.code) {
+                                                1 -> {
+                                                    CustomToast.getInstance(applicationContext)
+                                                        .setMessage("Outlet data successfully updated!")
+                                                        .setFontColor(
+                                                            ContextCompat.getColor(
+                                                                applicationContext,
+                                                                R.color.custom_toast_font_success
+                                                            )
                                                         )
-                                                    )
-                                                    .setBackgroundColor(
-                                                        ContextCompat.getColor(
-                                                            applicationContext,
-                                                            R.color.custom_toast_background_success
-                                                        )
-                                                    ).show()
-                                                setResult(RESULT_OK)
-                                                finish()
-                                            }
+                                                        .setBackgroundColor(
+                                                            ContextCompat.getColor(
+                                                                applicationContext,
+                                                                R.color.custom_toast_background_success
+                                                            )
+                                                        ).show()
+                                                    setResult(RESULT_OK)
+                                                    finish()
+                                                }
 
-                                            0 -> {
-                                                CustomToast.getInstance(applicationContext)
-                                                    .setMessage(result.message.toString())
-                                                    .setFontColor(
-                                                        ContextCompat.getColor(
-                                                            applicationContext,
-                                                            R.color.custom_toast_font_failed
+                                                0 -> {
+                                                    CustomToast.getInstance(applicationContext)
+                                                        .setMessage(result.message.toString())
+                                                        .setFontColor(
+                                                            ContextCompat.getColor(
+                                                                applicationContext,
+                                                                R.color.custom_toast_font_failed
+                                                            )
                                                         )
-                                                    )
-                                                    .setBackgroundColor(
-                                                        ContextCompat.getColor(
-                                                            applicationContext,
-                                                            R.color.custom_toast_background_failed
-                                                        )
-                                                    ).show()
+                                                        .setBackgroundColor(
+                                                            ContextCompat.getColor(
+                                                                applicationContext,
+                                                                R.color.custom_toast_background_failed
+                                                            )
+                                                        ).show()
+                                                }
                                             }
+                                        } else {
+                                            Log.e("ERROR (Update)", "Response body is null")
+                                            CustomToast.getInstance(applicationContext)
+                                                .setMessage("Something went wrong, please try again.")
+                                                .setFontColor(
+                                                    ContextCompat.getColor(
+                                                        applicationContext,
+                                                        R.color.custom_toast_font_failed
+                                                    )
+                                                )
+                                                .setBackgroundColor(
+                                                    ContextCompat.getColor(
+                                                        applicationContext,
+                                                        R.color.custom_toast_background_failed
+                                                    )
+                                                ).show()
                                         }
                                     } else {
-                                        Log.e("ERROR (Creation)", "Response body is null")
+                                        Log.e("ERROR (Update)", "Response not successful")
                                         CustomToast.getInstance(applicationContext)
                                             .setMessage("Something went wrong, please try again.")
                                             .setFontColor(
@@ -292,8 +310,16 @@ class AddOutletActivity : AppCompatActivity() {
                                                 )
                                             ).show()
                                     }
-                                } else {
-                                    Log.e("ERROR (Creation)", "Response not successful")
+                                }
+
+                                override fun onFailure(
+                                    call: Call<OutletEditResponse>,
+                                    throwable: Throwable
+                                ) {
+                                    loadingBar.visibility = View.GONE
+                                    throwable.printStackTrace()
+                                    Log.e("ERROR (Update)", throwable.toString())
+                                    finish()
                                     CustomToast.getInstance(applicationContext)
                                         .setMessage("Something went wrong, please try again.")
                                         .setFontColor(
@@ -309,51 +335,167 @@ class AddOutletActivity : AppCompatActivity() {
                                             )
                                         ).show()
                                 }
-                            }
-
-                            override fun onFailure(
-                                call: Call<OutletCreationResponse>,
-                                throwable: Throwable
-                            ) {
-                                loadingBar.visibility = View.GONE
-                                throwable.printStackTrace()
-                                Log.e("ERROR (Creation)", throwable.toString())
-                                finish()
-                                CustomToast.getInstance(applicationContext)
-                                    .setMessage("Something went wrong, please try again.")
-                                    .setFontColor(
-                                        ContextCompat.getColor(
-                                            applicationContext,
-                                            R.color.custom_toast_font_failed
-                                        )
+                            })
+                        } catch (jsonException: JSONException) {
+                            loadingBar.visibility = View.GONE
+                            jsonException.printStackTrace()
+                            Log.e("ERROR (Update)", jsonException.toString())
+                            finish()
+                            CustomToast.getInstance(applicationContext)
+                                .setMessage("Something went wrong, please try again.")
+                                .setFontColor(
+                                    ContextCompat.getColor(
+                                        applicationContext,
+                                        R.color.custom_toast_font_failed
                                     )
-                                    .setBackgroundColor(
-                                        ContextCompat.getColor(
-                                            applicationContext,
-                                            R.color.custom_toast_background_failed
+                                )
+                                .setBackgroundColor(
+                                    ContextCompat.getColor(
+                                        applicationContext,
+                                        R.color.custom_toast_background_failed
+                                    )
+                                ).show()
+                        }
+                    } else {
+                        try {
+                            AppAPI.superEndpoint.outletCreation(
+                                userData.branchID ?: 0,
+                                outletNameField.text.toString(),
+                                selectedType,
+                                userData.iD!!,
+                                addressField.text.toString(),
+                                selectedProvince,
+                                selectedCityRegency,
+                                selectedSubDistrict,
+                                selectedVillage,
+                                latitude,
+                                longitude
+                            ).enqueue(object : Callback<OutletCreationResponse> {
+                                override fun onResponse(
+                                    call: Call<OutletCreationResponse>,
+                                    response: Response<OutletCreationResponse>
+                                ) {
+                                    loadingBar.visibility = View.GONE
+                                    if (response.isSuccessful) {
+                                        if (response.body() != null) {
+                                            val result = response.body()
+                                            when (result?.code) {
+                                                1 -> {
+                                                    CustomToast.getInstance(applicationContext)
+                                                        .setMessage("New outlet data has been created!")
+                                                        .setFontColor(
+                                                            ContextCompat.getColor(
+                                                                applicationContext,
+                                                                R.color.custom_toast_font_success
+                                                            )
+                                                        )
+                                                        .setBackgroundColor(
+                                                            ContextCompat.getColor(
+                                                                applicationContext,
+                                                                R.color.custom_toast_background_success
+                                                            )
+                                                        ).show()
+                                                    setResult(RESULT_OK)
+                                                    finish()
+                                                }
+
+                                                0 -> {
+                                                    CustomToast.getInstance(applicationContext)
+                                                        .setMessage(result.message.toString())
+                                                        .setFontColor(
+                                                            ContextCompat.getColor(
+                                                                applicationContext,
+                                                                R.color.custom_toast_font_failed
+                                                            )
+                                                        )
+                                                        .setBackgroundColor(
+                                                            ContextCompat.getColor(
+                                                                applicationContext,
+                                                                R.color.custom_toast_background_failed
+                                                            )
+                                                        ).show()
+                                                }
+                                            }
+                                        } else {
+                                            Log.e("ERROR (Creation)", "Response body is null")
+                                            CustomToast.getInstance(applicationContext)
+                                                .setMessage("Something went wrong, please try again.")
+                                                .setFontColor(
+                                                    ContextCompat.getColor(
+                                                        applicationContext,
+                                                        R.color.custom_toast_font_failed
+                                                    )
+                                                )
+                                                .setBackgroundColor(
+                                                    ContextCompat.getColor(
+                                                        applicationContext,
+                                                        R.color.custom_toast_background_failed
+                                                    )
+                                                ).show()
+                                        }
+                                    } else {
+                                        Log.e("ERROR (Creation)", "Response not successful")
+                                        CustomToast.getInstance(applicationContext)
+                                            .setMessage("Something went wrong, please try again.")
+                                            .setFontColor(
+                                                ContextCompat.getColor(
+                                                    applicationContext,
+                                                    R.color.custom_toast_font_failed
+                                                )
+                                            )
+                                            .setBackgroundColor(
+                                                ContextCompat.getColor(
+                                                    applicationContext,
+                                                    R.color.custom_toast_background_failed
+                                                )
+                                            ).show()
+                                    }
+                                }
+
+                                override fun onFailure(
+                                    call: Call<OutletCreationResponse>,
+                                    throwable: Throwable
+                                ) {
+                                    loadingBar.visibility = View.GONE
+                                    throwable.printStackTrace()
+                                    Log.e("ERROR (Creation)", throwable.toString())
+                                    finish()
+                                    CustomToast.getInstance(applicationContext)
+                                        .setMessage("Something went wrong, please try again.")
+                                        .setFontColor(
+                                            ContextCompat.getColor(
+                                                applicationContext,
+                                                R.color.custom_toast_font_failed
+                                            )
                                         )
-                                    ).show()
-                            }
-                        })
-                    } catch (jsonException: JSONException) {
-                        loadingBar.visibility = View.GONE
-                        jsonException.printStackTrace()
-                        Log.e("ERROR (Creation)", jsonException.toString())
-                        finish()
-                        CustomToast.getInstance(applicationContext)
-                            .setMessage("Something went wrong, please try again.")
-                            .setFontColor(
-                                ContextCompat.getColor(
-                                    applicationContext,
-                                    R.color.custom_toast_font_failed
+                                        .setBackgroundColor(
+                                            ContextCompat.getColor(
+                                                applicationContext,
+                                                R.color.custom_toast_background_failed
+                                            )
+                                        ).show()
+                                }
+                            })
+                        } catch (jsonException: JSONException) {
+                            loadingBar.visibility = View.GONE
+                            jsonException.printStackTrace()
+                            Log.e("ERROR (Creation)", jsonException.toString())
+                            finish()
+                            CustomToast.getInstance(applicationContext)
+                                .setMessage("Something went wrong, please try again.")
+                                .setFontColor(
+                                    ContextCompat.getColor(
+                                        applicationContext,
+                                        R.color.custom_toast_font_failed
+                                    )
                                 )
-                            )
-                            .setBackgroundColor(
-                                ContextCompat.getColor(
-                                    applicationContext,
-                                    R.color.custom_toast_background_failed
-                                )
-                            ).show()
+                                .setBackgroundColor(
+                                    ContextCompat.getColor(
+                                        applicationContext,
+                                        R.color.custom_toast_background_failed
+                                    )
+                                ).show()
+                        }
                     }
                 }
             }

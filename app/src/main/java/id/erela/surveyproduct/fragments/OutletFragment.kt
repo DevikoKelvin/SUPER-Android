@@ -82,6 +82,8 @@ class OutletFragment(private val context: Context) : Fragment() {
                     emptyAnimation.visibility = View.VISIBLE
                     outletListRv.visibility = View.GONE
                 } else {
+                    outletList.clear()
+                    callNetwork()
                     emptyAnimation.visibility = View.GONE
                     outletListRv.visibility = View.VISIBLE
                 }
