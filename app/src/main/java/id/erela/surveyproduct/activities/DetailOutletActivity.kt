@@ -20,6 +20,7 @@ import id.erela.surveyproduct.databinding.ActivityDetailOutletBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
+import id.erela.surveyproduct.objects.OutletItem
 import id.erela.surveyproduct.objects.OutletResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,6 +35,7 @@ class DetailOutletActivity : AppCompatActivity() {
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private lateinit var dialog: LoadingDialog
+    private lateinit var outlet: OutletItem
 
     companion object {
         private const val OUTLET_ID = "OUTLET_ID"
@@ -83,7 +85,11 @@ class DetailOutletActivity : AppCompatActivity() {
 
             callNetwork()
 
-            editButton.setOnClickListener { }
+            editButton.setOnClickListener {
+                AddOutletActivity.startEdit(
+                    this@DetailOutletActivity, outlet
+                )
+            }
         }
     }
 
@@ -103,19 +109,21 @@ class DetailOutletActivity : AppCompatActivity() {
                                 val result = response.body()
                                 when (result?.code) {
                                     1 -> {
-                                        val outlet = result.data
-                                        outletName.text = outlet?.name
-                                        outletID.text = outlet?.outletID
-                                        address.text = outlet?.address
-                                        village.text = outlet?.villageName
-                                        subDistrict.text = outlet?.subDistrictName
-                                        cityRegency.text = outlet?.cityRegencyName
-                                        province.text = outlet?.provinceName
-                                        latitude = outlet?.latitude?.toDouble() ?: 0.toDouble()
-                                        longitude = outlet?.longitude?.toDouble() ?: 0.toDouble()
+                                        if (result.data != null)
+                                            outlet = result.data
+                                        outletName.text = outlet.name
+                                        outletID.text = outlet.outletID
+                                        address.text = outlet.address
+                                        village.text = outlet.villageName
+                                        subDistrict.text = outlet.subDistrictName
+                                        cityRegency.text = outlet.cityRegencyName
+                                        province.text = outlet.provinceName
+                                        latitude = outlet.latitude?.toDouble() ?: 0.toDouble()
+                                        longitude = outlet.longitude?.toDouble() ?: 0.toDouble()
 
                                         setMapPreview()
                                     }
+
                                     0 -> {
                                         finish()
                                         CustomToast.getInstance(applicationContext)

@@ -55,7 +55,7 @@ class AddOutletActivity : AppCompatActivity() {
         UserDataHelper(applicationContext).getData()
     }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var editedData: OutletItem
+    private var editedData: OutletItem? = null
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private var selectedType: Int = 0
@@ -82,8 +82,9 @@ class AddOutletActivity : AppCompatActivity() {
 
     companion object {
         private const val DATA = "DATA"
+        private var isEdit = false
 
-        fun start(context: Context, data: OutletItem) {
+        fun startEdit(context: Context, data: OutletItem) {
             context.startActivity(
                 Intent(context, AddOutletActivity::class.java).also {
                     it.apply {
@@ -91,6 +92,7 @@ class AddOutletActivity : AppCompatActivity() {
                     }
                 }
             )
+            isEdit = true
         }
     }
 
@@ -130,11 +132,33 @@ class AddOutletActivity : AppCompatActivity() {
 
     private fun init() {
         binding.apply {
-            editedData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                intent.getSerializableExtra(DATA, OutletItem::class.java)!!
-            } else {
-                intent.getSerializableExtra(DATA)!! as OutletItem
+            if (isEdit) {
+                toolbarTitle.text = getString(R.string.edit_outlet_title)
+                getLocationText.text = getString(R.string.setNewLocation)
+                editedData = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    intent.getSerializableExtra(DATA, OutletItem::class.java)!!
+                } else {
+                    intent.getSerializableExtra(DATA)!! as OutletItem
+                }
+
+                if (editedData != null) {
+                    outletNameField.setText(editedData?.name)
+                    addressField.setText(editedData?.address)
+                    selectedType = editedData?.type!!
+                    selectedProvince = editedData?.province!!
+                    selectedCityRegency = editedData?.cityRegency!!
+                    selectedSubDistrict = editedData?.subDistrict!!
+                    selectedVillage = editedData?.village!!
+                    prepareFormInput()
+                    getOutletsCategory()
+                    dialog.dismiss()
+                    latitude = editedData?.latitude!!.toDouble()
+                    longitude = editedData?.longitude!!.toDouble()
+                    setMapPreview()
+                }
             }
+
+            getLocationText.text = getString(R.string.refresh)
 
             backButton.setOnClickListener {
                 onBackPressedDispatcher.onBackPressed()
@@ -158,7 +182,8 @@ class AddOutletActivity : AppCompatActivity() {
                     .show()
                 finish()
             } else {
-                getLastKnownLocation()
+                if (!isEdit)
+                    getLastKnownLocation()
             }
 
             refreshButton.setOnClickListener {
@@ -474,6 +499,7 @@ class AddOutletActivity : AppCompatActivity() {
                         isTiltGesturesEnabled = false
                         isHorizontalScrollGesturesEnabled = false
                     }
+                    Log.e("Latitude | Longitude", "$latitude | $longitude")
                     cameraPosition =
                         CameraPosition.Builder().target(
                             LatLng(latitude, longitude)
@@ -826,7 +852,11 @@ class AddOutletActivity : AppCompatActivity() {
                                                                     this@AddOutletActivity,
                                                                     R.color.form_field_stroke
                                                                 )
-                                                            getRegionList(selectedProvince, null, null)
+                                                            getRegionList(
+                                                                selectedProvince,
+                                                                null,
+                                                                null
+                                                            )
                                                         }
                                                     }
 

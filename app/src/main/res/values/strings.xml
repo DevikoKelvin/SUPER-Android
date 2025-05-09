@@ -16,6 +16,7 @@
     <string name="submit">Submit</string>
     <string name="send">Send</string>
     <string name="refresh">Refresh Location</string>
+    <string name="setNewLocation">Set New Location</string>
 
     <!-- Menu -->
     <string name="home">Home</string>
@@ -78,7 +79,4 @@
 
     <!-- Profile Menu -->
     <string name="signout_text">Sign Out</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
