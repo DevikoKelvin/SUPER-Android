@@ -57,6 +57,7 @@ class AddOutletActivity : AppCompatActivity() {
     }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var editedData: OutletItem? = null
+    private var isEdit = false
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
     private var selectedType: Int = 0
@@ -82,19 +83,8 @@ class AddOutletActivity : AppCompatActivity() {
     private lateinit var dialog: LoadingDialog
 
     companion object {
-        private const val DATA = "DATA"
-        private var isEdit = false
-
-        fun startEdit(context: Context, data: OutletItem) {
-            context.startActivity(
-                Intent(context, AddOutletActivity::class.java).also {
-                    it.apply {
-                        putExtra(DATA, data)
-                    }
-                }
-            )
-            isEdit = true
-        }
+        const val DATA = "DATA"
+        const val IS_EDIT = "IS_EDIT"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,6 +123,8 @@ class AddOutletActivity : AppCompatActivity() {
 
     private fun init() {
         binding.apply {
+            isEdit = intent.getBooleanExtra(IS_EDIT, false)
+
             if (isEdit) {
                 toolbarTitle.text = getString(R.string.edit_outlet_title)
                 getLocationText.text = getString(R.string.setNewLocation)
@@ -143,6 +135,10 @@ class AddOutletActivity : AppCompatActivity() {
                 }
 
                 if (editedData != null) {
+                    if (editedData?.name != null)
+                        isFormEmpty[6] = true
+                    if (editedData?.address != null)
+                        isFormEmpty[0] = true
                     outletNameField.setText(editedData?.name)
                     addressField.setText(editedData?.address)
                     selectedType = editedData?.type!!

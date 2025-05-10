@@ -108,9 +108,10 @@
                     android:text="@string/welcome_login"
                     android:textSize="26sp"
                     android:textStyle="bold"
-                    app:endColor="@color/dark_blue_accent"
+                    android:fontFamily="@font/nucleo"
+                    app:endColor="#2152ff"
                     app:isVertical="true"
-                    app:startColor="@color/light_blue_accent" />
+                    app:startColor="#80E3FF" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/usernameFieldLayout"

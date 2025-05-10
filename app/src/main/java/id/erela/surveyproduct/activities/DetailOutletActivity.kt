@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.Insets
@@ -36,6 +38,13 @@ class DetailOutletActivity : AppCompatActivity() {
     private var longitude: Double = 0.0
     private lateinit var dialog: LoadingDialog
     private lateinit var outlet: OutletItem
+    private val activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == RESULT_OK) {
+            callNetwork()
+        }
+    }
 
     companion object {
         private const val OUTLET_ID = "OUTLET_ID"
@@ -86,8 +95,16 @@ class DetailOutletActivity : AppCompatActivity() {
             callNetwork()
 
             editButton.setOnClickListener {
-                AddOutletActivity.startEdit(
-                    this@DetailOutletActivity, outlet
+                activityResultLauncher.launch(
+                    Intent(
+                        this@DetailOutletActivity,
+                        AddOutletActivity::class.java
+                    ).also {
+                        with(it) {
+                            putExtra(AddOutletActivity.DATA, outlet)
+                            putExtra(AddOutletActivity.IS_EDIT, true)
+                        }
+                    }
                 )
             }
         }
