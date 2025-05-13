@@ -1,9 +1,11 @@
 package id.erela.surveyproduct.adapters.recycler_view
 
 import android.annotation.SuppressLint
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import id.erela.surveyproduct.databinding.ListItemCheckInOutBinding
 import id.erela.surveyproduct.objects.CheckInOutHistoryItem
@@ -58,6 +60,21 @@ class CheckInOutAdapter(
 
                 itemView.setOnClickListener {
                     onCheckInOutItemClickListener.onCheckInOutItemClick(item)
+                }
+
+                if (position == checkInOutHistoryItemList.size - 1) {
+                    val params = itemView.layoutParams as MarginLayoutParams
+                    params.setMargins(
+                        0,
+                        0,
+                        0,
+                        TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            200f,
+                            itemView.resources.displayMetrics
+                        ).toInt()
+                    )
+                    itemView.layoutParams = params
                 }
             }
         }

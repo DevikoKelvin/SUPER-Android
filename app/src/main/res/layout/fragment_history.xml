@@ -56,10 +56,10 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/nucleo"
+                        android:text="@string/filter_survey"
                         android:textAlignment="center"
                         android:textColor="@color/text_primary_color"
-                        android:textStyle="bold"
-                        android:text="@string/filter_survey" />
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:layout_width="21dp"
@@ -118,10 +118,9 @@
                 android:id="@+id/checkInOutListRv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="4dp"
                 android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
-                android:paddingBottom="90dp"
                 tools:listitem="@layout/list_item_questions" />
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

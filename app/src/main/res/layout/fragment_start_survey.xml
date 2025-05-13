@@ -94,7 +94,6 @@
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
-                android:paddingBottom="90dp"
                 tools:listitem="@layout/list_item_questions" />
         </LinearLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,10 +21,12 @@ import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityDetailOutletBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
+import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.OutletItem
 import id.erela.surveyproduct.objects.OutletResponse
+import id.erela.surveyproduct.objects.UsersSuper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,6 +35,9 @@ import java.util.Locale
 class DetailOutletActivity : AppCompatActivity() {
     private val binding: ActivityDetailOutletBinding by lazy {
         ActivityDetailOutletBinding.inflate(layoutInflater)
+    }
+    private val userData: UsersSuper by lazy {
+        UserDataHelper(applicationContext).getData()
     }
     private var id: Int = 0
     private var latitude: Double = 0.0
@@ -128,6 +134,11 @@ class DetailOutletActivity : AppCompatActivity() {
                                     1 -> {
                                         if (result.data != null)
                                             outlet = result.data
+                                        if (outlet.creatorID == userData.iD)
+                                            editButton.visibility = View.VISIBLE
+                                        else
+                                            editButton.visibility = View.GONE
+
                                         outletName.text = outlet.name
                                         outletID.text = outlet.outletID
                                         address.text = outlet.address
@@ -230,7 +241,6 @@ class DetailOutletActivity : AppCompatActivity() {
             }
         }
     }
-
     @Deprecated("Deprecated in Java")
     override fun onLowMemory() {
         super.onLowMemory()

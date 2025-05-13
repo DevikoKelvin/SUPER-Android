@@ -226,7 +226,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="4dp"
-                    android:layout_marginBottom="56dp"
+                    android:layout_marginBottom="125dp"
                     android:fontFamily="@font/nucleo"
                     android:text="@string/map_click_caption"
                     android:textAlignment="center"
@@ -262,7 +262,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:realtimeBlurRadius="50dp"
-                app:realtimeOverlayColor="#65D5E6FB" />
+                app:realtimeOverlayColor="#CCD5E6FB" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
