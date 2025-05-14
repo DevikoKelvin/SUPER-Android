@@ -52,6 +52,14 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
         init()
     }
 
+    override fun onResume() {
+        super.onResume()
+        val startSurveyFragment = supportFragmentManager.fragments.find { fragment ->
+            fragment is StartSurveyFragment
+        } as? StartSurveyFragment
+        startSurveyFragment?.callNetwork()
+    }
+
     private fun init() {
         binding.apply {
             Rive.init(applicationContext)

@@ -106,7 +106,7 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
         }
     }
 
-    private fun callNetwork() {
+    fun callNetwork() {
         loadingManager(true)
         binding?.apply {
             try {
