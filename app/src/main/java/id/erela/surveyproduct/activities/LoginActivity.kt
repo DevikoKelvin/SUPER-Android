@@ -44,8 +44,8 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
 
-            usernameField.setText("igun.cantik")
-            passwordField.setText("putrikecilayah")
+            /*usernameField.setText("igun.cantik")
+            passwordField.setText("putrikecilayah")*/
 
             signInButton.setOnClickListener {
                 val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
