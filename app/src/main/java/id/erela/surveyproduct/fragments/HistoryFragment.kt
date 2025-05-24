@@ -198,8 +198,10 @@ class HistoryFragment(private val context: Context) : Fragment() {
                                     when (result?.code) {
                                         1 -> {
                                             checkInOutHistory.clear()
-                                            for (item in result.data!!) {
-                                                checkInOutHistory.add(item!!)
+                                            if (result.data?.isNotEmpty() == true) {
+                                                for (item in result.data) {
+                                                    checkInOutHistory.add(item!!)
+                                                }
                                             }
                                             if (checkInOutHistory.isEmpty()) {
                                                 emptyAnimation.visibility = View.VISIBLE

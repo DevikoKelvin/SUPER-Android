@@ -135,10 +135,15 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                                     }
                                                 }
                                             }
-                                            if (outletList.isEmpty())
+
+                                            if (outletList.isEmpty()) {
                                                 outletListRv.visibility = View.GONE
-                                            else
+                                                noOutletFound.visibility = View.VISIBLE
+                                                noOutletFound.text = result.message
+                                            } else {
                                                 outletListRv.visibility = View.VISIBLE
+                                                noOutletFound.visibility = View.GONE
+                                            }
 
                                             outletListRv.layoutManager =
                                                 LinearLayoutManager(context)

@@ -79,11 +79,23 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:text="@string/add_outlet_title"
-        app:icon="@drawable/baseline_add_24"
         app:backgroundTint="#CEF2E8"
+        app:icon="@drawable/baseline_add_24"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/versionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/custom_toast_font_normal_gray"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Version 1.6 Build 5242025-1218" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"

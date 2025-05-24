@@ -140,10 +140,10 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/nucleo"
-                                android:text="Ivan Gunawan"
                                 android:textColor="@color/text_primary_color"
                                 android:textSize="24sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                tools:text="Ivan Gunawan" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -156,19 +156,19 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:fontFamily="@font/nucleo"
-                                    android:text="Salesman"
                                     android:textColor="@color/text_primary_color"
-                                    android:textSize="14sp" />
+                                    android:textSize="14sp"
+                                    tools:text="Salesman" />
 
                                 <TextView
                                     android:id="@+id/userCode"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/nucleo"
-                                    android:text="69GAY6969"
                                     android:textAlignment="textEnd"
                                     android:textColor="@color/text_primary_color"
-                                    android:textSize="14sp" />
+                                    android:textSize="14sp"
+                                    tools:text="69GAY6969" />
                             </LinearLayout>
                         </LinearLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -179,7 +179,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="32dp"
-                android:text="Profile Information"
+                android:text="@string/profile_info"
                 android:textColor="@color/text_primary_color"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -189,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="16dp"
-                android:text="Username"
+                android:text="@string/username_text"
                 android:textColor="@color/text_primary_color"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -199,8 +199,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="32dp"
-                android:layout_marginTop="8dp"
-                android:text="igun.cantik" />
+                tools:text="igun.cantik" />
 
             <!--<com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -228,7 +227,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="16dp"
-                android:text="Email"
+                android:text="@string/email_text"
                 android:textColor="@color/text_primary_color"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -238,8 +237,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="32dp"
-                android:layout_marginTop="8dp"
-                android:text="igun@erela.id" />
+                tools:text="igun@erela.id" />
 
             <!--<com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -267,7 +265,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="16dp"
-                android:text="Team Branch"
+                android:text="@string/team_branch_text"
                 android:textColor="@color/text_primary_color"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -277,8 +275,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="32dp"
-                android:layout_marginTop="8dp"
-                android:text="Promosi Gay of BOGOR" />
+                tools:text="Promosi Gay of BOGOR" />
 
             <!--<com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"

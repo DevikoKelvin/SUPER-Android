@@ -79,4 +79,8 @@
 
     <!-- Profile Menu -->
     <string name="signout_text">Sign Out</string>
+    <string name="profile_info">Profile Information</string>
+    <string name="username_text">Username</string>
+    <string name="email_text">Email</string>
+    <string name="team_branch_text">Team Branch</string>
 </resources>

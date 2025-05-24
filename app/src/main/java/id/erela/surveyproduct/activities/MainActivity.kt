@@ -1,9 +1,12 @@
 package id.erela.surveyproduct.activities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
@@ -16,6 +19,7 @@ import androidx.core.content.edit
 import androidx.core.graphics.toColorInt
 import androidx.viewpager2.widget.ViewPager2
 import app.rive.runtime.kotlin.core.Rive
+import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.adapters.home_nav.HomeNavPagerAdapter
 import id.erela.surveyproduct.databinding.ActivityMainBinding
@@ -60,9 +64,11 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
         startSurveyFragment?.callNetwork()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun init() {
         binding.apply {
             Rive.init(applicationContext)
+            versionText.text = "Version ${BuildConfig.VERSION_NAME} Build ${BuildConfig.VERSION_CODE}"
             onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     binding.apply {
@@ -124,11 +130,13 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                     when (position) {
                         0 -> {
                             titleBar.alpha = 1f
+                            versionText.alpha = 0f
                             addButton.hide()
                         }
 
                         1 -> {
                             titleBar.alpha = 1f
+                            versionText.alpha = 0f
                             if (addButton.isExtended)
                                 addButton.shrink()
                             addButton.text = getString(R.string.add_outlet_title)
@@ -148,6 +156,7 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
 
                         2 -> {
                             titleBar.alpha = 1f
+                            versionText.alpha = 0f
                             if (!addButton.isExtended)
                                 addButton.extend()
                             addButton.text = getString(R.string.start_survey_now)
@@ -163,11 +172,13 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
 
                         3 -> {
                             titleBar.alpha = 1 - positionOffset
+                            versionText.alpha = positionOffset
                             addButton.hide()
                         }
 
                         4 -> {
                             titleBar.alpha = 0f
+                            versionText.alpha = 1f
                             addButton.hide()
                         }
                     }
