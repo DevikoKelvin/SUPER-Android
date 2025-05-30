@@ -4,6 +4,16 @@ plugins {
     id 'kotlin-parcelize'
 }
 
+def getVerCode() {
+    def propFile = file("../buildNumber.properties")
+    def properties = new Properties()
+    properties.load(new FileInputStream(propFile))
+    def versionCode = properties['VERSION_CODE'].toInteger()
+    properties['VERSION_CODE'] = (versionCode + 1).toString()
+    properties.store(propFile.newWriter(), null)
+    return versionCode
+}
+
 android {
     namespace 'id.erela.surveyproduct'
     compileSdk 36
@@ -12,8 +22,10 @@ android {
         applicationId "id.erela.surveyproduct"
         minSdk 26
         targetSdk 36
-        versionCode 1
+        versionCode getVerCode()
         versionName "1.6"
+
+        buildConfigField "String", "BUILD_TIMESTAMP", "\"${new Date().format('MMddyy-HHmm')}\""
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -31,7 +43,7 @@ android {
 
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
-            outputFileName = "Erela_Super_${variant.name}_v${variant.versionName}.apk"
+            outputFileName = "Erela_Super_${variant.name}_v${variant.versionName}.${variant.versionCode}.apk"
         }
     }
 
@@ -102,6 +114,7 @@ dependencies {
     implementation libs.swipeRefreshLayout
     implementation libs.shimmer
     implementation libs.rive.android
+    implementation libs.circleimageview
 
     implementation libs.retrofit
     implementation libs.okhttp3
@@ -115,4 +128,7 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
+
+    // Glide
+    annotationProcessor libs.compiler
 }

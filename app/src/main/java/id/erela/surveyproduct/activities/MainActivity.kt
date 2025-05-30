@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
-import android.os.Build
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
@@ -14,11 +14,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.toColorInt
 import androidx.viewpager2.widget.ViewPager2
 import app.rive.runtime.kotlin.core.Rive
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.adapters.home_nav.HomeNavPagerAdapter
@@ -31,10 +36,15 @@ import id.erela.surveyproduct.fragments.ProfileFragment
 import id.erela.surveyproduct.fragments.StartSurveyFragment
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.UserDataHelper
+import id.erela.surveyproduct.objects.UsersSuper
+import androidx.core.view.get
 
 class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionListener {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
+    }
+    private val userData: UsersSuper by lazy {
+        UserDataHelper(applicationContext).getData()
     }
     private lateinit var adapter: HomeNavPagerAdapter
     private val activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
@@ -63,12 +73,46 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
         } as? StartSurveyFragment
         startSurveyFragment?.callNetwork()
     }
-
     @SuppressLint("SetTextI18n")
     private fun init() {
         binding.apply {
             Rive.init(applicationContext)
-            versionText.text = "Version ${BuildConfig.VERSION_NAME} Build ${BuildConfig.VERSION_CODE}"
+
+            bottomNavMenu.itemIconTintList = null
+
+            Glide.with(applicationContext)
+                .asBitmap()
+                .load(BuildConfig.IMAGE_URL + userData.photoProfile)
+                .placeholder(
+                    AppCompatResources.getDrawable(
+                        applicationContext,
+                        R.drawable.profile_icon
+                    )
+                )
+                .error(
+                    AppCompatResources.getDrawable(
+                        applicationContext,
+                        R.drawable.profile_icon
+                    )
+                )
+                .circleCrop()
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        bitmap: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        bottomNavMenu.menu.findItem(R.id.profile)
+                            .setIcon(bitmap.toDrawable(applicationContext.resources))
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        bottomNavMenu.menu.findItem(R.id.profile).setIcon(placeholder)
+                    }
+                })
+
+            versionText.text =
+                "Version ${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}_${BuildConfig.BUILD_TIMESTAMP}"
+
             onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     binding.apply {
@@ -83,7 +127,9 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                                         ConfirmationDialog.ConfirmationDialogListener {
                                         override fun onConfirm() {
                                             finish()
-                                            SharedPreferencesHelper.getSharedPreferences(applicationContext).edit {
+                                            SharedPreferencesHelper.getSharedPreferences(
+                                                applicationContext
+                                            ).edit {
                                                 remove(HistoryFragment.KEY_START)
                                                 remove(HistoryFragment.KEY_END)
                                             }
@@ -100,7 +146,6 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                     }
                 }
             })
-
             val fragmentList = listOf(
                 HomeFragment(this@MainActivity),
                 OutletFragment(this@MainActivity),

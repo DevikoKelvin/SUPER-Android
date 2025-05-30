@@ -3,26 +3,26 @@
     <item
         android:id="@+id/home"
         android:checked="true"
-        android:icon="@drawable/home_icon"
+        android:icon="@drawable/home_icon_nav"
         android:title="@string/home" />
 
     <item
         android:id="@+id/outlet"
-        android:icon="@drawable/outlet_icon"
+        android:icon="@drawable/outlet_icon_nav"
         android:title="@string/list_customer" />
 
     <item
         android:id="@+id/start_survey"
-        android:icon="@drawable/survey_icon"
+        android:icon="@drawable/survey_icon_nav"
         android:title="@string/survey_add" />
 
     <item
         android:id="@+id/history"
-        android:icon="@drawable/history_icon"
+        android:icon="@drawable/history_icon_nav"
         android:title="@string/history" />
 
     <item
         android:id="@+id/profile"
-        android:icon="@drawable/profile_icon"
+        android:icon="@drawable/profile_icon_nav"
         android:title="@string/profile" />
 </menu>

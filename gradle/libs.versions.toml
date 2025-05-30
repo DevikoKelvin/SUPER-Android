@@ -21,6 +21,7 @@ glide = "4.16.0"
 swipeRefreshLayout = "1.1.0"
 shimmer = "0.5.0"
 riveAndroid = "10.0.2"
+circleimageview = "3.1.0"
 
 retrofit = "2.11.0"
 okhttp3 = "5.0.0-alpha.14"
@@ -29,6 +30,7 @@ loggingInterceptor = "5.0.0-alpha.14"
 playServicesMaps = "19.2.0"
 mapLibre = "10.0.2"
 playServicesLocation = "21.3.0"
+compiler = "4.15.1"
 
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -55,6 +57,7 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 swipeRefreshLayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swipeRefreshLayout" }
 shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 rive-android = { module = "app.rive:rive-android", version.ref = "riveAndroid" }
+circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -63,6 +66,7 @@ logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-intercep
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 map-libre = { module = "org.maplibre.gl:android-sdk", version.ref = "mapLibre" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
