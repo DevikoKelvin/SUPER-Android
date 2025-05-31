@@ -4,13 +4,17 @@ plugins {
     id 'kotlin-parcelize'
 }
 
-def getVerCode() {
+def getVerCode(boolean increment = false) {
     def propFile = file("../buildNumber.properties")
     def properties = new Properties()
     properties.load(new FileInputStream(propFile))
     def versionCode = properties['VERSION_CODE'].toInteger()
-    properties['VERSION_CODE'] = (versionCode + 1).toString()
-    properties.store(propFile.newWriter(), null)
+
+    if (increment) {
+        properties['VERSION_CODE'] = (versionCode + 1).toString()
+        properties.store(propFile.newWriter(), null)
+    }
+
     return versionCode
 }
 
@@ -22,7 +26,8 @@ android {
         applicationId "id.erela.surveyproduct"
         minSdk 26
         targetSdk 36
-        versionCode getVerCode()
+
+        versionCode getVerCode(!project.gradle.startParameter.taskNames.any { it.contains('assemble') || it.contains('bundle') })
         versionName "1.6"
 
         buildConfigField "String", "BUILD_TIMESTAMP", "\"${new Date().format('MMddyy-HHmm')}\""
