@@ -3,9 +3,9 @@ package id.erela.surveyproduct.adapters.recycler_view
 import android.annotation.SuppressLint
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.ViewGroup.MarginLayoutParams
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import id.erela.surveyproduct.databinding.ListItemOutletBinding
 import id.erela.surveyproduct.objects.OutletItem

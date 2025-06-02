@@ -7,16 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".activities.LoginActivity">
 
-    <ImageView
+    <com.santalu.diagonalimageview.DiagonalImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="-50dp"
-        android:layout_marginEnd="-250dp"
-        android:layout_marginBottom="-250dp"
-        android:rotation="23"
         android:scaleType="centerCrop"
-        android:src="@drawable/curved2"
+        android:src="@drawable/erelahome"
+        app:di_distance="950dp"
+        app:di_end="right"
+        app:di_start="top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +48,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:realtimeBlurRadius="50dp"
-                app:realtimeOverlayColor="#B2FFFFFF" />
+                app:realtimeOverlayColor="#CCFFFFFF" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -104,11 +102,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="24dp"
+                    android:fontFamily="@font/nucleo"
                     android:gravity="center"
                     android:text="@string/welcome_login"
                     android:textSize="26sp"
                     android:textStyle="bold"
-                    android:fontFamily="@font/nucleo"
                     app:endColor="#2152ff"
                     app:isVertical="true"
                     app:startColor="#80E3FF" />

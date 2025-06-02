@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.Toast
-import androidx.appcompat.content.res.AppCompatResources
 import id.erela.surveyproduct.databinding.CustomToastBinding
 
 class CustomToast(private val context: Context) : Toast(context) {

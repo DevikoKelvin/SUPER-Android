@@ -37,7 +37,6 @@ import id.erela.surveyproduct.fragments.StartSurveyFragment
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.objects.UsersSuper
-import androidx.core.view.get
 
 class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionListener {
     private val binding: ActivityMainBinding by lazy {
@@ -73,6 +72,7 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
         } as? StartSurveyFragment
         startSurveyFragment?.callNetwork()
     }
+
     @SuppressLint("SetTextI18n")
     private fun init() {
         binding.apply {

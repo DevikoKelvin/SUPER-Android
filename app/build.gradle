@@ -120,6 +120,7 @@ dependencies {
     implementation libs.shimmer
     implementation libs.rive.android
     implementation libs.circleimageview
+    implementation libs.diagonal.imageview
 
     implementation libs.retrofit
     implementation libs.okhttp3

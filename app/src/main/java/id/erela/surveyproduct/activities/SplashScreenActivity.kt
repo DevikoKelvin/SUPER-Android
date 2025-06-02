@@ -1,7 +1,7 @@
 package id.erela.surveyproduct.activities
 
-import android.annotation.SuppressLint
 import android.R.anim
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler

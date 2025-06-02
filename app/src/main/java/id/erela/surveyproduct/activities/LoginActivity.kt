@@ -2,15 +2,22 @@ package id.erela.surveyproduct.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.Insets
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityLoginBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
@@ -32,7 +39,30 @@ class LoginActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(binding.root)
 
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val systemBars: Insets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(0, 0, 0, systemBars.bottom)
+            insets
+        }
+
         init()
+    }
+
+    override fun dispatchTouchEvent(motionEvent: MotionEvent): Boolean {
+        if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+            val view: View? = currentFocus
+            if (view is TextInputEditText || view is EditText) {
+                val rect = Rect()
+                view.getGlobalVisibleRect(rect)
+                if (!rect.contains(motionEvent.rawX.toInt(), motionEvent.rawY.toInt())) {
+                    view.clearFocus()
+                    val inputMethodManager =
+                        getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(motionEvent)
     }
 
     @SuppressLint("SetTextI18n")
@@ -43,7 +73,6 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 }
             }
-
             /*usernameField.setText("igun.cantik")
             passwordField.setText("putrikecilayah")*/
 
@@ -125,7 +154,9 @@ class LoginActivity : AppCompatActivity() {
                                                             val result1 = response1.body()
                                                             when (result1?.code) {
                                                                 1 -> {
-                                                                    CustomToast.getInstance(applicationContext)
+                                                                    CustomToast.getInstance(
+                                                                        applicationContext
+                                                                    )
                                                                         .setMessage("Login Successful!")
                                                                         .setFontColor(
                                                                             ContextCompat.getColor(
@@ -154,19 +185,25 @@ class LoginActivity : AppCompatActivity() {
                                                                             result1.usersSuper?.branchID,
                                                                             result1.usersSuper?.branchName
                                                                         )
-                                                                    Handler(mainLooper).postDelayed({
-                                                                        startActivity(
-                                                                            Intent(
-                                                                                this@LoginActivity,
-                                                                                MainActivity::class.java
-                                                                            )
-                                                                        ).also {
-                                                                            finish()
-                                                                        }
-                                                                    }, 2000)
+                                                                    Handler(mainLooper).postDelayed(
+                                                                        {
+                                                                            startActivity(
+                                                                                Intent(
+                                                                                    this@LoginActivity,
+                                                                                    MainActivity::class.java
+                                                                                )
+                                                                            ).also {
+                                                                                finish()
+                                                                            }
+                                                                        },
+                                                                        2000
+                                                                    )
                                                                 }
+
                                                                 0 -> {
-                                                                    CustomToast.getInstance(applicationContext)
+                                                                    CustomToast.getInstance(
+                                                                        applicationContext
+                                                                    )
                                                                         .setMessage(result1.message!!)
                                                                         .setFontColor(
                                                                             ContextCompat.getColor(
@@ -184,7 +221,9 @@ class LoginActivity : AppCompatActivity() {
                                                             }
                                                         } else {
                                                             Log.e("ERROR", "Response body is null")
-                                                            CustomToast.getInstance(applicationContext)
+                                                            CustomToast.getInstance(
+                                                                applicationContext
+                                                            )
                                                                 .setMessage("Something went wrong, please try again.")
                                                                 .setFontColor(
                                                                     ContextCompat.getColor(
@@ -223,7 +262,10 @@ class LoginActivity : AppCompatActivity() {
                                                     throwable: Throwable
                                                 ) {
                                                     loadingBar.visibility = View.GONE
-                                                    Log.e("ERROR", "Super API Error Get User Detail")
+                                                    Log.e(
+                                                        "ERROR",
+                                                        "Super API Error Get User Detail"
+                                                    )
                                                     Log.e("ERROR", throwable.toString())
                                                     throwable.printStackTrace()
                                                     Snackbar.make(

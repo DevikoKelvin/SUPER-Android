@@ -22,6 +22,7 @@ swipeRefreshLayout = "1.1.0"
 shimmer = "0.5.0"
 riveAndroid = "10.0.2"
 circleimageview = "3.1.0"
+diagonalImageview = "1.1.1"
 
 retrofit = "2.11.0"
 okhttp3 = "5.0.0-alpha.14"
@@ -58,6 +59,7 @@ swipeRefreshLayout = { group = "androidx.swiperefreshlayout", name = "swiperefre
 shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 rive-android = { module = "app.rive:rive-android", version.ref = "riveAndroid" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
+diagonal-imageview = { module = "com.github.santalu:diagonal-imageview", version.ref = "diagonalImageview" }
 
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
