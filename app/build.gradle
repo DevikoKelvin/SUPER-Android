@@ -37,12 +37,12 @@ android {
 
     signingConfigs {
         release {
-            /*storeFile file('\\media\\devikokelvin\\DATA\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore,jks')*/
-            storeFile file('D:\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\keystore.jks')
-            /*storeFile file('D:\\Coding\\Android_Studio_Projects\\ERELA\\SUPER\\keystore.jks')*/
-            storePassword "erelasuper"
+            /*storeFile file('\\media\\devikokelvin\\DATA\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\super_keystore,jks')*/
+            storeFile file('D:\\ERELA_Projects\\Android_Mobile_Apps\\SUPER-Android\\super_keystore.jks')
+            /*storeFile file('D:\\Coding\\Android_Studio_Projects\\ERELA\\SUPER\\super_keystore.jks')*/
+            storePassword "erela25"
             keyAlias "supererela"
-            keyPassword "erelasuper"
+            keyPassword "erela25"
         }
     }
 
