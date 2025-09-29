@@ -149,6 +149,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:fontFamily="@font/nucleo"
+                                android:paddingVertical="2dp"
                                 android:text="SUPER (Survey Product Erela) App"
                                 android:textColor="@color/text_primary_color"
                                 android:textSize="18sp"

@@ -236,22 +236,47 @@ class AnswerActivity : AppCompatActivity(),
                                     val result = response.body()
                                     when (result?.code) {
                                         1 -> {
-                                            CheckInActivity.surveyQuestionsList.clear()
-                                            CheckInActivity.questionIdArray.clear()
-                                            CheckInActivity.subQuestionIdArray.clear()
-                                            for (item in result.data!!) {
-                                                CheckInActivity.surveyQuestionsList.add(item!!)
-                                                if (item.subQuestions != null) {
-                                                    for (subItem in item.subQuestions) {
+                                            if (result.data == null) {
+                                                CustomToast.getInstance(applicationContext)
+                                                    .setMessage("There's no survey has been set. Please contact the administrator!")
+                                                    .setBackgroundColor(
+                                                        ContextCompat.getColor(
+                                                            this@AnswerActivity,
+                                                            R.color.custom_toast_background_failed
+                                                        )
+                                                    )
+                                                    .setFontColor(
+                                                        ContextCompat.getColor(
+                                                            this@AnswerActivity,
+                                                            R.color.custom_toast_font_failed
+                                                        )
+                                                    ).show()
+                                                finish()
+                                                if (CheckInActivity.activity != null)
+                                                    CheckInActivity.activity?.finish()
+                                                CheckInActivity.clearCheckInData(this@AnswerActivity)
+                                                CheckInActivity.clearAnswerData(this@AnswerActivity)
+                                                CheckOutActivity.clearCheckOutData(this@AnswerActivity)
+                                            } else {
+                                                CheckInActivity.surveyQuestionsList.clear()
+                                                CheckInActivity.questionIdArray.clear()
+                                                CheckInActivity.subQuestionIdArray.clear()
+                                                for (item in result.data) {
+                                                    CheckInActivity.surveyQuestionsList.add(item!!)
+                                                    if (item.subQuestions != null) {
+                                                        for (subItem in item.subQuestions) {
+                                                            CheckInActivity.questionIdArray.add(item.iD!!)
+                                                            CheckInActivity.subQuestionIdArray.add(
+                                                                subItem?.iD
+                                                            )
+                                                        }
+                                                    } else {
                                                         CheckInActivity.questionIdArray.add(item.iD!!)
-                                                        CheckInActivity.subQuestionIdArray.add(subItem?.iD)
+                                                        CheckInActivity.subQuestionIdArray.add(0)
                                                     }
-                                                } else {
-                                                    CheckInActivity.questionIdArray.add(item.iD!!)
-                                                    CheckInActivity.subQuestionIdArray.add(0)
                                                 }
+                                                adapter.notifyDataSetChanged()
                                             }
-                                            adapter.notifyDataSetChanged()
                                         }
 
                                         0 -> {
@@ -269,8 +294,12 @@ class AnswerActivity : AppCompatActivity(),
                                                         R.color.custom_toast_font_failed
                                                     )
                                                 ).show()
+                                            finish()
                                             if (CheckInActivity.activity != null)
                                                 CheckInActivity.activity?.finish()
+                                            CheckInActivity.clearCheckInData(this@AnswerActivity)
+                                            CheckInActivity.clearAnswerData(this@AnswerActivity)
+                                            CheckOutActivity.clearCheckOutData(this@AnswerActivity)
                                         }
                                     }
                                 }
