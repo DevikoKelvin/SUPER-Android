@@ -4,7 +4,7 @@
 
     <!-- Login Screen -->
     <string name="welcome_login">Welcome back!</string>
-    <string name="username">Username</string>
+    <string name="username">Username or Email</string>
     <string name="password">Password</string>
     <string name="sign_in">SIGN IN</string>
 
