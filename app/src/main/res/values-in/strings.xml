@@ -1,0 +1,100 @@
+<resources>
+    <string name="app_name">SUPER Mobile</string>
+    <string name="app_name_full">SUPER (Survey Product Erela) App</string>
+
+    <!-- Login Screen -->
+    <string name="welcome_login">Selamat Datang!</string>
+    <string name="username">Username atau Email</string>
+    <string name="password">Kata Sandi</string>
+    <string name="sign_in">MASUK</string>
+
+    <!-- Generic String -->
+    <string name="cancel_confirmation">Batal</string>
+    <string name="confirm">Konfirmasi</string>
+    <string name="ok">OK</string>
+    <string name="yes">Ya</string>
+    <string name="no">Tidak</string>
+    <string name="save">Simpan</string>
+    <string name="submit">Kirim</string>
+    <string name="send">Kirim</string>
+    <string name="refresh">Perbarui Lokasi</string>
+    <string name="setNewLocation">Tetapkan Lokasi Baru</string>
+
+    <!-- Menu -->
+    <string name="home">Beranda</string>
+    <string name="erela_corp">PT Erlangga Edi Laboratories</string>
+    <string name="super_desc">Dibuat untuk membantu tim penjualan melakukan survei dengan tim pemasaran mengenai produk Erela yang telah didistribusikan.</string>
+    <string name="work_with_erela">Bekerja dengan ERELA</string>
+    <string name="erela_slogan">Dengan slogan &quot;Anda Sehat Bersamanya&quot;, PT ERELA akan senantiasa menjadi sahabat kesehatan Anda dengan menyediakan produk-produk kesehatan yang berkualitas.</string>
+    <string name="read_more">Baca selengkapnya</string>
+    <string name="list_customer">Pelanggan</string>
+    <string name="survey_add">Mulai</string>
+    <string name="history">Riwayat</string>
+    <string name="profile">Profil</string>
+
+    <!-- Outlets Menu -->
+    <string name="outlet">Outlet/Pelanggan</string>
+    <string name="search_outlet">Cari Nama Outlet</string>
+
+    <!-- Outlet Detail -->
+    <string name="outlet_detail_title">Informasi Outlet</string>
+    <string name="outlet_detail_name">Nama Outlet</string>
+    <string name="outlet_detail_type">Jenis Outlet</string>
+    <string name="outlet_detail_address">Alamat</string>
+    <string name="outlet_detail_pic_number">Nomor Telepon Penanggung Jawab</string>
+    <string name="outlet_detail_phone_number">Nomor Telepon Outlet</string>
+    <string name="outlet_detail_village">Kelurahan</string>
+    <string name="outlet_detail_sub_district">Kecamatan</string>
+    <string name="outlet_detail_city_regency">Kota/Kabupaten</string>
+    <string name="outlet_detail_province">Provinsi</string>
+    <string name="outlet_detail_location">Location</string>
+    <string name="map_location">Peta</string>
+    <string name="map_click_caption">Ketuk peta untuk membuka detail peta</string>
+
+    <!-- Add New Outlet -->
+    <string name="add_outlet_title">Tambah Outlet Baru</string>
+
+    <!-- Edit Outlet -->
+    <string name="edit_outlet_title">Sunting Outlet</string>
+
+    <!-- Start Survey Menu -->
+    <string name="start_survey_title">Survei</string>
+    <string name="start_survey_now">Mulai Survei Sekarang!</string>
+    <string name="today_survey">Pelacakan Survei Hari Ini</string>
+    <string name="previous">Sebelumnya</string>
+    <string name="next">Berikutnya</string>
+    <string name="check_in_title">Check In</string>
+    <string name="choose_outlet">Pilih Outlet</string>
+    <string name="check_in_photo">Foto Check In</string>
+
+    <string name="take_photo">Ambil Foto Sekarang!</string>
+
+    <string name="rewards">Hadiah/Kupingan</string>
+    <string name="is_any_reward">Apakah ada hadiah/kupingan?</string>
+    <string name="reward_photo">Reward Photo</string>
+    <string name="reward_proof_photo">Reward Proof Photo</string>
+    <string name="note_no_reward">Note</string>
+    <string name="check_out_title">Check Out</string>
+    <string name="check_out_photo">Foto Check Out</string>
+
+    <!-- Survey Detail -->
+    <string name="survey_detail_title">Detail Survei</string>
+    <string name="survey_data">Data Survei</string>
+    <string name="surveyors">Pelaku survei</string>
+    <string name="survey_answer">Jawaban</string>
+
+    <!-- Survey History Menu -->
+    <string name="history_survey">Riwayat Survei</string>
+    <string name="filter_survey">Saring</string>
+
+    <!-- History Filter -->
+    <string name="by_date">Berdasarkan Tanggal</string>
+    <string name="range_select">Pilih Rentang Tanggal</string>
+
+    <!-- Profile Menu -->
+    <string name="signout_text">Keluar</string>
+    <string name="profile_info">Informasi Profil</string>
+    <string name="username_text">Username</string>
+    <string name="email_text">Email</string>
+    <string name="team_branch_text">Cabang Tim</string>
+</resources>

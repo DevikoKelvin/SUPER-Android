@@ -101,6 +101,50 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/nucleo"
+                    android:text="@string/outlet_detail_pic_number"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/picNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="14sp"
+                    tools:text="087878787" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nucleo"
+                    android:text="@string/outlet_detail_phone_number"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/nucleo"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="14sp"
+                    tools:text="087878787" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/nucleo"
                     android:text="@string/outlet_detail_village"
                     android:textColor="@color/text_primary_color"
                     android:textSize="16sp"

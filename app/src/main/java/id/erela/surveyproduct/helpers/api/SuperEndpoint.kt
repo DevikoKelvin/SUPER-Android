@@ -50,8 +50,11 @@ interface SuperEndpoint {
     ): Call<InsertAnswerResponse>
 
     // Outlets
+    @FormUrlEncoded
     @POST("outlet")
-    fun showAllOutlets(): Call<OutletListResponse>
+    fun showAllOutlets(
+        @Field("userId") userId: Int
+    ): Call<OutletListResponse>
 
     @FormUrlEncoded
     @POST("outlet/byId")
@@ -85,6 +88,8 @@ interface SuperEndpoint {
         @Field("CityRegency") outletCityRegency: Int,
         @Field("SubDistrict") outletSubDistrict: Int,
         @Field("Village") outletVillage: Long,
+        @Field("PicPhone") picPhone: String,
+        @Field("Phone") phone: String,
         @Field("Latitude") latitude: Double,
         @Field("Longitude") longitude: Double
     ): Call<OutletCreationResponse>
@@ -100,6 +105,8 @@ interface SuperEndpoint {
         @Field("SubDistrict") subDistrict: Int,
         @Field("Village") village: Long,
         @Field("Address") address: String,
+        @Field("PicPhone") picPhone: String,
+        @Field("Phone") phone: String,
         @Field("Latitude") latitude: Double,
         @Field("Longitude") longitude: Double
     ): Call<OutletEditResponse>
@@ -130,7 +137,9 @@ interface SuperEndpoint {
     @POST("check/out")
     fun checkOut(
         @PartMap data: MutableMap<String, RequestBody>,
-        @Part photoOut: MultipartBody.Part?
+        @Part photoOut: MultipartBody.Part?,
+        @Part rewardPhoto: MultipartBody.Part?,
+        @Part rewardProofPhoto: MultipartBody.Part?
     ): Call<CheckOutResponse>
 
     @Multipart

@@ -16,6 +16,10 @@ data class OutletData(
     val outletID: String? = null,
     @field:SerializedName("Address")
     val address: String? = null,
+    @field:SerializedName("PICNumber")
+    val picNumber: String? = null,
+    @field:SerializedName("PhoneNumber")
+    val phoneNumber: String? = null,
     @field:SerializedName("Village")
     val village: String? = null,
     @field:SerializedName("created_at")

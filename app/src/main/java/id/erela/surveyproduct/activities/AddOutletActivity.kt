@@ -1,6 +1,5 @@
 package id.erela.surveyproduct.activities
 
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -77,6 +76,7 @@ class AddOutletActivity : AppCompatActivity() {
         false,
         false,
         false,
+        false,
         false
     )
     private lateinit var dialog: LoadingDialog
@@ -138,6 +138,8 @@ class AddOutletActivity : AppCompatActivity() {
                         isFormEmpty[6] = true
                     if (editedData?.address != null)
                         isFormEmpty[0] = true
+                    if (editedData?.picNumber != null)
+                        isFormEmpty[7] = true
                     outletNameField.setText(editedData?.name)
                     addressField.setText(editedData?.address)
                     selectedType = editedData?.type!!
@@ -145,6 +147,8 @@ class AddOutletActivity : AppCompatActivity() {
                     selectedCityRegency = editedData?.cityRegency!!
                     selectedSubDistrict = editedData?.subDistrict!!
                     selectedVillage = editedData?.village!!
+                    picNumberField.setText(editedData?.picNumber)
+                    phoneNumberField.setText(editedData?.phoneNumber)
                     prepareFormInput()
                     getOutletsCategory()
                     dialog.dismiss()
@@ -223,6 +227,8 @@ class AddOutletActivity : AppCompatActivity() {
                                 selectedSubDistrict,
                                 selectedVillage,
                                 addressField.text.toString(),
+                                picNumberField.text.toString(),
+                                phoneNumberField.text.toString(),
                                 latitude,
                                 longitude
                             ).enqueue(object : Callback<OutletEditResponse> {
@@ -363,6 +369,8 @@ class AddOutletActivity : AppCompatActivity() {
                                 selectedCityRegency,
                                 selectedSubDistrict,
                                 selectedVillage,
+                                picNumberField.text.toString(),
+                                phoneNumberField.text.toString(),
                                 latitude,
                                 longitude
                             ).enqueue(object : Callback<OutletCreationResponse> {
@@ -499,7 +507,7 @@ class AddOutletActivity : AppCompatActivity() {
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (currentFocus != null) {
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
         return super.dispatchTouchEvent(ev)
@@ -573,6 +581,13 @@ class AddOutletActivity : AppCompatActivity() {
                 }
 
                 override fun afterTextChanged(editable: Editable?) {
+                    if (editable!!.isEmpty()) {
+                        outletNameFieldLayout.error = "Outlet name is required"
+                        isFormEmpty[0] = false
+                    } else {
+                        outletNameFieldLayout.error = null
+                        isFormEmpty[0] = true
+                    }
                 }
             })
             addressField.addTextChangedListener(object : TextWatcher {
@@ -600,6 +615,47 @@ class AddOutletActivity : AppCompatActivity() {
                 }
 
                 override fun afterTextChanged(editable: Editable?) {
+                    if (editable!!.isEmpty()) {
+                        addressFieldLayout.error = "Address is required"
+                        isFormEmpty[6] = false
+                    } else {
+                        addressFieldLayout.error = null
+                        isFormEmpty[6] = true
+                    }
+                }
+            })
+            picNumberField.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    if (s!!.isEmpty()) {
+                        picNumberFieldLayout.error = "PIC Number is required"
+                        isFormEmpty[7] = false
+                    } else {
+                        picNumberFieldLayout.error = null
+                        isFormEmpty[7] = true
+                    }
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                    if (s!!.isEmpty()) {
+                        picNumberFieldLayout.error = "PIC Number is required"
+                        isFormEmpty[7] = false
+                    } else {
+                        picNumberFieldLayout.error = null
+                        isFormEmpty[7] = true
+                    }
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
                 }
             })
         }
@@ -758,7 +814,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                         id: Long
                                                     ) {
                                                         selectedType =
-                                                            if (position == 0) 0 else result.data!![position - 1]?.iD!!.toInt()
+                                                            if (position == 0) 0 else result.data!![position - 1]?.iD!!
                                                         isFormEmpty[1] = selectedType != 0
                                                         if (selectedType != 0)
                                                             typeDropdownLayout.strokeColor =
@@ -981,7 +1037,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                         selectedProvince =
                                                             if (position == 0) 0 else result.data?.get(
                                                                 position - 1
-                                                            )?.id!!.toInt()
+                                                            )?.id!!
                                                         isFormEmpty[2] = selectedProvince != 0
                                                         if (selectedProvince != 0) {
                                                             provinceDropdownLayout.strokeColor =
@@ -1125,7 +1181,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         cityRegencyDropdownAdapter.notifyDataSetChanged()
                                         if (selectedCityRegency != 0) {
                                             for (i in 0 until result.regionsData!!.cities!!.size) {
-                                                if (result.regionsData.cities?.get(i)?.id == selectedCityRegency)
+                                                if (result.regionsData.cities[i]?.id == selectedCityRegency)
                                                     cityRegencyDropdown.setSelection(
                                                         cityRegencyDropdownAdapter.getPosition(
                                                             result.regionsData.cities[i]?.name
@@ -1157,7 +1213,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                         }
                                                     }
                                                     selectedCityRegency =
-                                                        if (position == 0) 0 else result.regionsData?.cities!![position - 1]?.id!!.toInt()
+                                                        if (position == 0) 0 else result.regionsData?.cities!![position - 1]?.id!!
                                                     isFormEmpty[3] = selectedCityRegency != 0
                                                     if (selectedCityRegency != 0) {
                                                         cityRegencyDropdownLayout.strokeColor =
@@ -1230,7 +1286,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                             villageDropdown.setSelection(0)
                                                         }
                                                         selectedSubDistrict =
-                                                            if (position == 0) 0 else result.regionsData.districts[position - 1]?.id!!.toInt()
+                                                            if (position == 0) 0 else result.regionsData.districts[position - 1]?.id!!
                                                         isFormEmpty[4] = selectedSubDistrict != 0
                                                         if (selectedSubDistrict != 0) {
                                                             subDistrictDropdownLayout.strokeColor =

@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class CheckInOutAdapter(
-    private val checkInOutHistoryItemList: ArrayList<CheckInOutHistoryItem?>
+    private val checkInOutHistoryItemList: List<CheckInOutHistoryItem?>
 ) : RecyclerView.Adapter<CheckInOutAdapter.ViewHolder>() {
     private lateinit var onCheckInOutItemClickListener: OnCheckInOutItemClickListener
 
@@ -48,15 +48,15 @@ class CheckInOutAdapter(
                 val formatedCheckInTime = parsedCheckInTime?.let { timeOutputFormat.format(it) }
                 var formatedCheckOutTime = "-"
                 if (item?.checkOutTime != null) {
-                    val parsedCheckOutTime = inputFormat.parse(item.checkOutTime.toString())
+                    val parsedCheckOutTime = inputFormat.parse(item.checkOutTime)
                     formatedCheckOutTime = parsedCheckOutTime?.let { timeOutputFormat.format(it) }.toString()
                 }
 
                 date.text = formattedDate
                 outletName.text = item?.outletName
                 outletAddress.text = item?.outletAddress
-                checkInTime.text = "Checked In\n${formatedCheckInTime ?: "-"}"
-                checkOutTime.text = "Checked Out\n${formatedCheckOutTime}"
+                checkInTime.text = "Checked In${formatedCheckInTime ?: "-"}"
+                checkOutTime.text = "Checked Out${formatedCheckOutTime}"
 
                 itemView.setOnClickListener {
                     onCheckInOutItemClickListener.onCheckInOutItemClick(item)

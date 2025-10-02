@@ -13,6 +13,7 @@
     <string name="confirm">Confirm</string>
     <string name="ok">OK</string>
     <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="save">Save</string>
     <string name="submit">Submit</string>
     <string name="send">Send</string>
@@ -40,6 +41,8 @@
     <string name="outlet_detail_name">Outlet Name</string>
     <string name="outlet_detail_type">Outlet Type</string>
     <string name="outlet_detail_address">Address</string>
+    <string name="outlet_detail_pic_number">PIC Number</string>
+    <string name="outlet_detail_phone_number">Outlet\'s Phone Number</string>
     <string name="outlet_detail_village">Village</string>
     <string name="outlet_detail_sub_district">Sub-District</string>
     <string name="outlet_detail_city_regency">City/Regency</string>
@@ -66,6 +69,11 @@
 
     <string name="take_photo">Take Photo Now!</string>
 
+    <string name="rewards">Rewards</string>
+    <string name="is_any_reward">Are there any rewards?</string>
+    <string name="reward_photo">Reward Photo</string>
+    <string name="reward_proof_photo">Reward Proof Photo</string>
+    <string name="note_no_reward">Note</string>
     <string name="check_out_title">Check Out</string>
     <string name="check_out_photo">Check Out Photo</string>
 

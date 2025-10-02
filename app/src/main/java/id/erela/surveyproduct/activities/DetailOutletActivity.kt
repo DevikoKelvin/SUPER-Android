@@ -142,6 +142,10 @@ class DetailOutletActivity : AppCompatActivity() {
                                         outletName.text = outlet.name
                                         outletID.text = outlet.outletID
                                         address.text = outlet.address
+                                        picNumber.text = outlet.picNumber
+                                        phone.text = if (!outlet.phoneNumber.toString().isEmpty())
+                                            outlet.phoneNumber
+                                        else "-"
                                         village.text = outlet.villageName
                                         subDistrict.text = outlet.subDistrictName
                                         cityRegency.text = outlet.cityRegencyName

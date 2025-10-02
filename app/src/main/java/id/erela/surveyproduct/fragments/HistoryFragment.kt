@@ -141,7 +141,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
                 mainContainerRefresh.isRefreshing = false
             }
 
-            adapter = CheckInOutAdapter(checkInOutHistory).also {
+            adapter = CheckInOutAdapter(checkInOutHistory.asReversed()).also {
                 with(it) {
                     setOnTodayTrackingItemClickListener(object :
                         CheckInOutAdapter.OnCheckInOutItemClickListener {

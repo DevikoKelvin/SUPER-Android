@@ -15,10 +15,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.adapters.recycler_view.OutletAdapter
 import id.erela.surveyproduct.databinding.BsSelectOutletBinding
+import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.OutletItem
 import id.erela.surveyproduct.objects.OutletListResponse
+import id.erela.surveyproduct.objects.UsersSuper
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,6 +30,9 @@ import java.util.Locale
 class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
     private val binding: BsSelectOutletBinding by lazy {
         BsSelectOutletBinding.inflate(layoutInflater)
+    }
+    private val userData: UsersSuper by lazy {
+        UserDataHelper(context).getData()
     }
     private var outletList = ArrayList<OutletItem>()
     private lateinit var adapter: OutletAdapter
@@ -43,7 +48,6 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
 
         init()
     }
-
     @SuppressLint("NotifyDataSetChanged")
     private fun init() {
         binding.apply {
@@ -91,7 +95,7 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
             }
 
             try {
-                AppAPI.superEndpoint.showAllOutlets()
+                AppAPI.superEndpoint.showAllOutlets(userData.iD!!)
                     .enqueue(object : Callback<OutletListResponse> {
                         override fun onResponse(
                             call: Call<OutletListResponse>,
@@ -113,6 +117,8 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                                                 outletID,
                                                                 typeName,
                                                                 address,
+                                                                picNumber,
+                                                                phoneNumber,
                                                                 village,
                                                                 creatorID,
                                                                 createdAt,

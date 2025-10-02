@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
@@ -72,6 +73,14 @@ class CheckInActivity : AppCompatActivity() {
                     photoPlaceholder.visibility = View.GONE
                     photoPreview.visibility = View.VISIBLE
                     photoPreview.setImageURI(imageUri)
+                } else {
+                    imageUri = null
+                    sharedPreferences.edit {
+                        remove(IMAGE_URI)
+                    }
+                    photoContainer.visibility = View.GONE
+                    photoPlaceholder.visibility = View.VISIBLE
+                    photoPreview.visibility = View.GONE
                 }
             }
         }

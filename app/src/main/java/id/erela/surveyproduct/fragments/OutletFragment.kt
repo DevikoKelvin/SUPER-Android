@@ -15,10 +15,12 @@ import id.erela.surveyproduct.R
 import id.erela.surveyproduct.activities.DetailOutletActivity
 import id.erela.surveyproduct.adapters.recycler_view.OutletAdapter
 import id.erela.surveyproduct.databinding.FragmentOutletBinding
+import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
 import id.erela.surveyproduct.objects.OutletItem
 import id.erela.surveyproduct.objects.OutletListResponse
+import id.erela.surveyproduct.objects.UsersSuper
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,6 +30,9 @@ import java.util.Locale
 @SuppressLint("NotifyDataSetChanged")
 class OutletFragment(private val context: Context) : Fragment() {
     private var binding: FragmentOutletBinding? = null
+    private val userData: UsersSuper by lazy {
+        UserDataHelper(context).getData()
+    }
     private lateinit var adapter: OutletAdapter
     private var outletList = ArrayList<OutletItem>()
     private var isInitialized = false
@@ -144,7 +149,7 @@ class OutletFragment(private val context: Context) : Fragment() {
             }
 
             try {
-                AppAPI.superEndpoint.showAllOutlets()
+                AppAPI.superEndpoint.showAllOutlets(userData.iD!!)
                     .enqueue(object : Callback<OutletListResponse> {
                         override fun onResponse(
                             call: Call<OutletListResponse>,
@@ -167,6 +172,8 @@ class OutletFragment(private val context: Context) : Fragment() {
                                                                 outletID,
                                                                 typeName,
                                                                 address,
+                                                                picNumber,
+                                                                phoneNumber,
                                                                 village,
                                                                 creatorID,
                                                                 createdAt,

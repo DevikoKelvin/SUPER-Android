@@ -69,6 +69,8 @@ class CheckOutActivity : AppCompatActivity() {
     private var longitude: Double = 0.0
     private var cameraCaptureFileName: String = ""
     private var imageUri: Uri? = null
+    private var rewardImageUri: Uri? = null
+    private var rewardProofImageUri: Uri? = null
     private var answerGroupId = 0
     private lateinit var dialog: LoadingDialog
     private val sharedPreferences: SharedPreferences by lazy {
@@ -87,15 +89,76 @@ class CheckOutActivity : AppCompatActivity() {
                     photoPlaceholder.visibility = View.GONE
                     photoPreview.visibility = View.VISIBLE
                     photoPreview.setImageURI(imageUri)
+                } else {
+                    imageUri = null
+                    sharedPreferences.edit {
+                        remove(IMAGE_URI)
+                    }
+                    photoContainer.visibility = View.GONE
+                    photoPlaceholder.visibility = View.VISIBLE
+                    photoPreview.visibility = View.GONE
                 }
             }
         }
     }
+    private val rewardPhotoLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        with(it) {
+            binding.apply {
+                if (resultCode == RESULT_OK) {
+                    sharedPreferences.edit {
+                        putString(REWARD_URI, rewardImageUri.toString())
+                    }
+                    rewardPhotoContainer.visibility = View.VISIBLE
+                    rewardPhotoPlaceholder.visibility = View.GONE
+                    rewardPhotoPreview.visibility = View.VISIBLE
+                    rewardPhotoPreview.setImageURI(rewardImageUri)
+                } else {
+                    rewardImageUri = null
+                    sharedPreferences.edit {
+                        remove(REWARD_URI)
+                    }
+                    rewardPhotoContainer.visibility = View.GONE
+                    rewardPhotoPlaceholder.visibility = View.VISIBLE
+                    rewardPhotoPreview.visibility = View.GONE
+                }
+            }
+        }
+    }
+    private val rewardProofPhotoLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            with(it) {
+                binding.apply {
+                    if (resultCode == RESULT_OK) {
+                        sharedPreferences.edit {
+                            putString(REWARD_PROOF_URI, rewardProofImageUri.toString())
+                        }
+                        rewardProofPhotoContainer.visibility = View.VISIBLE
+                        rewardProofPhotoPlaceholder.visibility = View.GONE
+                        rewardProofPhotoPreview.visibility = View.VISIBLE
+                        rewardProofPhotoPreview.setImageURI(rewardProofImageUri)
+                    } else {
+                        rewardProofImageUri = null
+                        sharedPreferences.edit {
+                            remove(REWARD_PROOF_URI)
+                        }
+                        rewardProofPhotoContainer.visibility = View.GONE
+                        rewardProofPhotoPlaceholder.visibility = View.VISIBLE
+                        rewardProofPhotoPreview.visibility = View.GONE
+                    }
+                }
+            }
+        }
 
     companion object {
         const val LATITUDE = "CHECK_OUT_LATITUDE"
         const val LONGITUDE = "CHECK_OUT_LONGITUDE"
         const val IMAGE_URI = "CHECK_OUT_IMAGE_URI"
+        const val REWARD_URI = "REWARD_IMAGE_URI"
+        const val REWARD_PROOF_URI = "REWARD_PROOF_IMAGE_URI"
 
         fun start(
             context: Context,
@@ -123,6 +186,8 @@ class CheckOutActivity : AppCompatActivity() {
                 remove(IMAGE_URI)
                 remove(LATITUDE)
                 remove(LONGITUDE)
+                remove(REWARD_URI)
+                remove(REWARD_PROOF_URI)
             }
         }
     }
@@ -142,12 +207,62 @@ class CheckOutActivity : AppCompatActivity() {
         init()
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PermissionHelper.REQUEST_CODE_CAMERA) {
+            if (PermissionHelper.isPermissionGranted(
+                    this@CheckOutActivity,
+                    PermissionHelper.CAMERA
+                )
+            ) {
+                // Determine which camera action was requested and open the appropriate camera
+                when (cameraCaptureFileName.substringBeforeLast("_")) {
+                    "Super_CheckOut_Reward_Capture" -> openRewardPhotoCamera()
+                    "Super_CheckOut_RewardProof_Capture" -> openRewardProofCamera()
+                    else -> openCamera() // Fallback to original if no specific reward capture name
+                }
+            } else {
+                PermissionHelper.requestPermission(
+                    this@CheckOutActivity,
+                    arrayOf(PermissionHelper.CAMERA),
+                    PermissionHelper.REQUEST_CODE_CAMERA
+                )
+            }
+        }
+        if (requestCode == PermissionHelper.REQUEST_LOCATION_GPS) {
+            if (isLocationEnabled()) {
+                getLastKnownLocation()
+            } else {
+                showLocationError()
+                getLastKnownLocation()
+            }
+        }
+    }
+
     private fun init() {
         binding.apply {
             backButton.setOnClickListener {
                 onBackPressedDispatcher.onBackPressed()
             }
 
+            rewardYes.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    rewardYesContainer.visibility = View.VISIBLE
+                    rewardNoContainer.visibility = View.GONE
+                }
+            }
+
+            rewardNo.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    rewardNoContainer.visibility = View.VISIBLE
+                    rewardYesContainer.visibility = View.GONE
+                }
+            }
+            // Restore imageUri for CheckOut photo
             imageUri =
                 sharedPreferences.getString(IMAGE_URI, null)?.toUri()
             imageUri?.let {
@@ -156,6 +271,25 @@ class CheckOutActivity : AppCompatActivity() {
                 photoPreview.visibility = View.VISIBLE
                 photoPreview.setImageURI(it)
             }
+            // Restore rewardImageUri for Reward Photo
+            rewardImageUri =
+                sharedPreferences.getString(REWARD_URI, null)?.toUri()
+            rewardImageUri?.let {
+                rewardPhotoContainer.visibility = View.VISIBLE
+                rewardPhotoPlaceholder.visibility = View.GONE
+                rewardPhotoPreview.visibility = View.VISIBLE
+                rewardPhotoPreview.setImageURI(it)
+            }
+            // Restore rewardProofImageUri for Reward Proof Photo
+            rewardProofImageUri =
+                sharedPreferences.getString(REWARD_PROOF_URI, null)?.toUri()
+            rewardProofImageUri?.let {
+                rewardProofPhotoContainer.visibility = View.VISIBLE
+                rewardProofPhotoPlaceholder.visibility = View.GONE
+                rewardProofPhotoPreview.visibility = View.VISIBLE
+                rewardProofPhotoPreview.setImageURI(it)
+            }
+
             latitude = sharedPreferences.getFloat(LATITUDE, 0f).toDouble()
             longitude = sharedPreferences.getFloat(LONGITUDE, 0f).toDouble()
             fusedLocationClient =
@@ -176,6 +310,14 @@ class CheckOutActivity : AppCompatActivity() {
                 handlePhotoCapture()
             }
 
+            takePhotoRewardButton.setOnClickListener {
+                handleRewardPhotoCapture()
+            }
+
+            takePhotoRewardProofButton.setOnClickListener {
+                handleRewardProofPhotoCapture()
+            }
+
             submitButton.setOnClickListener {
                 executeUpload()
             }
@@ -186,6 +328,35 @@ class CheckOutActivity : AppCompatActivity() {
         dialog = LoadingDialog(this@CheckOutActivity)
 
         binding.apply {
+            val isRewardYesSelected = rewardYes.isChecked
+
+            if (isRewardYesSelected) {
+                if (rewardImageUri == null) {
+                    CustomToast(applicationContext)
+                        .setMessage("Please take reward photo first!")
+                        .setFontColor(getColor(R.color.custom_toast_font_failed))
+                        .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
+                        .show()
+                    return
+                }
+                if (rewardProofImageUri == null) {
+                    CustomToast(applicationContext)
+                        .setMessage("Please take reward proof photo first!")
+                        .setFontColor(getColor(R.color.custom_toast_font_failed))
+                        .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
+                        .show()
+                    return
+                }
+            } else { // rewardNo is selected
+                if (noteNoRewardField.text.isNullOrBlank()) {
+                    CustomToast(applicationContext)
+                        .setMessage("Please fill the note for no reward!")
+                        .setFontColor(getColor(R.color.custom_toast_font_failed))
+                        .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
+                        .show()
+                    return
+                }
+            }
             val isCheckInUploaded =
                 sharedPreferences.getBoolean(CheckInActivity.CHECK_IN_UPLOADED, false)
             val isSurveyUploaded =
@@ -577,10 +748,22 @@ class CheckOutActivity : AppCompatActivity() {
                 "PhotoOut"
             )
         else null
-        (if (photoCheckOut != null) AppAPI.superEndpoint.checkOut(
-            data,
-            photoCheckOut
-        ) else AppAPI.superEndpoint.checkOutNoPhoto(data)).enqueue(
+        val photoReward = if (rewardImageUri != null)
+            createMultipartBody(
+                rewardImageUri!!,
+                "RewardPhoto"
+            )
+        else null
+        val photoRewardProof = if (rewardProofImageUri != null)
+            createMultipartBody(
+                rewardProofImageUri!!,
+                "RewardProofPhoto"
+            )
+        else null
+
+        (if (photoCheckOut != null && photoReward != null && photoRewardProof != null)
+            AppAPI.superEndpoint.checkOut(data, photoCheckOut, photoReward, photoRewardProof)
+        else AppAPI.superEndpoint.checkOutNoPhoto(data)).enqueue(
             object : Callback<CheckOutResponse> {
                 override fun onResponse(
                     call: Call<CheckOutResponse>,
@@ -773,6 +956,52 @@ class CheckOutActivity : AppCompatActivity() {
         )
     }
 
+    private fun openRewardPhotoCamera() {
+        val timeStamp =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.forLanguageTag("id-ID")).format(Date())
+        cameraCaptureFileName = "Super_CheckOut_Reward_Capture_$timeStamp.jpg"
+        rewardImageUri = contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            ContentValues().also {
+                with(it) {
+                    put(MediaStore.Images.Media.TITLE, cameraCaptureFileName)
+                    put(MediaStore.Images.Media.DESCRIPTION, "Reward Image capture by camera")
+                }
+            }
+        )!!
+
+        rewardPhotoLauncher.launch(
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
+                with(it) {
+                    putExtra(MediaStore.EXTRA_OUTPUT, rewardImageUri)
+                }
+            }
+        )
+    }
+
+    private fun openRewardProofCamera() {
+        val timeStamp =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.forLanguageTag("id-ID")).format(Date())
+        cameraCaptureFileName = "Super_CheckOut_RewardProof_Capture_$timeStamp.jpg"
+        rewardProofImageUri = contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            ContentValues().also {
+                with(it) {
+                    put(MediaStore.Images.Media.TITLE, cameraCaptureFileName)
+                    put(MediaStore.Images.Media.DESCRIPTION, "Reward Proof Image capture by camera")
+                }
+            }
+        )!!
+
+        rewardProofPhotoLauncher.launch(
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
+                with(it) {
+                    putExtra(MediaStore.EXTRA_OUTPUT, rewardProofImageUri)
+                }
+            }
+        )
+    }
+
     private fun handlePhotoCapture() {
         if (PermissionHelper.isPermissionGranted(
                 this@CheckOutActivity,
@@ -780,6 +1009,38 @@ class CheckOutActivity : AppCompatActivity() {
             )
         ) {
             openCamera()
+        } else {
+            PermissionHelper.requestPermission(
+                this@CheckOutActivity,
+                arrayOf(PermissionHelper.CAMERA),
+                PermissionHelper.REQUEST_CODE_CAMERA
+            )
+        }
+    }
+
+    private fun handleRewardPhotoCapture() {
+        if (PermissionHelper.isPermissionGranted(
+                this@CheckOutActivity,
+                PermissionHelper.CAMERA
+            )
+        ) {
+            openRewardPhotoCamera()
+        } else {
+            PermissionHelper.requestPermission(
+                this@CheckOutActivity,
+                arrayOf(PermissionHelper.CAMERA),
+                PermissionHelper.REQUEST_CODE_CAMERA
+            )
+        }
+    }
+
+    private fun handleRewardProofPhotoCapture() {
+        if (PermissionHelper.isPermissionGranted(
+                this@CheckOutActivity,
+                PermissionHelper.CAMERA
+            )
+        ) {
+            openRewardProofCamera()
         } else {
             PermissionHelper.requestPermission(
                 this@CheckOutActivity,
