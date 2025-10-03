@@ -166,7 +166,10 @@ class AddOutletActivity : AppCompatActivity() {
 
             if (!isLocationEnabled()) {
                 CustomToast(applicationContext)
-                    .setMessage("Please turn on your location first!")
+                    .setMessage(
+                        if (getString(R.string.language) == "en") "Please turn on your location first!"
+                        else "Harap aktifkan lokasi terlebih dahulu!"
+                    )
                     .setBackgroundColor(
                         ContextCompat.getColor(
                             applicationContext,
@@ -201,7 +204,8 @@ class AddOutletActivity : AppCompatActivity() {
                     loadingBar.visibility = View.GONE
                     CustomToast.getInstance(applicationContext)
                         .setMessage(
-                            "Please make sure all fields in the form are filled in."
+                            if (getString(R.string.language) == "en") "Please make sure all fields in the form are filled in."
+                            else "Pastikan semua kolom pada formulir telah diisi."
                         )
                         .setBackgroundColor(
                             ContextCompat.getColor(
@@ -243,7 +247,10 @@ class AddOutletActivity : AppCompatActivity() {
                                             when (result?.code) {
                                                 1 -> {
                                                     CustomToast.getInstance(applicationContext)
-                                                        .setMessage("Outlet data successfully updated!")
+                                                        .setMessage(
+                                                            if (getString(R.string.language) == "en") "Outlet data successfully updated!"
+                                                            else "Data outlet berhasil diperbarui!"
+                                                        )
                                                         .setFontColor(
                                                             ContextCompat.getColor(
                                                                 applicationContext,
@@ -280,7 +287,10 @@ class AddOutletActivity : AppCompatActivity() {
                                         } else {
                                             Log.e("ERROR (Update)", "Response body is null")
                                             CustomToast.getInstance(applicationContext)
-                                                .setMessage("Something went wrong, please try again.")
+                                                .setMessage(
+                                                    if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                                    else "Terjadi kesalahan, silakan coba lagi."
+                                                )
                                                 .setFontColor(
                                                     ContextCompat.getColor(
                                                         applicationContext,
@@ -297,7 +307,10 @@ class AddOutletActivity : AppCompatActivity() {
                                     } else {
                                         Log.e("ERROR (Update)", "Response not successful")
                                         CustomToast.getInstance(applicationContext)
-                                            .setMessage("Something went wrong, please try again.")
+                                            .setMessage(
+                                                if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                                else "Terjadi kesalahan, silakan coba lagi."
+                                            )
                                             .setFontColor(
                                                 ContextCompat.getColor(
                                                     applicationContext,
@@ -322,7 +335,10 @@ class AddOutletActivity : AppCompatActivity() {
                                     Log.e("ERROR (Update)", throwable.toString())
                                     finish()
                                     CustomToast.getInstance(applicationContext)
-                                        .setMessage("Something went wrong, please try again.")
+                                        .setMessage(
+                                            if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                            else "Terjadi kesalahan, silakan coba lagi."
+                                        )
                                         .setFontColor(
                                             ContextCompat.getColor(
                                                 applicationContext,
@@ -343,7 +359,10 @@ class AddOutletActivity : AppCompatActivity() {
                             Log.e("ERROR (Update)", jsonException.toString())
                             finish()
                             CustomToast.getInstance(applicationContext)
-                                .setMessage("Something went wrong, please try again.")
+                                .setMessage(
+                                    if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                    else "Terjadi kesalahan, silakan coba lagi."
+                                )
                                 .setFontColor(
                                     ContextCompat.getColor(
                                         applicationContext,
@@ -385,7 +404,10 @@ class AddOutletActivity : AppCompatActivity() {
                                             when (result?.code) {
                                                 1 -> {
                                                     CustomToast.getInstance(applicationContext)
-                                                        .setMessage("New outlet data has been created!")
+                                                        .setMessage(
+                                                            if (getString(R.string.language) == "en") "New outlet data has been created!"
+                                                            else "Data outlet baru telah dibuat!"
+                                                        )
                                                         .setFontColor(
                                                             ContextCompat.getColor(
                                                                 applicationContext,
@@ -422,7 +444,10 @@ class AddOutletActivity : AppCompatActivity() {
                                         } else {
                                             Log.e("ERROR (Creation)", "Response body is null")
                                             CustomToast.getInstance(applicationContext)
-                                                .setMessage("Something went wrong, please try again.")
+                                                .setMessage(
+                                                    if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                                    else "Terjadi kesalahan, silakan coba lagi."
+                                                )
                                                 .setFontColor(
                                                     ContextCompat.getColor(
                                                         applicationContext,
@@ -439,7 +464,10 @@ class AddOutletActivity : AppCompatActivity() {
                                     } else {
                                         Log.e("ERROR (Creation)", "Response not successful")
                                         CustomToast.getInstance(applicationContext)
-                                            .setMessage("Something went wrong, please try again.")
+                                            .setMessage(
+                                                if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                                else "Terjadi kesalahan, silakan coba lagi."
+                                            )
                                             .setFontColor(
                                                 ContextCompat.getColor(
                                                     applicationContext,
@@ -464,7 +492,10 @@ class AddOutletActivity : AppCompatActivity() {
                                     Log.e("ERROR (Creation)", throwable.toString())
                                     finish()
                                     CustomToast.getInstance(applicationContext)
-                                        .setMessage("Something went wrong, please try again.")
+                                        .setMessage(
+                                            if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                            else "Terjadi kesalahan, silakan coba lagi."
+                                        )
                                         .setFontColor(
                                             ContextCompat.getColor(
                                                 applicationContext,
@@ -485,7 +516,10 @@ class AddOutletActivity : AppCompatActivity() {
                             Log.e("ERROR (Creation)", jsonException.toString())
                             finish()
                             CustomToast.getInstance(applicationContext)
-                                .setMessage("Something went wrong, please try again.")
+                                .setMessage(
+                                    if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                    else "Terjadi kesalahan, silakan coba lagi."
+                                )
                                 .setFontColor(
                                     ContextCompat.getColor(
                                         applicationContext,
@@ -522,9 +556,11 @@ class AddOutletActivity : AppCompatActivity() {
                 }
             }
             if (outletNameField.text!!.isEmpty())
-                outletNameFieldLayout.error = "Outlet name is required"
+                outletNameFieldLayout.error =
+                    if (getString(R.string.language) == "en") "Outlet name is required" else "Nama outlet wajib diisi"
             if (addressField.text!!.isEmpty())
-                addressFieldLayout.error = "Address is required"
+                addressFieldLayout.error =
+                    if (getString(R.string.language) == "en") "Address is required" else "Alamat diperlukan"
             if (selectedType == 0)
                 typeDropdownLayout.strokeColor = ContextCompat.getColor(
                     this@AddOutletActivity,
@@ -572,7 +608,8 @@ class AddOutletActivity : AppCompatActivity() {
                     count: Int
                 ) {
                     if (charSequence!!.isEmpty()) {
-                        outletNameFieldLayout.error = "Outlet name is required"
+                        outletNameFieldLayout.error =
+                            if (getString(R.string.language) == "en") "Outlet name is required" else "Nama outlet wajib diisi"
                         isFormEmpty[0] = false
                     } else {
                         outletNameFieldLayout.error = null
@@ -582,7 +619,8 @@ class AddOutletActivity : AppCompatActivity() {
 
                 override fun afterTextChanged(editable: Editable?) {
                     if (editable!!.isEmpty()) {
-                        outletNameFieldLayout.error = "Outlet name is required"
+                        outletNameFieldLayout.error =
+                            if (getString(R.string.language) == "en") "Outlet name is required" else "Nama outlet wajib diisi"
                         isFormEmpty[0] = false
                     } else {
                         outletNameFieldLayout.error = null
@@ -606,7 +644,8 @@ class AddOutletActivity : AppCompatActivity() {
                     count: Int
                 ) {
                     if (charSequence!!.isEmpty()) {
-                        addressFieldLayout.error = "Address is required"
+                        addressFieldLayout.error =
+                            if (getString(R.string.language) == "en") "Address is required" else "Alamat diperlukan"
                         isFormEmpty[6] = false
                     } else {
                         addressFieldLayout.error = null
@@ -616,7 +655,8 @@ class AddOutletActivity : AppCompatActivity() {
 
                 override fun afterTextChanged(editable: Editable?) {
                     if (editable!!.isEmpty()) {
-                        addressFieldLayout.error = "Address is required"
+                        addressFieldLayout.error =
+                            if (getString(R.string.language) == "en") "Address is required" else "Alamat diperlukan"
                         isFormEmpty[6] = false
                     } else {
                         addressFieldLayout.error = null
@@ -627,7 +667,8 @@ class AddOutletActivity : AppCompatActivity() {
             picNumberField.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     if (s!!.isEmpty()) {
-                        picNumberFieldLayout.error = "PIC Number is required"
+                        picNumberFieldLayout.error =
+                            if (getString(R.string.language) == "en") "PIC Number is required" else "Nomor PIC diperlukan"
                         isFormEmpty[7] = false
                     } else {
                         picNumberFieldLayout.error = null
@@ -642,7 +683,8 @@ class AddOutletActivity : AppCompatActivity() {
                     after: Int
                 ) {
                     if (s!!.isEmpty()) {
-                        picNumberFieldLayout.error = "PIC Number is required"
+                        picNumberFieldLayout.error =
+                            if (getString(R.string.language) == "en") "PIC Number is required" else "Nomor PIC diperlukan"
                         isFormEmpty[7] = false
                     } else {
                         picNumberFieldLayout.error = null
@@ -663,7 +705,10 @@ class AddOutletActivity : AppCompatActivity() {
 
     private fun showLocationError() {
         CustomToast(applicationContext)
-            .setMessage("Please turn on your location first!")
+            .setMessage(
+                if (getString(R.string.language) == "en") "Please turn on your location first!"
+                else "Harap aktifkan lokasi terlebih dahulu!"
+            )
             .setBackgroundColor(
                 ContextCompat.getColor(
                     applicationContext,
@@ -784,7 +829,11 @@ class AddOutletActivity : AppCompatActivity() {
                                     when (result?.code) {
                                         1 -> {
                                             val data: ArrayList<String> = ArrayList()
-                                            data.add("Select Outlet Category")
+                                            data.add(
+                                                if (getString(R.string.language) == "en")
+                                                    "Select Outlet Category"
+                                                else "Pilih Kategori Outlet"
+                                            )
                                             result.data?.forEach {
                                                 data.add(it?.type.toString())
                                             }
@@ -852,7 +901,10 @@ class AddOutletActivity : AppCompatActivity() {
                                     Log.e("Response", response.toString())
                                     finish()
                                     CustomToast.getInstance(applicationContext)
-                                        .setMessage("Something went wrong, please try again.")
+                                        .setMessage(
+                                            if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                            else "Terjadi kesalahan, silakan coba lagi."
+                                        )
                                         .setFontColor(
                                             ContextCompat.getColor(
                                                 applicationContext,
@@ -871,7 +923,10 @@ class AddOutletActivity : AppCompatActivity() {
                                 Log.e("Response", response.toString())
                                 finish()
                                 CustomToast.getInstance(applicationContext)
-                                    .setMessage("Something went wrong, please try again.")
+                                    .setMessage(
+                                        if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                        else "Terjadi kesalahan, silakan coba lagi."
+                                    )
                                     .setFontColor(
                                         ContextCompat.getColor(
                                             applicationContext,
@@ -896,7 +951,10 @@ class AddOutletActivity : AppCompatActivity() {
                             Log.e("ERROR (Category)", throwable.toString())
                             finish()
                             CustomToast.getInstance(applicationContext)
-                                .setMessage("Something went wrong, please try again.")
+                                .setMessage(
+                                    if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                    else "Terjadi kesalahan, silakan coba lagi."
+                                )
                                 .setFontColor(
                                     ContextCompat.getColor(
                                         applicationContext,
@@ -917,7 +975,10 @@ class AddOutletActivity : AppCompatActivity() {
                 Log.e("ERROR (Category)", jsonException.toString())
                 finish()
                 CustomToast.getInstance(applicationContext)
-                    .setMessage("Something went wrong, please try again.")
+                    .setMessage(
+                        if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                        else "Terjadi kesalahan, silakan coba lagi."
+                    )
                     .setFontColor(
                         ContextCompat.getColor(
                             applicationContext,
@@ -950,7 +1011,10 @@ class AddOutletActivity : AppCompatActivity() {
                                     when (result?.code) {
                                         1 -> {
                                             val provinceList: ArrayList<String> = ArrayList()
-                                            provinceList.add("Select Province")
+                                            provinceList.add(
+                                                if (getString(R.string.language) == "en") "Select Province"
+                                                else "Pilih Provinsi"
+                                            )
                                             cityRegencyList.add("-")
                                             subDistrictList.add("-")
                                             villageList.add("-")
@@ -1063,7 +1127,10 @@ class AddOutletActivity : AppCompatActivity() {
                                     Log.e("Response", response.toString())
                                     finish()
                                     CustomToast.getInstance(applicationContext)
-                                        .setMessage("Something went wrong, please try again.")
+                                        .setMessage(
+                                            if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                            else "Terjadi kesalahan, silakan coba lagi."
+                                        )
                                         .setFontColor(
                                             ContextCompat.getColor(
                                                 applicationContext,
@@ -1082,7 +1149,10 @@ class AddOutletActivity : AppCompatActivity() {
                                 Log.e("Response", response.toString())
                                 finish()
                                 CustomToast.getInstance(applicationContext)
-                                    .setMessage("Something went wrong, please try again.")
+                                    .setMessage(
+                                        if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                        else "Terjadi kesalahan, silakan coba lagi."
+                                    )
                                     .setFontColor(
                                         ContextCompat.getColor(
                                             applicationContext,
@@ -1107,7 +1177,10 @@ class AddOutletActivity : AppCompatActivity() {
                             Log.e("ERROR (Province)", throwable.toString())
                             finish()
                             CustomToast.getInstance(applicationContext)
-                                .setMessage("Something went wrong, please try again.")
+                                .setMessage(
+                                    if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                    else "Terjadi kesalahan, silakan coba lagi."
+                                )
                                 .setFontColor(
                                     ContextCompat.getColor(
                                         applicationContext,
@@ -1128,7 +1201,10 @@ class AddOutletActivity : AppCompatActivity() {
                 Log.e("ERROR (Province)", jsonException.toString())
                 finish()
                 CustomToast.getInstance(applicationContext)
-                    .setMessage("Something went wrong, please try again.")
+                    .setMessage(
+                        if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                        else "Terjadi kesalahan, silakan coba lagi."
+                    )
                     .setFontColor(
                         ContextCompat.getColor(
                             applicationContext,
@@ -1164,7 +1240,10 @@ class AddOutletActivity : AppCompatActivity() {
                                 when (result?.code) {
                                     1 -> {
                                         cityRegencyList.clear()
-                                        cityRegencyList.add("Select City/Regency")
+                                        cityRegencyList.add(
+                                            if (getString(R.string.language) == "en") "Select City/Regency"
+                                            else "Pilih Kota/Kabupaten"
+                                        )
                                         result.regionsData?.cities?.forEach { citiesItem ->
                                             cityRegencyList.add(
                                                 citiesItem?.name.toString().lowercase()
@@ -1243,7 +1322,10 @@ class AddOutletActivity : AppCompatActivity() {
                                             }
                                         if (result.regionsData?.districts != null) {
                                             subDistrictList.clear()
-                                            subDistrictList.add("Select Sub-District")
+                                            subDistrictList.add(
+                                                if (getString(R.string.language) == "en") "Select Sub-District"
+                                                else "Pilih Kecamatan"
+                                            )
                                             result.regionsData.districts.forEach { districtsItem ->
                                                 subDistrictList.add(
                                                     districtsItem?.name.toString().lowercase()
@@ -1313,7 +1395,10 @@ class AddOutletActivity : AppCompatActivity() {
                                         }
                                         if (result.regionsData?.villages != null) {
                                             villageList.clear()
-                                            villageList.add("Select Village")
+                                            villageList.add(
+                                                if (getString(R.string.language) == "en") "Select Village"
+                                                else "Pilih Kelurahan"
+                                            )
                                             result.regionsData.villages.forEach { villagesItem ->
                                                 villageList.add(
                                                     villagesItem?.name.toString().lowercase()
@@ -1368,7 +1453,10 @@ class AddOutletActivity : AppCompatActivity() {
                                 Log.e("Response", response.toString())
                                 finish()
                                 CustomToast.getInstance(applicationContext)
-                                    .setMessage("Something went wrong, please try again.")
+                                    .setMessage(
+                                        if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                        else "Terjadi kesalahan, silakan coba lagi."
+                                    )
                                     .setFontColor(
                                         ContextCompat.getColor(
                                             applicationContext,
@@ -1387,7 +1475,10 @@ class AddOutletActivity : AppCompatActivity() {
                             Log.e("Response", response.toString())
                             finish()
                             CustomToast.getInstance(applicationContext)
-                                .setMessage("Something went wrong, please try again.")
+                                .setMessage(
+                                    if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                    else "Terjadi kesalahan, silakan coba lagi."
+                                )
                                 .setFontColor(
                                     ContextCompat.getColor(
                                         applicationContext,
@@ -1412,7 +1503,10 @@ class AddOutletActivity : AppCompatActivity() {
                         Log.e("ERROR (Region)", throwable.toString())
                         finish()
                         CustomToast.getInstance(applicationContext)
-                            .setMessage("Something went wrong, please try again.")
+                            .setMessage(
+                                if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                                else "Terjadi kesalahan, silakan coba lagi."
+                            )
                             .setFontColor(
                                 ContextCompat.getColor(
                                     applicationContext,
@@ -1433,7 +1527,10 @@ class AddOutletActivity : AppCompatActivity() {
                 Log.e("ERROR (Province)", jsonException.toString())
                 finish()
                 CustomToast.getInstance(applicationContext)
-                    .setMessage("Something went wrong, please try again.")
+                    .setMessage(
+                        if (getString(R.string.language) == "en") "Something went wrong, please try again."
+                        else "Terjadi kesalahan, silakan coba lagi."
+                    )
                     .setFontColor(
                         ContextCompat.getColor(
                             applicationContext,

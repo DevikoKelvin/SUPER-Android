@@ -5,11 +5,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import id.erela.surveyproduct.R
 import id.erela.surveyproduct.activities.AnswerActivity
 import id.erela.surveyproduct.databinding.ListItemQuestionsBinding
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
@@ -38,12 +40,13 @@ class QuestionSurveyAdapter(
     override fun getItemCount(): Int = questionsArrayList.size
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val item = questionsArrayList[position]
 
         with(holder) {
             binding.apply {
-                questionNumbers.text = "Question ${position + 1}"
+                questionNumbers.text = if (context.getString(R.string.language) == "en") "Question ${position + 1}"
+                else "Pertanyaan ${position + 1}"
                 questions.text = item.question
 
                 answerContainer.visibility = View.VISIBLE
@@ -51,16 +54,22 @@ class QuestionSurveyAdapter(
 
                 when (item.questionType) {
                     "sub" -> {
+                        ratingBar.visibility = View.GONE
                         answerFieldLayout.visibility = View.GONE
                         takePhotoButton.visibility = View.GONE
                         multipleCheckboxAnswerRv.visibility = View.GONE
                         imageAnswer.visibility = View.GONE
+                        scaleAnswer.visibility = View.GONE
+                        scaleText.visibility = View.GONE
                     }
 
                     "photo" -> {
+                        ratingBar.visibility = View.GONE
                         answerFieldLayout.visibility = View.GONE
                         takePhotoButton.visibility = View.VISIBLE
                         multipleCheckboxAnswerRv.visibility = View.GONE
+                        scaleAnswer.visibility = View.GONE
+                        scaleText.visibility = View.GONE
                         val photo =
                             SharedPreferencesHelper.getSharedPreferences(context).getString(
                                 "${AnswerActivity.ANSWER_PHOTO}_${item.iD}_0",
@@ -75,9 +84,12 @@ class QuestionSurveyAdapter(
                     }
 
                     "checkbox" -> {
+                        ratingBar.visibility = View.GONE
                         answerFieldLayout.visibility = View.GONE
                         takePhotoButton.visibility = View.GONE
                         imageAnswer.visibility = View.GONE
+                        scaleAnswer.visibility = View.GONE
+                        scaleText.visibility = View.GONE
                         val checkboxMultipleItem = ArrayList<CheckboxMultipleItem>()
                         for (i in item.checkboxOptions!!.indices) {
                             checkboxMultipleItem.add(
@@ -98,9 +110,12 @@ class QuestionSurveyAdapter(
                     }
 
                     "multiple" -> {
+                        ratingBar.visibility = View.GONE
                         answerFieldLayout.visibility = View.GONE
                         takePhotoButton.visibility = View.GONE
                         imageAnswer.visibility = View.GONE
+                        scaleAnswer.visibility = View.GONE
+                        scaleText.visibility = View.GONE
                         val checkboxMultipleItem = ArrayList<CheckboxMultipleItem>()
                         for (i in item.checkboxOptions!!.indices) {
                             checkboxMultipleItem.add(
@@ -121,10 +136,13 @@ class QuestionSurveyAdapter(
                     }
 
                     "essay" -> {
+                        ratingBar.visibility = View.GONE
                         answerFieldLayout.visibility = View.VISIBLE
                         takePhotoButton.visibility = View.GONE
                         multipleCheckboxAnswerRv.visibility = View.GONE
                         imageAnswer.visibility = View.GONE
+                        scaleAnswer.visibility = View.GONE
+                        scaleText.visibility = View.GONE
                         val savedAnswer = SharedPreferencesHelper.getSharedPreferences(context).getString(
                             "${AnswerActivity.ANSWER_TEXT}_${item.iD}_0",
                             null
@@ -133,7 +151,46 @@ class QuestionSurveyAdapter(
                             answerField.setText(savedAnswer)
                         }
                     }
+
+                    "scale" -> {
+                        ratingBar.visibility = View.GONE
+                        answerFieldLayout.visibility = View.GONE
+                        takePhotoButton.visibility = View.GONE
+                        multipleCheckboxAnswerRv.visibility = View.GONE
+                        imageAnswer.visibility = View.GONE
+                        scaleAnswer.visibility = View.VISIBLE
+                        scaleText.visibility = View.VISIBLE
+                        val savedAnswer = SharedPreferencesHelper.getSharedPreferences(context).getString(
+                            "${AnswerActivity.ANSWER_TEXT}_${item.iD}_0",
+                            null
+                        )
+                        val progress = savedAnswer?.toIntOrNull() ?: 0
+                        if (scaleAnswer.progress != progress) {
+                            scaleAnswer.progress = progress
+                        }
+                    }
                 }
+
+                scaleAnswer.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(
+                        seekBar: SeekBar?,
+                        progress: Int,
+                        fromUser: Boolean
+                    ) {
+                        val answer = progress.toString()
+                        SharedPreferencesHelper.getSharedPreferences(context).edit {
+                            putString("${AnswerActivity.ANSWER_TEXT}_${item.iD}_0", answer)
+                            apply()
+                        }
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                    }
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    }
+
+                })
 
                 answerField.addTextChangedListener { editable ->
                     val answer = editable.toString()
@@ -146,7 +203,7 @@ class QuestionSurveyAdapter(
                 takePhotoButton.setOnClickListener {
                     onQuestionItemActionClickListener.onTakePhotoButtonClick(
                         position,
-                        item.iD!!.toInt(),
+                        item.iD!!,
                         null
                     )
                 }

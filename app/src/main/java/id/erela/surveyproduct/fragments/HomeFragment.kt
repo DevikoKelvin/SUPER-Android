@@ -62,11 +62,18 @@ class HomeFragment(private val context: Context) : Fragment() {
                 )
                 .into(photoProfile)
             val currentDateTime = LocalDateTime.now()
-            greetings.text = "Good ${
+            greetings.text = if (context.getString(R.string.language) == "en") "Good ${
                 when (currentDateTime.hour) {
                     in 0..11 -> "morning,"
                     in 12..18 -> "afternoon,"
                     else -> "evening,"
+                }
+            }"
+            else "Selamat ${
+                when (currentDateTime.hour) {
+                    in 0..11 -> "pagi,"
+                    in 12..18 -> "siang,"
+                    else -> "sore,"
                 }
             }"
             fullName.text = "${userData.fullName}!"

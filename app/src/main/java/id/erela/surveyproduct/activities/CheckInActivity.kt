@@ -39,9 +39,16 @@ import id.erela.surveyproduct.databinding.ActivityCheckInBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
 import id.erela.surveyproduct.helpers.PermissionHelper
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
+import id.erela.surveyproduct.helpers.UserDataHelper
+import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
+import id.erela.surveyproduct.objects.GenericResponse
 import id.erela.surveyproduct.objects.OutletItem
 import id.erela.surveyproduct.objects.QuestionsItem
+import id.erela.surveyproduct.objects.UsersSuper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -50,6 +57,9 @@ class CheckInActivity : AppCompatActivity() {
     private val binding: ActivityCheckInBinding by lazy {
         ActivityCheckInBinding.inflate(layoutInflater)
     }
+    private val userData: UsersSuper by lazy {
+        UserDataHelper(this@CheckInActivity).getData()
+    }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var selectedOutlet = 0
     private var latitude: Double = 0.0
@@ -57,6 +67,7 @@ class CheckInActivity : AppCompatActivity() {
     private var longitude: Double = 0.0
     private var cameraCaptureFileName: String = ""
     private var imageUri: Uri? = null
+    private lateinit var dialog: LoadingDialog
     private val sharedPreferences: SharedPreferences by lazy {
         SharedPreferencesHelper.getSharedPreferences(applicationContext)
     }
@@ -98,7 +109,6 @@ class CheckInActivity : AppCompatActivity() {
         var questionIdArray = ArrayList<Int>()
         var subQuestionIdArray = ArrayList<Int?>()
         val surveyQuestionsList = ArrayList<QuestionsItem>()
-
         @SuppressLint("StaticFieldLeak")
         var activity: Activity? = null
 
@@ -243,6 +253,7 @@ class CheckInActivity : AppCompatActivity() {
 
     private fun init() {
         binding.apply {
+            dialog = LoadingDialog(this@CheckInActivity)
             onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     clearCheckInData(this@CheckInActivity)
@@ -251,7 +262,6 @@ class CheckInActivity : AppCompatActivity() {
                     finish()
                 }
             })
-
             val isCheckInUploaded = sharedPreferences.getBoolean(CHECK_IN_UPLOADED, false)
             if (isCheckInUploaded) {
                 AnswerActivity.start(
@@ -267,7 +277,6 @@ class CheckInActivity : AppCompatActivity() {
             backButton.setOnClickListener {
                 onBackPressedDispatcher.onBackPressed()
             }
-
             // Restore outlet text
             selectedOutlet = sharedPreferences.getInt(SELECTED_OUTLET, 0)
             selectedOutletText =
@@ -313,21 +322,76 @@ class CheckInActivity : AppCompatActivity() {
 
             nextButton.setOnClickListener {
                 if (selectedOutlet == 0 || imageUri == null) {
-                    CustomToast(applicationContext).setMessage(
-                        if (selectedOutlet == 0) "Please select outlet first!"
-                        else "Please take photo first!"
-                    ).setFontColor(getColor(R.color.custom_toast_font_failed))
+                    CustomToast(applicationContext)
+                        .setMessage(
+                            if (selectedOutlet == 0) {
+                                if (getString(R.string.language) == "en") "Please select outlet first!"
+                                else "Silakan pilih outlet terlebih dahulu!"
+                            } else {
+                                if (getString(R.string.language) == "en") "Please take photo first!"
+                                else "Silakan ambil foto terlebih dahulu!"
+                            }
+                        )
+                        .setFontColor(getColor(R.color.custom_toast_font_failed))
                         .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
                         .show()
                     return@setOnClickListener
                 } else {
-                    AnswerActivity.start(
-                        this@CheckInActivity,
-                        sharedPreferences.getInt(SELECTED_OUTLET, 0),
-                        imageUri!!,
-                        sharedPreferences.getFloat(LATITUDE, 0f).toDouble(),
-                        sharedPreferences.getFloat(LONGITUDE, 0f).toDouble()
-                    )
+                    if (dialog.window != null)
+                        dialog.show()
+                    AppAPI.superEndpoint.isAlreadyChecked(userData.iD!!, selectedOutlet)
+                        .enqueue(object : Callback<GenericResponse> {
+                            override fun onResponse(
+                                call: Call<GenericResponse?>,
+                                response: Response<GenericResponse?>
+                            ) {
+                                dialog.dismiss()
+                                if (response.isSuccessful) {
+                                    if (response.body() != null) {
+                                        val result = response.body()
+                                        when (result?.code) {
+                                            1 -> {
+                                                AnswerActivity.start(
+                                                    this@CheckInActivity,
+                                                    sharedPreferences.getInt(SELECTED_OUTLET, 0),
+                                                    imageUri!!,
+                                                    sharedPreferences.getFloat(LATITUDE, 0f)
+                                                        .toDouble(),
+                                                    sharedPreferences.getFloat(LONGITUDE, 0f)
+                                                        .toDouble()
+                                                )
+                                            }
+
+                                            else -> {
+                                                CustomToast(applicationContext)
+                                                    .setMessage(result?.message.toString())
+                                                    .setFontColor(getColor(R.color.custom_toast_font_failed))
+                                                    .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
+                                                    .show()
+                                                onBackPressedDispatcher.onBackPressed()
+                                                return
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(
+                                call: Call<GenericResponse?>,
+                                throwable: Throwable
+                            ) {
+                                dialog.dismiss()
+                                throwable.printStackTrace()
+                                CustomToast(applicationContext)
+                                    .setMessage(
+                                        if (getString(R.string.language) == "en") "Can't check your check in history. Please try again!"
+                                        else "Tidak dapat memeriksa riwayat check in. Mohon coba lagi!"
+                                    )
+                                    .setFontColor(getColor(R.color.custom_toast_font_failed))
+                                    .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
+                                    .show()
+                            }
+                        })
                 }
             }
         }
@@ -425,7 +489,10 @@ class CheckInActivity : AppCompatActivity() {
 
     private fun showLocationError() {
         CustomToast(applicationContext)
-            .setMessage("Please turn on your location first!")
+            .setMessage(
+                if (getString(R.string.language) == "en") "Please turn on your location first!"
+                else "Harap aktifkan lokasi terlebih dahulu!"
+            )
             .setBackgroundColor(
                 ContextCompat.getColor(
                     applicationContext,
@@ -448,7 +515,7 @@ class CheckInActivity : AppCompatActivity() {
                         SelectOutletBottomSheet.OnOutletSelectedListener {
                         @SuppressLint("SetTextI18n")
                         override fun onOutletSelected(outlet: OutletItem) {
-                            selectedOutlet = outlet.iD!!.toInt()
+                            selectedOutlet = outlet.iD!!
                             selectedOutletText = "${outlet.name} | OutletID: ${outlet.outletID}"
                             outletText.text = selectedOutletText
                             SharedPreferencesHelper.getSharedPreferences(context).edit {

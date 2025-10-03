@@ -1,5 +1,6 @@
 package id.erela.surveyproduct.dialogs
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -30,6 +31,7 @@ class ConfirmationDialog(context: Context): Dialog(context) {
         init()
     }
 
+    @SuppressLint("GestureBackNavigation")
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()

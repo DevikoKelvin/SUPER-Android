@@ -110,8 +110,8 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                     }
                 })
 
-            versionText.text =
-                "Version ${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}_${BuildConfig.BUILD_TIMESTAMP}"
+            versionText.text = if (getString(R.string.language) == "en") "Version ${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}_${BuildConfig.BUILD_TIMESTAMP}"
+            else "Versi ${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}_${BuildConfig.BUILD_TIMESTAMP}"
 
             onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -119,8 +119,9 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                         if (bottomNavMenu.selectedItemId == R.id.home) {
                             val dialog = ConfirmationDialog(
                                 this@MainActivity,
-                                "Are you sure want to quit?",
-                                "Yes"
+                                if (getString(R.string.language) == "en") "Are you sure want to quit?"
+                                else "Apakah yakin ingin keluar?",
+                                if (getString(R.string.language) == "en") "Yes" else "Ya"
                             ).also {
                                 with(it) {
                                     setConfirmationDialogListener(object :
@@ -300,8 +301,9 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
     override fun onSignOut() {
         val dialog = ConfirmationDialog(
             this@MainActivity,
-            "Are you sure you want to sign out?",
-            "Yes"
+            if (getString(R.string.language) == "en") "Are you sure you want to sign out?"
+            else "Apakah Anda yakin ingin keluar?",
+            if (getString(R.string.language) == "en") "Yes" else "Ya"
         ).also {
             with(it) {
                 setConfirmationDialogListener(object :

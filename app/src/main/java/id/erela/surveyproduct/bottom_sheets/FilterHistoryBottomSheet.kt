@@ -9,6 +9,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.datepicker.MaterialDatePicker
+import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.BsFilterHistoryBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -52,7 +53,10 @@ class FilterHistoryBottomSheet(
 
             startDateButton.setOnClickListener {
                 val datePicker = MaterialDatePicker.Builder.datePicker()
-                    .setTitleText("Select Date")
+                    .setTitleText(
+                        if (context.getString(R.string.language) == "en") "Select Date"
+                        else "Pilih Tanggal"
+                    )
                     .setSelection(startCalendar.timeInMillis)
                     .build()
                 datePicker.addOnPositiveButtonClickListener { selection ->
@@ -75,7 +79,10 @@ class FilterHistoryBottomSheet(
 
             endDateButton.setOnClickListener {
                 val datePicker = MaterialDatePicker.Builder.datePicker()
-                    .setTitleText("Select Date")
+                    .setTitleText(
+                        if (context.getString(R.string.language) == "en") "Select Date"
+                        else "Pilih Tanggal"
+                    )
                     .setSelection(nowCalendar.timeInMillis)
                     .build()
                 datePicker.addOnPositiveButtonClickListener { selection ->

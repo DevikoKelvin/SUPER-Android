@@ -204,7 +204,10 @@ class AnswerActivity : AppCompatActivity(),
                     }
                 } else {
                     CustomToast.getInstance(applicationContext)
-                        .setMessage("Please answer all questions")
+                        .setMessage(
+                            if (getString(R.string.language) == "en") "Please answer all questions"
+                            else "Tolong jawab semua pertanyaan"
+                        )
                         .setBackgroundColor(
                             ContextCompat.getColor(
                                 this@AnswerActivity,
@@ -238,7 +241,10 @@ class AnswerActivity : AppCompatActivity(),
                                         1 -> {
                                             if (result.data == null) {
                                                 CustomToast.getInstance(applicationContext)
-                                                    .setMessage("There's no survey has been set. Please contact the administrator!")
+                                                    .setMessage(
+                                                        if (getString(R.string.language) == "en") "There's no survey has been set. Please contact the administrator!"
+                                                        else "Belum ada survei yang ditetapkan. Silakan hubungi administrator!"
+                                                    )
                                                     .setBackgroundColor(
                                                         ContextCompat.getColor(
                                                             this@AnswerActivity,
@@ -281,7 +287,10 @@ class AnswerActivity : AppCompatActivity(),
 
                                         0 -> {
                                             CustomToast.getInstance(applicationContext)
-                                                .setMessage("Something went wrong, please try again later")
+                                                .setMessage(
+                                                    if (getString(R.string.language) == "en") "Something went wrong, please try again later"
+                                                    else "Terjadi kesalahan, silakan coba lagi nanti"
+                                                )
                                                 .setBackgroundColor(
                                                     ContextCompat.getColor(
                                                         this@AnswerActivity,
@@ -312,6 +321,23 @@ class AnswerActivity : AppCompatActivity(),
                         ) {
                             Log.e("ERROR", throwable.toString())
                             throwable.printStackTrace()
+                            CustomToast.getInstance(applicationContext)
+                                .setMessage(
+                                    if (getString(R.string.language) == "en") "Something went wrong, please try again later"
+                                    else "Terjadi kesalahan, silakan coba lagi nanti"
+                                )
+                                .setBackgroundColor(
+                                    ContextCompat.getColor(
+                                        this@AnswerActivity,
+                                        R.color.custom_toast_background_failed
+                                    )
+                                )
+                                .setFontColor(
+                                    ContextCompat.getColor(
+                                        this@AnswerActivity,
+                                        R.color.custom_toast_font_failed
+                                    )
+                                ).show()
                             if (CheckInActivity.activity != null)
                                 CheckInActivity.activity?.finish()
                         }
@@ -319,6 +345,23 @@ class AnswerActivity : AppCompatActivity(),
             } catch (jsonException: JSONException) {
                 Log.e("ERROR", jsonException.toString())
                 jsonException.printStackTrace()
+                CustomToast.getInstance(applicationContext)
+                    .setMessage(
+                        if (getString(R.string.language) == "en") "Something went wrong, please try again later"
+                        else "Terjadi kesalahan, silakan coba lagi nanti"
+                    )
+                    .setBackgroundColor(
+                        ContextCompat.getColor(
+                            this@AnswerActivity,
+                            R.color.custom_toast_background_failed
+                        )
+                    )
+                    .setFontColor(
+                        ContextCompat.getColor(
+                            this@AnswerActivity,
+                            R.color.custom_toast_font_failed
+                        )
+                    ).show()
                 if (CheckInActivity.activity != null)
                     CheckInActivity.activity?.finish()
             }

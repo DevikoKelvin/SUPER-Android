@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import id.erela.surveyproduct.BuildConfig
+import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.FragmentProfileBinding
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.objects.UsersSuper
@@ -58,11 +59,17 @@ class ProfileFragment : Fragment() {
             userCode.text = userUsersSuper.userCode
             userName.text = userUsersSuper.userName
             userMail.text = userUsersSuper.userMail
-            teamBranch.text =
+            teamBranch.text = if (context?.getString(R.string.language) == "en") {
                 if (userUsersSuper.teamName == "" && userUsersSuper.branchName == "") "-"
                 else if (userUsersSuper.teamName == "" && userUsersSuper.branchName != "") "Branch of ${userUsersSuper.branchName}"
                 else if (userUsersSuper.teamName != "" && userUsersSuper.branchName == "") userUsersSuper.teamName
                 else "${userUsersSuper.teamName} of Branch ${userUsersSuper.branchName}"
+            } else {
+                if (userUsersSuper.teamName == "" && userUsersSuper.branchName == "") "-"
+                else if (userUsersSuper.teamName == "" && userUsersSuper.branchName != "") "Cabang ${userUsersSuper.branchName}"
+                else if (userUsersSuper.teamName != "" && userUsersSuper.branchName == "") userUsersSuper.teamName
+                else "${userUsersSuper.teamName} Cabang ${userUsersSuper.branchName}"
+            }
         }
     }
 

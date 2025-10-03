@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SUPER Mobile</string>
     <string name="app_name_full">SUPER (Survey Product Erela) App</string>
+    <string name="language">en</string>
 
     <!-- Login Screen -->
     <string name="welcome_login">Welcome back!</string>

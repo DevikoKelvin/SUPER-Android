@@ -198,7 +198,10 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                 } else {
                                     Log.e("ERROR", "Response body is null")
                                     CustomToast.getInstance(context)
-                                        .setMessage("Something went wrong, please try again.")
+                                        .setMessage(
+                                            if (context.getString(R.string.language) == "en") "Something went wrong, please try again later"
+                                            else "Terjadi kesalahan, silakan coba lagi nanti"
+                                        )
                                         .setFontColor(
                                             ContextCompat.getColor(
                                                 context,
@@ -216,7 +219,10 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                             } else {
                                 Log.e("ERROR", "Response not successful")
                                 CustomToast.getInstance(context)
-                                    .setMessage("Something went wrong, please try again.")
+                                    .setMessage(
+                                        if (context.getString(R.string.language) == "en") "Something went wrong, please try again later"
+                                        else "Terjadi kesalahan, silakan coba lagi nanti"
+                                    )
                                     .setFontColor(
                                         ContextCompat.getColor(
                                             context,
@@ -241,7 +247,10 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                             Log.e("ERROR", throwable.toString())
                             throwable.printStackTrace()
                             CustomToast.getInstance(context)
-                                .setMessage("Something went wrong, please try again.")
+                                .setMessage(
+                                    if (context.getString(R.string.language) == "en") "Something went wrong, please try again later"
+                                    else "Terjadi kesalahan, silakan coba lagi nanti"
+                                )
                                 .setFontColor(
                                     ContextCompat.getColor(
                                         context,
@@ -262,7 +271,10 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                 Log.e("ERROR", jsonException.toString())
                 jsonException.printStackTrace()
                 CustomToast.getInstance(context)
-                    .setMessage("Something went wrong, please try again.")
+                    .setMessage(
+                        if (context.getString(R.string.language) == "en") "Something went wrong, please try again later"
+                        else "Terjadi kesalahan, silakan coba lagi nanti"
+                    )
                     .setFontColor(
                         ContextCompat.getColor(
                             context,

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SUPER Mobile</string>
     <string name="app_name_full">SUPER (Survey Product Erela) App</string>
+    <string name="language">id</string>
 
     <!-- Login Screen -->
     <string name="welcome_login">Selamat Datang!</string>
@@ -71,9 +72,9 @@
 
     <string name="rewards">Hadiah/Kupingan</string>
     <string name="is_any_reward">Apakah ada hadiah/kupingan?</string>
-    <string name="reward_photo">Reward Photo</string>
-    <string name="reward_proof_photo">Reward Proof Photo</string>
-    <string name="note_no_reward">Note</string>
+    <string name="reward_photo">Foto Hadiah/Kupingan</string>
+    <string name="reward_proof_photo">Foto Bukti Penyerahan Hadiah/Kupingan</string>
+    <string name="note_no_reward">Catatan</string>
     <string name="check_out_title">Check Out</string>
     <string name="check_out_photo">Foto Check Out</string>
 

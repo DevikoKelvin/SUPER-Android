@@ -181,7 +181,10 @@ class DetailOutletActivity : AppCompatActivity() {
                                 )
                                 finish()
                                 CustomToast.getInstance(applicationContext)
-                                    .setMessage("Something went wrong, please try again.")
+                                    .setMessage(
+                                        if (getString(R.string.language) == "en") "Something went wrong, please try again later"
+                                        else "Terjadi kesalahan, silakan coba lagi nanti"
+                                    )
                                     .setFontColor(
                                         ContextCompat.getColor(
                                             applicationContext,
@@ -202,7 +205,10 @@ class DetailOutletActivity : AppCompatActivity() {
                             )
                             finish()
                             CustomToast.getInstance(applicationContext)
-                                .setMessage("Something went wrong, please try again.")
+                                .setMessage(
+                                    if (getString(R.string.language) == "en") "Something went wrong, please try again later"
+                                    else "Terjadi kesalahan, silakan coba lagi nanti"
+                                )
                                 .setFontColor(
                                     ContextCompat.getColor(
                                         applicationContext,
@@ -229,7 +235,10 @@ class DetailOutletActivity : AppCompatActivity() {
                 Log.e("ERROR (Outlet Detail)", jsonException.toString())
                 finish()
                 CustomToast.getInstance(applicationContext)
-                    .setMessage("Something went wrong, please try again.")
+                    .setMessage(
+                        if (getString(R.string.language) == "en") "Something went wrong, please try again later"
+                        else "Terjadi kesalahan, silakan coba lagi nanti"
+                    )
                     .setFontColor(
                         ContextCompat.getColor(
                             applicationContext,

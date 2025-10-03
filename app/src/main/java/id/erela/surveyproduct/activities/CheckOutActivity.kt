@@ -249,10 +249,28 @@ class CheckOutActivity : AppCompatActivity() {
                 onBackPressedDispatcher.onBackPressed()
             }
 
+            if (sharedPreferences.getString(REWARD_URI, null) != null ||
+                sharedPreferences.getString(REWARD_PROOF_URI, null) != null
+            ) {
+                rewardYes.isChecked = true
+            }
+
+            if (rewardYes.isChecked) {
+                rewardYesContainer.visibility = View.VISIBLE
+                rewardNoContainer.visibility = View.GONE
+            }
+
+            if (rewardNo.isChecked) {
+                rewardNoContainer.visibility = View.VISIBLE
+                rewardYesContainer.visibility = View.GONE
+            }
+
             rewardYes.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     rewardYesContainer.visibility = View.VISIBLE
                     rewardNoContainer.visibility = View.GONE
+
+                    noteNoRewardField.setText("")
                 }
             }
 
@@ -260,6 +278,20 @@ class CheckOutActivity : AppCompatActivity() {
                 if (isChecked) {
                     rewardNoContainer.visibility = View.VISIBLE
                     rewardYesContainer.visibility = View.GONE
+                    SharedPreferencesHelper.getSharedPreferences(this@CheckOutActivity).edit {
+                        remove(REWARD_URI)
+                        remove(REWARD_PROOF_URI)
+                    }
+                    rewardImageUri = null
+                    rewardProofImageUri = null
+
+                    rewardPhotoContainer.visibility = View.GONE
+                    rewardPhotoPlaceholder.visibility = View.VISIBLE
+                    rewardPhotoPreview.visibility = View.GONE
+
+                    rewardProofPhotoContainer.visibility = View.GONE
+                    rewardProofPhotoPlaceholder.visibility = View.VISIBLE
+                    rewardProofPhotoPreview.visibility = View.GONE
                 }
             }
             // Restore imageUri for CheckOut photo
@@ -333,7 +365,10 @@ class CheckOutActivity : AppCompatActivity() {
             if (isRewardYesSelected) {
                 if (rewardImageUri == null) {
                     CustomToast(applicationContext)
-                        .setMessage("Please take reward photo first!")
+                        .setMessage(
+                            if (getString(R.string.language) == "en") "Please take reward photo first!"
+                            else "Mohon ambil foto hadiah/kupingan terlebih dahulu!"
+                        )
                         .setFontColor(getColor(R.color.custom_toast_font_failed))
                         .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
                         .show()
@@ -341,7 +376,10 @@ class CheckOutActivity : AppCompatActivity() {
                 }
                 if (rewardProofImageUri == null) {
                     CustomToast(applicationContext)
-                        .setMessage("Please take reward proof photo first!")
+                        .setMessage(
+                            if (getString(R.string.language) == "en") "Please take reward proof photo first!"
+                            else "Mohon ambil foto bukti penyerahan terlebih dahulu!"
+                        )
                         .setFontColor(getColor(R.color.custom_toast_font_failed))
                         .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
                         .show()
@@ -350,7 +388,10 @@ class CheckOutActivity : AppCompatActivity() {
             } else { // rewardNo is selected
                 if (noteNoRewardField.text.isNullOrBlank()) {
                     CustomToast(applicationContext)
-                        .setMessage("Please fill the note for no reward!")
+                        .setMessage(
+                            if (getString(R.string.language) == "en") "Please fill the note for no reward!"
+                            else "Silakan isi catatan!"
+                        )
                         .setFontColor(getColor(R.color.custom_toast_font_failed))
                         .setBackgroundColor(getColor(R.color.custom_toast_background_failed))
                         .show()
@@ -406,88 +447,79 @@ class CheckOutActivity : AppCompatActivity() {
             "PhotoIn"
         )!!
 
-        AppAPI.superEndpoint.checkIn(data, photoCheckIn!!)
-            .enqueue(object : Callback<CheckInResponse> {
-                override fun onResponse(
-                    call: Call<CheckInResponse>,
-                    response: Response<CheckInResponse>
-                ) {
-                    dialog.dismiss()
-                    if (response.isSuccessful) {
-                        if (response.body() != null) {
-                            val result = response.body()
-                            when (result?.code) {
-                                1 -> {
-                                    CustomToast(applicationContext)
-                                        .setMessage("Check In Successfully!")
-                                        .setBackgroundColor(
-                                            getColor(R.color.custom_toast_background_success)
-                                        )
-                                        .setFontColor(
-                                            getColor(R.color.custom_toast_font_success)
-                                        ).show()
-                                    CheckInActivity.clearCheckInData(this@CheckOutActivity)
-                                    sharedPreferences.edit {
-                                        putInt(
-                                            CheckInActivity.CHECK_IN_ID,
-                                            result.data?.iD!!
-                                        )
-                                        putInt(
-                                            CheckInActivity.ANSWER_GROUP_ID,
-                                            result.data.answerGroupID!!
-                                        )
-                                        putBoolean(
-                                            CheckInActivity.CHECK_IN_UPLOADED,
-                                            true
-                                        )
-                                    }
-                                    val isCheckInUploaded =
-                                        sharedPreferences.getBoolean(
-                                            CheckInActivity.CHECK_IN_UPLOADED,
-                                            false
-                                        )
-                                    answerGroupId = result.data?.answerGroupID!!
-                                    if (isCheckInUploaded)
-                                        uploadSurveyData()
+        AppAPI.superEndpoint.checkIn(data, photoCheckIn!!).enqueue(object : Callback<CheckInResponse> {
+            override fun onResponse(
+                call: Call<CheckInResponse>,
+                response: Response<CheckInResponse>
+            ) {
+                dialog.dismiss()
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        val result = response.body()
+                        when (result?.code) {
+                            1 -> {
+                                CustomToast(applicationContext)
+                                    .setMessage(
+                                        if (getString(R.string.language) == "en") "Check In Successfully!"
+                                        else "Check In Berhasil!"
+                                    )
+                                    .setBackgroundColor(
+                                        getColor(R.color.custom_toast_background_success)
+                                    )
+                                    .setFontColor(
+                                        getColor(R.color.custom_toast_font_success)
+                                    ).show()
+                                CheckInActivity.clearCheckInData(this@CheckOutActivity)
+                                sharedPreferences.edit {
+                                    putInt(
+                                        CheckInActivity.CHECK_IN_ID,
+                                        result.data?.iD!!
+                                    )
+                                    putInt(
+                                        CheckInActivity.ANSWER_GROUP_ID,
+                                        result.data.answerGroupID!!
+                                    )
+                                    putBoolean(
+                                        CheckInActivity.CHECK_IN_UPLOADED,
+                                        true
+                                    )
                                 }
+                                val isCheckInUploaded =
+                                    sharedPreferences.getBoolean(
+                                        CheckInActivity.CHECK_IN_UPLOADED,
+                                        false
+                                    )
+                                answerGroupId = result.data?.answerGroupID!!
+                                if (isCheckInUploaded)
+                                    uploadSurveyData()
+                            }
 
-                                0 -> {
-                                    CustomToast(applicationContext)
-                                        .setMessage("Check In Failed! ${result.message}")
-                                        .setBackgroundColor(
-                                            getColor(R.color.custom_toast_background_failed)
-                                        )
-                                        .setFontColor(
-                                            getColor(R.color.custom_toast_font_failed)
-                                        ).show()
-                                    sharedPreferences.edit {
-                                        putBoolean(
-                                            CheckInActivity.CHECK_IN_UPLOADED,
-                                            false
-                                        )
-                                    }
+                            0 -> {
+                                CustomToast(applicationContext)
+                                    .setMessage(
+                                        if (getString(R.string.language) == "en") "Check In Failed! ${result.message}"
+                                        else "Check In Gagal! ${result.message}"
+                                    )
+                                    .setBackgroundColor(
+                                        getColor(R.color.custom_toast_background_failed)
+                                    )
+                                    .setFontColor(
+                                        getColor(R.color.custom_toast_font_failed)
+                                    ).show()
+                                sharedPreferences.edit {
+                                    putBoolean(
+                                        CheckInActivity.CHECK_IN_UPLOADED,
+                                        false
+                                    )
                                 }
                             }
-                        } else {
-                            CustomToast(applicationContext)
-                                .setMessage("Check In Failed!")
-                                .setBackgroundColor(
-                                    getColor(R.color.custom_toast_background_failed)
-                                )
-                                .setFontColor(
-                                    getColor(R.color.custom_toast_font_failed)
-                                ).show()
-                            sharedPreferences.edit {
-                                putBoolean(
-                                    CheckInActivity.CHECK_IN_UPLOADED,
-                                    false
-                                )
-                            }
-                            Log.e("ERROR", "Check In Response body is null")
                         }
                     } else {
                         CustomToast(applicationContext)
-                            .setMessage("Check In Failed!")
+                            .setMessage(
+                                if (getString(R.string.language) == "en") "Check In Failed!"
+                                else "Check In Gagal!"
+                            )
                             .setBackgroundColor(
                                 getColor(R.color.custom_toast_background_failed)
                             )
@@ -500,18 +532,14 @@ class CheckOutActivity : AppCompatActivity() {
                                 false
                             )
                         }
-                        Log.e(
-                            "ERROR",
-                            "Check In is not successful. ${response.code()}: ${response.message()}"
-                        )
+                        Log.e("ERROR", "Check In Response body is null")
                     }
-                }
-
-                override fun onFailure(call: Call<CheckInResponse>, throwable: Throwable) {
-                    dialog.dismiss()
-                    throwable.printStackTrace()
+                } else {
                     CustomToast(applicationContext)
-                        .setMessage("Check In Failed!")
+                        .setMessage(
+                            if (getString(R.string.language) == "en") "Check In Failed!"
+                            else "Check In Gagal!"
+                        )
                         .setBackgroundColor(
                             getColor(R.color.custom_toast_background_failed)
                         )
@@ -524,9 +552,36 @@ class CheckOutActivity : AppCompatActivity() {
                             false
                         )
                     }
-                    Log.e("ERROR", "Check In Failure. ${throwable.message}")
+                    Log.e(
+                        "ERROR",
+                        "Check In is not successful. ${response.code()}: ${response.message()}"
+                    )
                 }
-            })
+            }
+
+            override fun onFailure(call: Call<CheckInResponse>, throwable: Throwable) {
+                dialog.dismiss()
+                throwable.printStackTrace()
+                CustomToast(applicationContext)
+                    .setMessage(
+                        if (getString(R.string.language) == "en") "Check In Failed!"
+                        else "Check In Gagal!"
+                    )
+                    .setBackgroundColor(
+                        getColor(R.color.custom_toast_background_failed)
+                    )
+                    .setFontColor(
+                        getColor(R.color.custom_toast_font_failed)
+                    ).show()
+                sharedPreferences.edit {
+                    putBoolean(
+                        CheckInActivity.CHECK_IN_UPLOADED,
+                        false
+                    )
+                }
+                Log.e("ERROR", "Check In Failure. ${throwable.message}")
+            }
+        })
     }
 
     private fun uploadSurveyData() {
@@ -604,7 +659,10 @@ class CheckOutActivity : AppCompatActivity() {
                             when (result?.code) {
                                 1 -> {
                                     CustomToast(applicationContext)
-                                        .setMessage("Survey Answer Successfully Submitted!")
+                                        .setMessage(
+                                            if (getString(R.string.language) == "en") "Survey Answer Successfully Submitted!"
+                                            else "Jawaban Survei Berhasil Dikirim!"
+                                        )
                                         .setBackgroundColor(
                                             getColor(R.color.custom_toast_background_success)
                                         )
@@ -623,7 +681,10 @@ class CheckOutActivity : AppCompatActivity() {
 
                                 0 -> {
                                     CustomToast(applicationContext)
-                                        .setMessage("Survey Answer Submission Failed! ${result.message}")
+                                        .setMessage(
+                                            if (getString(R.string.language) == "en") "Survey Answer Submission Failed! ${result.message}"
+                                            else "Pengiriman Jawaban Survei Gagal! ${result.message}"
+                                        )
                                         .setBackgroundColor(
                                             getColor(R.color.custom_toast_background_failed)
                                         )
@@ -640,7 +701,10 @@ class CheckOutActivity : AppCompatActivity() {
                             }
                         } else {
                             CustomToast(applicationContext)
-                                .setMessage("Survey Answer Submission Failed!")
+                                .setMessage(
+                                    if (getString(R.string.language) == "en") "Survey Answer Submission Failed!"
+                                    else "Pengiriman Jawaban Survei Gagal!"
+                                )
                                 .setBackgroundColor(
                                     getColor(R.color.custom_toast_background_failed)
                                 )
@@ -657,7 +721,10 @@ class CheckOutActivity : AppCompatActivity() {
                         }
                     } else {
                         CustomToast(applicationContext)
-                            .setMessage("Survey Answer Submission Failed!")
+                            .setMessage(
+                                if (getString(R.string.language) == "en") "Survey Answer Submission Failed!"
+                                else "Pengiriman Jawaban Survei Gagal!"
+                            )
                             .setBackgroundColor(
                                 getColor(R.color.custom_toast_background_failed)
                             )
@@ -688,7 +755,10 @@ class CheckOutActivity : AppCompatActivity() {
                     throwable.printStackTrace()
                     Log.e("ERROR", "Survey Answer Submission failure. ${throwable.message}")
                     CustomToast(applicationContext)
-                        .setMessage("Survey Answer Submission Failed!")
+                        .setMessage(
+                            if (getString(R.string.language) == "en") "Survey Answer Submission Failed!"
+                            else "Pengiriman Jawaban Survei Gagal!"
+                        )
                         .setBackgroundColor(
                             getColor(R.color.custom_toast_background_failed)
                         )
@@ -708,7 +778,10 @@ class CheckOutActivity : AppCompatActivity() {
             e.printStackTrace()
             Log.e("ERROR", "Survey Answer Submission Exception: ${e.message}")
             CustomToast(applicationContext)
-                .setMessage("Survey Answer Submission Failed!")
+                .setMessage(
+                    if (getString(R.string.language) == "en") "Survey Answer Submission Failed!"
+                    else "Pengiriman Jawaban Survei Gagal!"
+                )
                 .setBackgroundColor(
                     getColor(R.color.custom_toast_background_failed)
                 )
@@ -776,7 +849,10 @@ class CheckOutActivity : AppCompatActivity() {
                             when (result?.code) {
                                 1 -> {
                                     CustomToast(applicationContext)
-                                        .setMessage("Check Out Successfully!")
+                                        .setMessage(
+                                            if (getString(R.string.language) == "en") "Check Out Successfully!"
+                                            else "Check Out Berhasil!"
+                                        )
                                         .setBackgroundColor(
                                             getColor(R.color.custom_toast_background_success)
                                         )
@@ -797,7 +873,10 @@ class CheckOutActivity : AppCompatActivity() {
 
                                 0 -> {
                                     CustomToast(applicationContext)
-                                        .setMessage("Check Out Failed! ${result.message}")
+                                        .setMessage(
+                                            if (getString(R.string.language) == "en") "Check Out Failed! ${result.message}"
+                                            else "Check Out Gagal! ${result.message}"
+                                        )
                                         .setBackgroundColor(
                                             getColor(R.color.custom_toast_background_failed)
                                         )
@@ -809,7 +888,10 @@ class CheckOutActivity : AppCompatActivity() {
                         } else {
                             Log.e("ERROR", "Check Out Response body is null")
                             CustomToast(applicationContext)
-                                .setMessage("Check Out Failed!")
+                                .setMessage(
+                                    if (getString(R.string.language) == "en") "Check Out Failed!"
+                                    else "Check Out Gagal!"
+                                )
                                 .setBackgroundColor(
                                     getColor(R.color.custom_toast_background_failed)
                                 )
@@ -823,7 +905,10 @@ class CheckOutActivity : AppCompatActivity() {
                             "Check Out Response is not successful. ${response.code()}: ${response.message()}"
                         )
                         CustomToast(applicationContext)
-                            .setMessage("Check Out Failed!")
+                            .setMessage(
+                                if (getString(R.string.language) == "en") "Check Out Failed!"
+                                else "Check Out Gagal!"
+                            )
                             .setBackgroundColor(
                                 getColor(R.color.custom_toast_background_failed)
                             )
@@ -838,7 +923,10 @@ class CheckOutActivity : AppCompatActivity() {
                     throwable.printStackTrace()
                     Log.e("ERROR", "Check Out failure! ${throwable.message}")
                     CustomToast(applicationContext)
-                        .setMessage("Check Out Failed!")
+                        .setMessage(
+                            if (getString(R.string.language) == "en") "Check Out Failed!"
+                            else "Check Out Gagal!"
+                        )
                         .setBackgroundColor(
                             getColor(R.color.custom_toast_background_failed)
                         )
@@ -918,7 +1006,10 @@ class CheckOutActivity : AppCompatActivity() {
 
     private fun showLocationError() {
         CustomToast(applicationContext)
-            .setMessage("Please turn on your location first!")
+            .setMessage(
+                if (getString(R.string.language) == "en") "Please turn on your location first!"
+                else "Harap aktifkan lokasi terlebih dahulu!"
+            )
             .setBackgroundColor(
                 ContextCompat.getColor(
                     applicationContext,
