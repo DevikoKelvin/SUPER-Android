@@ -422,6 +422,28 @@ class AnswerActivity : AppCompatActivity(),
                         }
                     }
 
+                    "scale" -> {
+                        val text = sharedPreferences.getString(
+                            "${ANSWER_TEXT}_${questionId}_0",
+                            null
+                        )
+                        if (text.isNullOrBlank()) {
+                            Log.e("Scale [$questionId][0]", "Empty")
+                            return false
+                        } else {
+                            answers.add(
+                                SurveyAnswer(
+                                    questionId,
+                                    text,
+                                    null,
+                                    null,
+                                    null,
+                                    null
+                                )
+                            )
+                        }
+                    }
+
                     "checkbox" -> {
                         var answeredCount = 0
                         for (i in 0 until question.checkboxOptions?.size!!) {
@@ -523,6 +545,28 @@ class AnswerActivity : AppCompatActivity(),
                             )
                             if (text.isNullOrBlank()) {
                                 Log.e("Essay [$questionId][$subQuestionId]", "Empty")
+                                return false
+                            } else {
+                                answers.add(
+                                    SurveyAnswer(
+                                        questionId,
+                                        text,
+                                        null,
+                                        null,
+                                        subQuestionId,
+                                        null
+                                    )
+                                )
+                            }
+                        }
+
+                        "scale" -> {
+                            val text = sharedPreferences.getString(
+                                "${ANSWER_TEXT}_${questionId}_${subQuestionId}",
+                                null
+                            )
+                            if (text.isNullOrBlank()) {
+                                Log.e("Scale [$questionId][$subQuestionId]", "Empty")
                                 return false
                             } else {
                                 answers.add(

@@ -2,6 +2,7 @@ package id.erela.surveyproduct.adapters.recycler_view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -117,11 +118,11 @@ class QuestionSurveyAdapter(
                         scaleAnswer.visibility = View.GONE
                         scaleText.visibility = View.GONE
                         val checkboxMultipleItem = ArrayList<CheckboxMultipleItem>()
-                        for (i in item.checkboxOptions!!.indices) {
+                        for (i in item.multipleOptions!!.indices) {
                             checkboxMultipleItem.add(
                                 CheckboxMultipleItem(
                                     false,
-                                    item.checkboxOptions[i]
+                                    item.multipleOptions[i]
                                 )
                             )
                         }

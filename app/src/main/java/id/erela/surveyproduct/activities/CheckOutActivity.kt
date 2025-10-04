@@ -12,6 +12,8 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -159,6 +161,7 @@ class CheckOutActivity : AppCompatActivity() {
         const val IMAGE_URI = "CHECK_OUT_IMAGE_URI"
         const val REWARD_URI = "REWARD_IMAGE_URI"
         const val REWARD_PROOF_URI = "REWARD_PROOF_IMAGE_URI"
+        const val NOTE_REWARD = "NOTE_REWARD"
 
         fun start(
             context: Context,
@@ -188,6 +191,7 @@ class CheckOutActivity : AppCompatActivity() {
                 remove(LONGITUDE)
                 remove(REWARD_URI)
                 remove(REWARD_PROOF_URI)
+                remove(NOTE_REWARD)
             }
         }
     }
@@ -245,6 +249,8 @@ class CheckOutActivity : AppCompatActivity() {
 
     private fun init() {
         binding.apply {
+            prepareFormInput()
+
             backButton.setOnClickListener {
                 onBackPressedDispatcher.onBackPressed()
             }
@@ -353,6 +359,41 @@ class CheckOutActivity : AppCompatActivity() {
             submitButton.setOnClickListener {
                 executeUpload()
             }
+        }
+    }
+
+    private fun prepareFormInput() {
+        binding.apply {
+            noteNoRewardField.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
+                    if (s!!.isEmpty()) {
+                        noteNoRewardLayout.error =
+                            if (getString(R.string.language) == "en") "Outlet name is required" else "Nama outlet wajib diisi"
+
+                    } else {
+                        noteNoRewardLayout.error = null
+                        sharedPreferences.edit {
+                            putString(NOTE_REWARD, s.toString())
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -812,6 +853,12 @@ class CheckOutActivity : AppCompatActivity() {
                 "LongOut",
                 createPartFromString(
                     sharedPreferences.getFloat(LONGITUDE, 0f).toString()
+                )!!
+            )
+            put(
+                "Note",
+                createPartFromString(
+                    sharedPreferences.getString(NOTE_REWARD, null).toString()
                 )!!
             )
         }

@@ -463,6 +463,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         }
                                     } else {
                                         Log.e("ERROR (Creation)", "Response not successful")
+                                        Log.e("ERROR (Creation)", response.toString())
                                         CustomToast.getInstance(applicationContext)
                                             .setMessage(
                                                 if (getString(R.string.language) == "en") "Something went wrong, please try again."
@@ -737,7 +738,6 @@ class AddOutletActivity : AppCompatActivity() {
                         isTiltGesturesEnabled = false
                         isHorizontalScrollGesturesEnabled = false
                     }
-                    Log.e("Latitude | Longitude", "$latitude | $longitude")
                     cameraPosition =
                         CameraPosition.Builder().target(
                             LatLng(latitude, longitude)
