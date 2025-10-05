@@ -881,7 +881,7 @@ class CheckOutActivity : AppCompatActivity() {
             )
         else null
 
-        (if (photoCheckOut != null && photoReward != null && photoRewardProof != null)
+        (if (photoCheckOut != null || (photoReward != null && photoRewardProof != null))
             AppAPI.superEndpoint.checkOut(data, photoCheckOut, photoReward, photoRewardProof)
         else AppAPI.superEndpoint.checkOutNoPhoto(data)).enqueue(
             object : Callback<CheckOutResponse> {
