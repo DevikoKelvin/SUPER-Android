@@ -3,6 +3,7 @@ package id.erela.surveyproduct.activities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -26,6 +27,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
+import id.erela.surveyproduct.activities.CheckInActivity.Companion.CHECK_IN_UPLOADED
 import id.erela.surveyproduct.adapters.home_nav.HomeNavPagerAdapter
 import id.erela.surveyproduct.databinding.ActivityMainBinding
 import id.erela.surveyproduct.dialogs.ConfirmationDialog
@@ -44,6 +46,9 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
     }
     private val userData: UsersSuper by lazy {
         UserDataHelper(applicationContext).getData()
+    }
+    private val sharedPreferences: SharedPreferences by lazy {
+        SharedPreferencesHelper.getSharedPreferences(applicationContext)
     }
     private lateinit var adapter: HomeNavPagerAdapter
     private val activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
@@ -72,7 +77,6 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
         } as? StartSurveyFragment
         startSurveyFragment?.callNetwork()
     }
-
     @SuppressLint("SetTextI18n")
     private fun init() {
         binding.apply {
@@ -101,17 +105,17 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                         bitmap: Bitmap,
                         transition: Transition<in Bitmap>?
                     ) {
-                        bottomNavMenu.menu.findItem(R.id.profile)
-                            .setIcon(bitmap.toDrawable(applicationContext.resources))
+                        bottomNavMenu.menu.findItem(R.id.profile).icon = bitmap.toDrawable(applicationContext.resources)
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {
-                        bottomNavMenu.menu.findItem(R.id.profile).setIcon(placeholder)
+                        bottomNavMenu.menu.findItem(R.id.profile).icon = placeholder
                     }
                 })
 
-            versionText.text = if (getString(R.string.language) == "en") "Version ${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}_${BuildConfig.BUILD_TIMESTAMP}"
-            else "Versi ${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}_${BuildConfig.BUILD_TIMESTAMP}"
+            versionText.text =
+                if (getString(R.string.language) == "en") "Version ${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}_${BuildConfig.BUILD_TIMESTAMP}"
+                else "Versi ${BuildConfig.VERSION_NAME}.${BuildConfig.VERSION_CODE}_${BuildConfig.BUILD_TIMESTAMP}"
 
             onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -205,7 +209,12 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                             versionText.alpha = 0f
                             if (!addButton.isExtended)
                                 addButton.extend()
-                            addButton.text = getString(R.string.start_survey_now)
+                            val isCheckInUploaded =
+                                sharedPreferences.getBoolean(CHECK_IN_UPLOADED, false)
+                            addButton.text = getString(
+                                if (!isCheckInUploaded) R.string.start_survey_now
+                                else R.string.continue_survey
+                            )
                             addButton.backgroundTintList = ColorStateList.valueOf(
                                 "#5899EF".toColorInt()
                             )

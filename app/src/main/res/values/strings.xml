@@ -61,6 +61,7 @@
     <!-- Start Survey Menu -->
     <string name="start_survey_title">Surveys</string>
     <string name="start_survey_now">Start Survey Now!</string>
+    <string name="continue_survey">Continue Last Checked In Survey</string>
     <string name="today_survey">Today\'s Survey Tracking</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>

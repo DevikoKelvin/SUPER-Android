@@ -53,12 +53,14 @@ class ProfileFragment : Fragment() {
             }
             Glide.with(requireContext())
                 .load(BuildConfig.IMAGE_URL + userUsersSuper.photoProfile)
+                .placeholder(R.drawable.blank_profile_icon)
+                .override(200, 200)
                 .into(profilePicture)
             fullName.text = userUsersSuper.fullName
             userType.text = userUsersSuper.typeName
             userCode.text = userUsersSuper.userCode
-            userName.text = userUsersSuper.userName
-            userMail.text = userUsersSuper.userMail
+            userName.text = if (userUsersSuper.userName != "") userUsersSuper.userName else "-"
+            userMail.text = if (userUsersSuper.userMail != "") userUsersSuper.userMail else "-"
             teamBranch.text = if (context?.getString(R.string.language) == "en") {
                 if (userUsersSuper.teamName == "" && userUsersSuper.branchName == "") "-"
                 else if (userUsersSuper.teamName == "" && userUsersSuper.branchName != "") "Branch of ${userUsersSuper.branchName}"

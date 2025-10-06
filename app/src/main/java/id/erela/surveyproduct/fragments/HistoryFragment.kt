@@ -184,7 +184,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
         loadingManager(true)
         binding?.apply {
             try {
-                AppAPI.superEndpoint.showAllCheckInOut(userData.iD!!.toInt(), start, end)
+                AppAPI.superEndpoint.showAllCheckInOut(userData.iD!!, start, end)
                     .enqueue(object : Callback<CheckInOutHistoryListResponse> {
                         override fun onResponse(
                             call: Call<CheckInOutHistoryListResponse>,

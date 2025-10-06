@@ -55,8 +55,8 @@ class CheckInOutAdapter(
                 date.text = formattedDate
                 outletName.text = item?.outletName
                 outletAddress.text = item?.outletAddress
-                checkInTime.text = "Checked In${formatedCheckInTime ?: "-"}"
-                checkOutTime.text = "Checked Out${formatedCheckOutTime}"
+                checkInTime.text = "Checked In\n${formatedCheckInTime ?: "-"}"
+                checkOutTime.text = "Checked Out\n${formatedCheckOutTime}"
 
                 itemView.setOnClickListener {
                     onCheckInOutItemClickListener.onCheckInOutItemClick(item)

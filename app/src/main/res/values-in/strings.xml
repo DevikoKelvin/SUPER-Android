@@ -61,6 +61,7 @@
     <!-- Start Survey Menu -->
     <string name="start_survey_title">Survei</string>
     <string name="start_survey_now">Mulai Survei Sekarang!</string>
+    <string name="continue_survey">Lanjutkan Survey Terakhir</string>
     <string name="today_survey">Pelacakan Survei Hari Ini</string>
     <string name="previous">Sebelumnya</string>
     <string name="next">Berikutnya</string>

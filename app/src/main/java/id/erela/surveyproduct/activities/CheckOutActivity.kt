@@ -32,6 +32,7 @@ import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.geometry.LatLng
 import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
+import id.erela.surveyproduct.activities.CheckInActivity.Companion.CHECK_IN_UPLOADED
 import id.erela.surveyproduct.databinding.ActivityCheckOutBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
 import id.erela.surveyproduct.helpers.PermissionHelper
@@ -897,6 +898,8 @@ class CheckOutActivity : AppCompatActivity() {
                                         .setFontColor(
                                             getColor(R.color.custom_toast_font_success)
                                         ).show()
+                                    CheckInActivity.clearCheckInData(this@CheckOutActivity)
+                                    CheckInActivity.clearAnswerData(this@CheckOutActivity)
                                     clearCheckOutData(this@CheckOutActivity)
                                     finish()
                                 }

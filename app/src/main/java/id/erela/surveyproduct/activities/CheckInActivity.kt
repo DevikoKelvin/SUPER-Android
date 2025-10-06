@@ -143,14 +143,6 @@ class CheckInActivity : AppCompatActivity() {
             }
         }
 
-        fun clearCheckOutData(context: Context) {
-            SharedPreferencesHelper.getSharedPreferences(context).edit {
-                remove(CheckOutActivity.IMAGE_URI)
-                remove(CheckOutActivity.LATITUDE)
-                remove(CheckOutActivity.LONGITUDE)
-            }
-        }
-
         fun clearAnswerData(context: Context) {
             SharedPreferencesHelper.getSharedPreferences(context).edit {
                 remove(AnswerActivity.ANSWER_UPLOADED)
@@ -269,8 +261,6 @@ class CheckInActivity : AppCompatActivity() {
             onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     clearCheckInData(this@CheckInActivity)
-                    clearAnswerData(this@CheckInActivity)
-                    CheckOutActivity.clearCheckOutData(this@CheckInActivity)
                     finish()
                 }
             })
