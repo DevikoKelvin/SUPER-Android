@@ -125,7 +125,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                     }
                 }
 
-                adapter = OutletAdapter(filteredList, "survey").also {
+                adapter = OutletAdapter(filteredList.asReversed(), "survey").also {
                     with(it) {
                         setOnOutletItemClickListener(object :
                             OutletAdapter.OnOutletItemClickListener {

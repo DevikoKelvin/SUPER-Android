@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import id.erela.surveyproduct.databinding.ListItemOutletBinding
 import id.erela.surveyproduct.objects.OutletItem
 
-class OutletAdapter(private val outlets: ArrayList<OutletItem>, private val usage: String) :
+class OutletAdapter(private val outlets: List<OutletItem>, private val usage: String) :
     RecyclerView.Adapter<OutletAdapter.ViewHolder>() {
     private lateinit var onOutletItemClickListener: OnOutletItemClickListener
 

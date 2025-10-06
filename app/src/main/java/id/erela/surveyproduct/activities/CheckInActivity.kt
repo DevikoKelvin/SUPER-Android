@@ -2,6 +2,7 @@ package id.erela.surveyproduct.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -42,13 +44,22 @@ import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
+import id.erela.surveyproduct.objects.CheckInResponse
 import id.erela.surveyproduct.objects.GenericResponse
 import id.erela.surveyproduct.objects.OutletItem
 import id.erela.surveyproduct.objects.QuestionsItem
 import id.erela.surveyproduct.objects.UsersSuper
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -61,13 +72,13 @@ class CheckInActivity : AppCompatActivity() {
         UserDataHelper(this@CheckInActivity).getData()
     }
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var dialog: LoadingDialog
     private var selectedOutlet = 0
     private var latitude: Double = 0.0
     private var selectedOutletText: String? = null
     private var longitude: Double = 0.0
     private var cameraCaptureFileName: String = ""
     private var imageUri: Uri? = null
-    private lateinit var dialog: LoadingDialog
     private val sharedPreferences: SharedPreferences by lazy {
         SharedPreferencesHelper.getSharedPreferences(applicationContext)
     }
@@ -105,6 +116,7 @@ class CheckInActivity : AppCompatActivity() {
         const val LATITUDE = "CHECK_IN_LATITUDE"
         const val LONGITUDE = "CHECK_IN_LONGITUDE"
         const val IMAGE_URI = "CHECK_IN_IMAGE_URI"
+        const val TIME = "CHECK_IN_TIME"
         const val CHECK_IN_UPLOADED = "CHECK_IN_UPLOADED"
         var questionIdArray = ArrayList<Int>()
         var subQuestionIdArray = ArrayList<Int?>()
@@ -265,11 +277,7 @@ class CheckInActivity : AppCompatActivity() {
             val isCheckInUploaded = sharedPreferences.getBoolean(CHECK_IN_UPLOADED, false)
             if (isCheckInUploaded) {
                 AnswerActivity.start(
-                    this@CheckInActivity,
-                    sharedPreferences.getInt(SELECTED_OUTLET, 0),
-                    imageUri,
-                    sharedPreferences.getFloat(LATITUDE, 0f).toDouble(),
-                    sharedPreferences.getFloat(LONGITUDE, 0f).toDouble()
+                    this@CheckInActivity
                 )
                 finish()
             }
@@ -351,7 +359,192 @@ class CheckInActivity : AppCompatActivity() {
                                         val result = response.body()
                                         when (result?.code) {
                                             1 -> {
-                                                AnswerActivity.start(
+                                                if (dialog.window != null)
+                                                    dialog.show()
+                                                val data: MutableMap<String, RequestBody> =
+                                                    mutableMapOf()
+                                                with(data) {
+                                                    put(
+                                                        "UserID",
+                                                        createPartFromString(userData.iD.toString())!!
+                                                    )
+                                                    put(
+                                                        "OutletID",
+                                                        createPartFromString(
+                                                            sharedPreferences.getInt(
+                                                                SELECTED_OUTLET,
+                                                                0
+                                                            ).toString()
+                                                        )!!
+                                                    )
+                                                    put(
+                                                        "LatIn",
+                                                        createPartFromString(
+                                                            sharedPreferences.getFloat(LATITUDE, 0f)
+                                                                .toString()
+                                                        )!!
+                                                    )
+                                                    put(
+                                                        "LongIn",
+                                                        createPartFromString(
+                                                            sharedPreferences.getFloat(
+                                                                LONGITUDE,
+                                                                0f
+                                                            ).toString()
+                                                        )!!
+                                                    )
+                                                }
+                                                val photoCheckIn: MultipartBody.Part? =
+                                                    createMultipartBody(
+                                                        imageUri!!
+                                                    )!!
+
+                                                AppAPI.superEndpoint.checkIn(data, photoCheckIn!!)
+                                                    .enqueue(object : Callback<CheckInResponse> {
+                                                        override fun onResponse(
+                                                            call: Call<CheckInResponse?>,
+                                                            response1: Response<CheckInResponse?>
+                                                        ) {
+                                                            dialog.dismiss()
+                                                            if (response1.isSuccessful) {
+                                                                if (response1.body() != null) {
+                                                                    val result = response1.body()
+                                                                    when (result?.code) {
+                                                                        1 -> {
+                                                                            CustomToast(
+                                                                                applicationContext
+                                                                            )
+                                                                                .setMessage(
+                                                                                    if (getString(R.string.language) == "en") "Check In Successfully!"
+                                                                                    else "Check In Berhasil!"
+                                                                                )
+                                                                                .setBackgroundColor(
+                                                                                    getColor(R.color.custom_toast_background_success)
+                                                                                )
+                                                                                .setFontColor(
+                                                                                    getColor(R.color.custom_toast_font_success)
+                                                                                ).show()
+                                                                            clearCheckInData(this@CheckInActivity)
+                                                                            sharedPreferences.edit {
+                                                                                putInt(
+                                                                                    CHECK_IN_ID,
+                                                                                    result.data?.iD!!
+                                                                                )
+                                                                                putInt(
+                                                                                    ANSWER_GROUP_ID,
+                                                                                    result.data.answerGroupID!!
+                                                                                )
+                                                                                putBoolean(
+                                                                                    CHECK_IN_UPLOADED,
+                                                                                    true
+                                                                                )
+                                                                            }
+                                                                            AnswerActivity.start(
+                                                                                this@CheckInActivity
+                                                                            )
+                                                                            finish()
+                                                                        }
+
+                                                                        0 -> {
+                                                                            CustomToast(
+                                                                                applicationContext
+                                                                            )
+                                                                                .setMessage(
+                                                                                    if (getString(R.string.language) == "en") "Check In Failed! ${result.message}"
+                                                                                    else "Check In Gagal! ${result.message}"
+                                                                                )
+                                                                                .setBackgroundColor(
+                                                                                    getColor(R.color.custom_toast_background_failed)
+                                                                                )
+                                                                                .setFontColor(
+                                                                                    getColor(R.color.custom_toast_font_failed)
+                                                                                ).show()
+                                                                            sharedPreferences.edit {
+                                                                                putBoolean(
+                                                                                    CHECK_IN_UPLOADED,
+                                                                                    false
+                                                                                )
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                } else {
+                                                                    CustomToast(applicationContext)
+                                                                        .setMessage(
+                                                                            if (getString(R.string.language) == "en") "Check In Failed!"
+                                                                            else "Check In Gagal!"
+                                                                        )
+                                                                        .setBackgroundColor(
+                                                                            getColor(R.color.custom_toast_background_failed)
+                                                                        )
+                                                                        .setFontColor(
+                                                                            getColor(R.color.custom_toast_font_failed)
+                                                                        ).show()
+                                                                    sharedPreferences.edit {
+                                                                        putBoolean(
+                                                                            CHECK_IN_UPLOADED,
+                                                                            false
+                                                                        )
+                                                                    }
+                                                                    Log.e(
+                                                                        "ERROR",
+                                                                        "Check In Response body is null"
+                                                                    )
+                                                                }
+                                                            } else {
+                                                                CustomToast(applicationContext)
+                                                                    .setMessage(
+                                                                        if (getString(R.string.language) == "en") "Check In Failed!"
+                                                                        else "Check In Gagal!"
+                                                                    )
+                                                                    .setBackgroundColor(
+                                                                        getColor(R.color.custom_toast_background_failed)
+                                                                    )
+                                                                    .setFontColor(
+                                                                        getColor(R.color.custom_toast_font_failed)
+                                                                    ).show()
+                                                                sharedPreferences.edit {
+                                                                    putBoolean(
+                                                                        CHECK_IN_UPLOADED,
+                                                                        false
+                                                                    )
+                                                                }
+                                                                Log.e(
+                                                                    "ERROR",
+                                                                    "Check In is not successful. ${response.code()}: ${response.message()}"
+                                                                )
+                                                            }
+                                                        }
+
+                                                        override fun onFailure(
+                                                            call: Call<CheckInResponse?>,
+                                                            throwable: Throwable
+                                                        ) {
+                                                            dialog.dismiss()
+                                                            throwable.printStackTrace()
+                                                            CustomToast(applicationContext)
+                                                                .setMessage(
+                                                                    if (getString(R.string.language) == "en") "Check In Failed!"
+                                                                    else "Check In Gagal!"
+                                                                )
+                                                                .setBackgroundColor(
+                                                                    getColor(R.color.custom_toast_background_failed)
+                                                                )
+                                                                .setFontColor(
+                                                                    getColor(R.color.custom_toast_font_failed)
+                                                                ).show()
+                                                            sharedPreferences.edit {
+                                                                putBoolean(
+                                                                    CHECK_IN_UPLOADED,
+                                                                    false
+                                                                )
+                                                            }
+                                                            Log.e(
+                                                                "ERROR",
+                                                                "Check In Failure. ${throwable.message}"
+                                                            )
+                                                        }
+                                                    })
+                                                /*AnswerActivity.start(
                                                     this@CheckInActivity,
                                                     sharedPreferences.getInt(SELECTED_OUTLET, 0),
                                                     imageUri!!,
@@ -359,7 +552,7 @@ class CheckInActivity : AppCompatActivity() {
                                                         .toDouble(),
                                                     sharedPreferences.getFloat(LONGITUDE, 0f)
                                                         .toDouble()
-                                                )
+                                                )*/
                                             }
 
                                             else -> {
@@ -546,5 +739,63 @@ class CheckInActivity : AppCompatActivity() {
                 PermissionHelper.REQUEST_CODE_CAMERA
             )
         }
+    }
+
+    private fun createPartFromString(stringData: String?): RequestBody? {
+        return stringData?.toRequestBody("text/plain".toMediaTypeOrNull())
+    }
+
+    private fun createMultipartBody(uri: Uri): MultipartBody.Part? {
+        return try {
+            val file = File(getRealPathFromURI(uri)!!)
+            val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+            MultipartBody.Part.createFormData("PhotoIn", file.name, requestBody)
+        } catch (e: Exception) {
+            Log.e("createMultipartBody", "Error creating MultipartBody.Part", e)
+            null
+        }
+    }
+
+    private fun getFileName(contentResolver: ContentResolver, uri: Uri): String? {
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        if (cursor != null && cursor.moveToFirst()) {
+            val displayNameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (displayNameIndex != -1) {
+                val fileName = cursor.getString(displayNameIndex)
+                cursor.close()
+                return fileName
+            }
+        }
+        cursor?.close()
+        return null
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String? {
+        val contentResolver = contentResolver
+        val fileName = getFileName(contentResolver!!, uri)
+
+        if (fileName != null) {
+            val file = File(cacheDir, fileName)
+            try {
+                val inputStream = contentResolver.openInputStream(uri)
+                val outputStream = FileOutputStream(file)
+                val buffer = ByteArray(4 * 1024)
+                var read: Int
+
+                while (inputStream!!.read(buffer).also { read = it } != -1) {
+                    outputStream.write(buffer, 0, read)
+                }
+
+                outputStream.flush()
+                outputStream.close()
+                inputStream.close()
+
+                return file.absolutePath
+            } catch (e: IOException) {
+                Log.e("getRealPathFromURI", "Error: ${e.message}")
+            }
+        }
+
+        return null
     }
 }

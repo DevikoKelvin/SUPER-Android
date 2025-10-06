@@ -2,6 +2,7 @@ package id.erela.surveyproduct.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -12,6 +13,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
@@ -27,16 +29,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.adapters.recycler_view.QuestionSurveyAdapter
 import id.erela.surveyproduct.databinding.ActivityAnswerBinding
+import id.erela.surveyproduct.dialogs.LoadingDialog
 import id.erela.surveyproduct.helpers.PermissionHelper
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
+import id.erela.surveyproduct.objects.InsertAnswerResponse
 import id.erela.surveyproduct.objects.SurveyAnswer
 import id.erela.surveyproduct.objects.SurveyListResponse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -48,6 +60,7 @@ class AnswerActivity : AppCompatActivity(),
         ActivityAnswerBinding.inflate(layoutInflater)
     }
     private lateinit var adapter: QuestionSurveyAdapter
+    private lateinit var dialog: LoadingDialog
     private var cameraCaptureFileName: String = ""
     private var imageUri: Uri? = null
     private var questionID: Int? = null
@@ -69,7 +82,8 @@ class AnswerActivity : AppCompatActivity(),
                         )
                     }
                     // Find the position of the item with this questionID
-                    val position = CheckInActivity.surveyQuestionsList.indexOfFirst { it.iD == questionID }
+                    val position =
+                        CheckInActivity.surveyQuestionsList.indexOfFirst { it.iD == questionID }
                     if (position != -1) {
                         adapter.notifyItemChanged(position)
                     }
@@ -89,16 +103,9 @@ class AnswerActivity : AppCompatActivity(),
         @SuppressLint("StaticFieldLeak")
         var activity: Activity? = null
 
-        fun start(context: Context, outletID: Int, photoIn: Uri?, latIn: Double, longIn: Double) {
+        fun start(context: Context) {
             context.startActivity(
-                Intent(context, AnswerActivity::class.java).also {
-                    with(it) {
-                        putExtra(CheckInActivity.SELECTED_OUTLET, outletID)
-                        putExtra(CheckInActivity.IMAGE_URI, photoIn.toString())
-                        putExtra(CheckInActivity.LATITUDE, latIn)
-                        putExtra(CheckInActivity.LONGITUDE, longIn)
-                    }
-                }
+                Intent(context, AnswerActivity::class.java)
             )
         }
     }
@@ -160,25 +167,23 @@ class AnswerActivity : AppCompatActivity(),
 
     private fun init() {
         binding.apply {
+            dialog = LoadingDialog(this@AnswerActivity)
             backButton.setOnClickListener {
                 onBackPressedDispatcher.onBackPressed()
             }
-
             val isAnswerUploaded = sharedPreferences.getBoolean(ANSWER_UPLOADED, false)
 
             if (isAnswerUploaded) {
                 CheckOutActivity.start(
-                    this@AnswerActivity,
-                    intent.getIntExtra(CheckInActivity.SELECTED_OUTLET, 0),
-                    intent.getStringExtra(CheckInActivity.IMAGE_URI)?.toUri(),
-                    intent.getDoubleExtra(CheckInActivity.LATITUDE, 0.0),
-                    intent.getDoubleExtra(CheckInActivity.LONGITUDE, 0.0),
-                    answers
+                    this@AnswerActivity
                 )
                 finish()
             }
 
-            adapter = QuestionSurveyAdapter(CheckInActivity.surveyQuestionsList, this@AnswerActivity).also {
+            adapter = QuestionSurveyAdapter(
+                CheckInActivity.surveyQuestionsList,
+                this@AnswerActivity
+            ).also {
                 with(it) {
                     setOnQuestionItemActionClickListener(this@AnswerActivity)
                 }
@@ -192,7 +197,217 @@ class AnswerActivity : AppCompatActivity(),
 
             nextButton.setOnClickListener {
                 if (validateAnswer(applicationContext)) {
-                    with(intent) {
+                    if (dialog.window != null)
+                        dialog.show()
+                    try {
+                        val map = mutableListOf<MultipartBody.Part>()
+                        with(map) {
+                            for (i in 0 until answers.size) {
+                                add(
+                                    MultipartBody.Part.createFormData(
+                                        "Answers[$i][QuestionID]",
+                                        answers[i].QuestionID.toString()
+                                    )
+                                )
+                                if (answers[i].Answer != null)
+                                    add(
+                                        MultipartBody.Part.createFormData(
+                                            "Answers[$i][Answer]",
+                                            answers[i].Answer!!
+                                        )
+                                    )
+                                if (answers[i].CheckboxID != null)
+                                    add(
+                                        MultipartBody.Part.createFormData(
+                                            "Answers[$i][CheckboxID]",
+                                            answers[i].CheckboxID.toString()
+                                        )
+                                    )
+                                if (answers[i].MultipleID != null)
+                                    add(
+                                        MultipartBody.Part.createFormData(
+                                            "Answers[$i][MultipleID]",
+                                            answers[i].MultipleID.toString()
+                                        )
+                                    )
+                                if (answers[i].SubQuestionID != null)
+                                    add(
+                                        MultipartBody.Part.createFormData(
+                                            "Answers[$i][SubQuestionID]",
+                                            answers[i].SubQuestionID.toString()
+                                        )
+                                    )
+                                if (answers[i].Photo != null) {
+                                    add(
+                                        createMultipartBody(
+                                            answers[i].Photo!!.toUri(),
+                                            "Answers[$i][Photo]"
+                                        )!!
+                                    )
+                                }
+                            }
+                        }
+                        val answerGroupIdPart =
+                            createPartFromString(
+                                sharedPreferences.getInt(
+                                    CheckInActivity.ANSWER_GROUP_ID,
+                                    0
+                                ).toString()
+                            )
+
+                        AppAPI.superEndpoint.insertAnswer(
+                            answerGroupIdPart!!, map
+                        ).enqueue(object : Callback<InsertAnswerResponse> {
+                            override fun onResponse(
+                                call: Call<InsertAnswerResponse?>,
+                                response: Response<InsertAnswerResponse?>
+                            ) {
+                                dialog.dismiss()
+                                if (response.isSuccessful) {
+                                    if (response.body() != null) {
+                                        val result = response.body()
+                                        when (result?.code) {
+                                            1 -> {
+                                                CustomToast(applicationContext)
+                                                    .setMessage(
+                                                        if (getString(R.string.language) == "en") "Survey Answer Successfully Submitted!"
+                                                        else "Jawaban Survei Berhasil Dikirim!"
+                                                    )
+                                                    .setBackgroundColor(
+                                                        getColor(R.color.custom_toast_background_success)
+                                                    )
+                                                    .setFontColor(
+                                                        getColor(R.color.custom_toast_font_success)
+                                                    ).show()
+                                                sharedPreferences.edit {
+                                                    putBoolean(
+                                                        ANSWER_UPLOADED,
+                                                        true
+                                                    )
+                                                }
+                                                with(intent) {
+                                                    CheckOutActivity.start(
+                                                        this@AnswerActivity
+                                                    )
+                                                }
+                                                finish()
+                                            }
+
+                                            0 -> {
+                                                CustomToast(applicationContext)
+                                                    .setMessage(
+                                                        if (getString(R.string.language) == "en") "Survey Answer Submission Failed! ${result.message}"
+                                                        else "Pengiriman Jawaban Survei Gagal! ${result.message}"
+                                                    )
+                                                    .setBackgroundColor(
+                                                        getColor(R.color.custom_toast_background_failed)
+                                                    )
+                                                    .setFontColor(
+                                                        getColor(R.color.custom_toast_font_failed)
+                                                    ).show()
+                                                sharedPreferences.edit {
+                                                    putBoolean(
+                                                        ANSWER_UPLOADED,
+                                                        false
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        CustomToast(applicationContext)
+                                            .setMessage(
+                                                if (getString(R.string.language) == "en") "Survey Answer Submission Failed!"
+                                                else "Pengiriman Jawaban Survei Gagal!"
+                                            )
+                                            .setBackgroundColor(
+                                                getColor(R.color.custom_toast_background_failed)
+                                            )
+                                            .setFontColor(
+                                                getColor(R.color.custom_toast_font_failed)
+                                            ).show()
+                                        sharedPreferences.edit {
+                                            putBoolean(
+                                                ANSWER_UPLOADED,
+                                                false
+                                            )
+                                        }
+                                        Log.e("ERROR", "Survey Answer Submission response body is null")
+                                    }
+                                } else {
+                                    CustomToast(applicationContext)
+                                        .setMessage(
+                                            if (getString(R.string.language) == "en") "Survey Answer Submission Failed!"
+                                            else "Pengiriman Jawaban Survei Gagal!"
+                                        )
+                                        .setBackgroundColor(
+                                            getColor(R.color.custom_toast_background_failed)
+                                        )
+                                        .setFontColor(
+                                            getColor(R.color.custom_toast_font_failed)
+                                        ).show()
+                                    sharedPreferences.edit {
+                                        putBoolean(
+                                            ANSWER_UPLOADED,
+                                            false
+                                        )
+                                    }
+                                    Log.e(
+                                        "ERROR",
+                                        "Survey Answer Submission response is not successful. ${response.code()}: ${response.message()}"
+                                    )
+                                }
+                            }
+
+                            override fun onFailure(
+                                call: Call<InsertAnswerResponse?>,
+                                throwable: Throwable
+                            ) {
+                                dialog.dismiss()
+                                sharedPreferences.edit {
+                                    putBoolean(
+                                        ANSWER_UPLOADED,
+                                        false
+                                    )
+                                }
+                                throwable.printStackTrace()
+                                Log.e("ERROR", "Survey Answer Submission failure. ${throwable.message}")
+                                CustomToast(applicationContext)
+                                    .setMessage(
+                                        if (getString(R.string.language) == "en") "Survey Answer Submission Failed!"
+                                        else "Pengiriman Jawaban Survei Gagal!"
+                                    )
+                                    .setBackgroundColor(
+                                        getColor(R.color.custom_toast_background_failed)
+                                    )
+                                    .setFontColor(
+                                        getColor(R.color.custom_toast_font_failed)
+                                    ).show()
+                            }
+
+                        })
+                    } catch (e: Exception) {
+                        dialog.dismiss()
+                        sharedPreferences.edit {
+                            putBoolean(
+                                ANSWER_UPLOADED,
+                                false
+                            )
+                        }
+                        e.printStackTrace()
+                        Log.e("ERROR", "Survey Answer Submission Exception: ${e.message}")
+                        CustomToast(applicationContext)
+                            .setMessage(
+                                if (getString(R.string.language) == "en") "Survey Answer Submission Failed!"
+                                else "Pengiriman Jawaban Survei Gagal!"
+                            )
+                            .setBackgroundColor(
+                                getColor(R.color.custom_toast_background_failed)
+                            )
+                            .setFontColor(
+                                getColor(R.color.custom_toast_font_failed)
+                            ).show()
+                    }
+                    /*with(intent) {
                         CheckOutActivity.start(
                             this@AnswerActivity,
                             getIntExtra(CheckInActivity.SELECTED_OUTLET, 0),
@@ -201,7 +416,7 @@ class AnswerActivity : AppCompatActivity(),
                             getDoubleExtra(CheckInActivity.LONGITUDE, 0.0),
                             answers
                         )
-                    }
+                    }*/
                 } else {
                     CustomToast.getInstance(applicationContext)
                         .setMessage(
@@ -694,5 +909,63 @@ class AnswerActivity : AppCompatActivity(),
                 PermissionHelper.REQUEST_CODE_CAMERA
             )
         }
+    }
+
+    private fun createPartFromString(stringData: String?): RequestBody? {
+        return stringData?.toRequestBody("text/plain".toMediaTypeOrNull())
+    }
+
+    private fun createMultipartBody(uri: Uri, name: String): MultipartBody.Part? {
+        return try {
+            val file = File(getRealPathFromURI(uri)!!)
+            val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+            MultipartBody.Part.createFormData(name, file.name, requestBody)
+        } catch (e: Exception) {
+            Log.e("createMultipartBody", "Error creating MultipartBody.Part", e)
+            null
+        }
+    }
+
+    private fun getFileName(contentResolver: ContentResolver, uri: Uri): String? {
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        if (cursor != null && cursor.moveToFirst()) {
+            val displayNameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (displayNameIndex != -1) {
+                val fileName = cursor.getString(displayNameIndex)
+                cursor.close()
+                return fileName
+            }
+        }
+        cursor?.close()
+        return null
+    }
+
+    private fun getRealPathFromURI(uri: Uri): String? {
+        val contentResolver = contentResolver
+        val fileName = getFileName(contentResolver!!, uri)
+
+        if (fileName != null) {
+            val file = File(cacheDir, fileName)
+            try {
+                val inputStream = contentResolver.openInputStream(uri)
+                val outputStream = FileOutputStream(file)
+                val buffer = ByteArray(4 * 1024)
+                var read: Int
+
+                while (inputStream!!.read(buffer).also { read = it } != -1) {
+                    outputStream.write(buffer, 0, read)
+                }
+
+                outputStream.flush()
+                outputStream.close()
+                inputStream.close()
+
+                return file.absolutePath
+            } catch (e: IOException) {
+                Log.e("getRealPathFromURI", "Error: ${e.message}")
+            }
+        }
+
+        return null
     }
 }
