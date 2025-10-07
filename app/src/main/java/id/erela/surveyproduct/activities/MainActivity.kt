@@ -105,7 +105,8 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                         bitmap: Bitmap,
                         transition: Transition<in Bitmap>?
                     ) {
-                        bottomNavMenu.menu.findItem(R.id.profile).icon = bitmap.toDrawable(applicationContext.resources)
+                        bottomNavMenu.menu.findItem(R.id.profile).icon =
+                            bitmap.toDrawable(applicationContext.resources)
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {
@@ -190,6 +191,18 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                             if (addButton.isExtended)
                                 addButton.shrink()
                             addButton.text = getString(R.string.add_outlet_title)
+                            addButton.setTextColor(
+                                ContextCompat.getColor(
+                                    this@MainActivity,
+                                    R.color.text_primary_color
+                                )
+                            )
+                            addButton.iconTint = ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    this@MainActivity,
+                                    R.color.text_primary_color
+                                )
+                            )
                             addButton.backgroundTintList = ColorStateList.valueOf(
                                 ContextCompat.getColor(
                                     this@MainActivity, R.color.custom_toast_background_success
@@ -214,6 +227,18 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                             addButton.text = getString(
                                 if (!isCheckInUploaded) R.string.start_survey_now
                                 else R.string.continue_survey
+                            )
+                            addButton.setTextColor(
+                                ContextCompat.getColor(
+                                    this@MainActivity,
+                                    R.color.white
+                                )
+                            )
+                            addButton.iconTint = ColorStateList.valueOf(
+                                ContextCompat.getColor(
+                                    this@MainActivity,
+                                    R.color.white
+                                )
                             )
                             addButton.backgroundTintList = ColorStateList.valueOf(
                                 "#5899EF".toColorInt()

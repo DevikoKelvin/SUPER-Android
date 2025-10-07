@@ -154,6 +154,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
             checkInOutListRv.adapter = adapter
             checkInOutListRv.layoutManager = LinearLayoutManager(context)
             checkInOutListRv.setHasFixedSize(true)
+            checkInOutListRv.setItemViewCacheSize(10000)
 
             filterButton.setOnClickListener {
                 val bottomSheet =

@@ -4,7 +4,7 @@ import id.erela.surveyproduct.objects.AnswerHistoryResponse
 import id.erela.surveyproduct.objects.CheckInOutHistoryListResponse
 import id.erela.surveyproduct.objects.CheckInResponse
 import id.erela.surveyproduct.objects.CheckOutResponse
-import id.erela.surveyproduct.objects.GenericResponse
+import id.erela.surveyproduct.objects.IsAlreadyCheckInResponse
 import id.erela.surveyproduct.objects.InsertAnswerResponse
 import id.erela.surveyproduct.objects.OutletCategoryResponse
 import id.erela.surveyproduct.objects.OutletCreationResponse
@@ -132,7 +132,7 @@ interface SuperEndpoint {
     fun isAlreadyChecked(
         @Field("UserID") userID: Int,
         @Field("OutletID") outletID: Int
-    ): Call<GenericResponse>
+    ): Call<IsAlreadyCheckInResponse>
 
     @Multipart
     @POST("check/in")
