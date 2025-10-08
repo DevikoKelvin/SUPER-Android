@@ -656,6 +656,7 @@ class CheckInActivity : AppCompatActivity() {
                                         if (response.isSuccessful) {
                                             if (response.body() != null) {
                                                 val result = response.body()
+                                                Log.e("Result Data", result.toString())
                                                 when (result?.code) {
                                                     1 -> {
                                                         selectedOutletText =

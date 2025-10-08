@@ -26,163 +26,257 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/toolbar_header_background" />
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/surveyId"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="125dp"
-            android:textColor="@color/text_primary_color"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            tools:text="Survey 3374-S00001" />
-
-        <TextView
-            android:id="@+id/outletName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="4dp"
-            android:textColor="@color/text_primary_color"
-            android:textSize="16sp"
-            tools:text="PT Erela" />
-
-        <TextView
-            android:id="@+id/outletAddress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:textColor="@color/text_primary_color"
-            android:textSize="16sp"
-            tools:text="Jalan Murbei No.2, Sumurboto, Banyumanik, Semarang" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/surveyors"
-            android:textColor="@color/text_primary_color"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/surveyorName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:textColor="@color/text_primary_color"
-            android:textSize="16sp"
-            tools:text="Ivan Gunawan (ID: 23708)" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/reward_note"
-            android:textColor="@color/text_primary_color"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/rewardNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:textColor="@color/text_primary_color"
-            android:textSize="16sp"
-            tools:text="Test note" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal"
-            tools:ignore="DisableBaselineAlignment">
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/surveyId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="125dp"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:textColor="@color/text_primary_color"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:text="Survey 3374-S00001" />
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/checkInPhotoButton"
+            <TextView
+                android:id="@+id/outletName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="4dp"
+                android:layout_weight="1"
+                android:textColor="@color/text_primary_color"
+                android:textSize="16sp"
+                tools:text="PT Erela" />
+
+            <TextView
+                android:id="@+id/outletAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_weight="1"
+                android:textColor="@color/text_primary_color"
+                android:textSize="16sp"
+                tools:text="Jalan Murbei No.2, Sumurboto, Banyumanik, Semarang" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:text="@string/surveyors"
+                android:textColor="@color/text_primary_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/surveyorName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_weight="1"
+                android:textColor="@color/text_primary_color"
+                android:textSize="16sp"
+                tools:text="Ivan Gunawan (ID: 23708)" />
+
+            <LinearLayout
+                android:id="@+id/rewardNoteContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_margin="8dp"
-                    app:cardBackgroundColor="@android:color/transparent"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
+                    android:layout_height="wrap_content"
+                    android:text="@string/reward_note"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:background="@drawable/button_background"
-                        android:paddingVertical="8dp"
-                        android:text="@string/check_in_photo"
-                        android:textColor="@color/text_primary_color"
-                        android:textStyle="bold" />
-                </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/rewardNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    tools:text="Test note" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                tools:ignore="DisableBaselineAlignment">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/checkOutPhotoButton"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_margin="8dp"
-                    app:cardBackgroundColor="@android:color/transparent"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                    <TextView
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/checkInPhotoButton"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/button_background"
-                        android:gravity="center"
-                        android:paddingVertical="8dp"
-                        android:text="@string/check_out_photo"
-                        android:textColor="@color/text_primary_color"
-                        android:textStyle="bold" />
-                </com.google.android.material.card.MaterialCardView>
+                        android:layout_height="52dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="@android:color/transparent"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="0dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/button_background"
+                            android:gravity="center"
+                            android:paddingVertical="8dp"
+                            android:text="@string/check_in_photo"
+                            android:textColor="@color/text_primary_color"
+                            android:textStyle="bold" />
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/checkOutPhotoButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="@android:color/transparent"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="0dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/button_background"
+                            android:gravity="center"
+                            android:paddingVertical="8dp"
+                            android:text="@string/check_out_photo"
+                            android:textColor="@color/text_primary_color"
+                            android:textStyle="bold" />
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/rewardPhotoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="2dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reward_note"
+                    android:textColor="@color/text_primary_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/rewardPhotoButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="@android:color/transparent"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="0dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_gradient_dark"
+                            android:gravity="center"
+                            android:paddingVertical="8dp"
+                            android:text="@string/reward_photos"
+                            android:textColor="@color/white"
+                            android:textStyle="bold" />
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/rewardPhotoProofButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_margin="8dp"
+                        app:cardBackgroundColor="@android:color/transparent"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="0dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_gradient_dark"
+                            android:gravity="center"
+                            android:paddingVertical="8dp"
+                            android:text="@string/reward_proof_photo"
+                            android:textColor="@color/white"
+                            android:textStyle="bold" />
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:text="@string/survey_data"
+                android:textColor="@color/text_primary_color"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/answeredQuestionRv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginTop="4dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/list_item_questions" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/survey_data"
-            android:textColor="@color/text_primary_color"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/answeredQuestionRv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="4dp"
-            android:paddingBottom="36dp"
-            tools:listitem="@layout/list_item_questions" />
-    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"

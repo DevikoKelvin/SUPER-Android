@@ -40,6 +40,9 @@
     @com.google.gson.annotations.SerializedName <fields>;
 }
 
+-keepclassmembers class id.erela.surveyproduct.objects.** { <init>(...); *; }
+-keep class id.erela.surveyproduct.objects.** { *; }
+
 -keep class android.support.v8.renderscript.** { *; }
 -keep class androidx.renderscript.** { *; }
 

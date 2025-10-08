@@ -3,9 +3,12 @@ package id.erela.surveyproduct.objects
 import com.google.gson.annotations.SerializedName
 
 data class IsAlreadyCheckInResponse(
-	val code: Int? = null,
-	val data: CheckData? = null,
-	val message: String? = null
+	@SerializedName("code")
+	val code: Int?,
+	@SerializedName("message")
+	val message: String?,
+	@SerializedName("data")
+	val data: CheckInData?
 )
 
 data class CheckData(

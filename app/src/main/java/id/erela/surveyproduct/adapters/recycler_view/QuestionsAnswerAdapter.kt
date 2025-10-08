@@ -62,7 +62,6 @@ class QuestionsAnswerAdapter(
                         ratingBar.rating = item.answer[0]?.answer!!.toFloat()
                         multipleCheckboxAnswerRv.visibility = View.GONE
                     } else {
-                        Log.e("Answers", item.answer.toString())
                         if (item.answer.size > 1) {
                             checkboxMultipleAdapter = CheckboxMultipleViewAdapter(item.answer)
                             multipleCheckboxAnswerRv.adapter = checkboxMultipleAdapter

@@ -52,7 +52,6 @@ class SurveyDetailActivity : AppCompatActivity() {
 
         init()
     }
-
     @SuppressLint("SetTextI18n")
     private fun init() {
         binding.apply {
@@ -71,6 +70,36 @@ class SurveyDetailActivity : AppCompatActivity() {
             outletName.text = surveyItem.outletName
             outletAddress.text = surveyItem.outletAddress
             surveyorName.text = "${surveyItem.surveyorName} (ID: ${surveyItem.userID})"
+            if (surveyItem.rewardNote != null) {
+                rewardNoteContainer.visibility = View.VISIBLE
+                rewardPhotoContainer.visibility = View.GONE
+                rewardNote.text = "${surveyItem.rewardNote}"
+            } else {
+                rewardNoteContainer.visibility = View.GONE
+                if (surveyItem.rewardPhoto != null || surveyItem.rewardProofPhoto != null) {
+                    rewardPhotoContainer.visibility = View.VISIBLE
+                    rewardPhotoButton.setOnClickListener {
+                        val dialog =
+                            PhotoPreviewDialog(this@SurveyDetailActivity, surveyItem.rewardPhoto)
+
+                        if (dialog.window != null)
+                            dialog.show()
+                    }
+
+                    rewardPhotoProofButton.setOnClickListener {
+                        val dialog =
+                            PhotoPreviewDialog(
+                                this@SurveyDetailActivity,
+                                surveyItem.rewardProofPhoto
+                            )
+
+                        if (dialog.window != null)
+                            dialog.show()
+                    }
+                } else {
+                    rewardNoteContainer.visibility = View.GONE
+                }
+            }
 
             checkInPhotoButton.setOnClickListener {
                 val dialog = PhotoPreviewDialog(this@SurveyDetailActivity, surveyItem.photoIn)
@@ -89,13 +118,11 @@ class SurveyDetailActivity : AppCompatActivity() {
             adapter = QuestionsAnswerAdapter(questionsAnswerList, this@SurveyDetailActivity)
             answeredQuestionRv.setItemViewCacheSize(1000)
             answeredQuestionRv.adapter = adapter
-            answeredQuestionRv.setHasFixedSize(true)
             answeredQuestionRv.layoutManager = LinearLayoutManager(this@SurveyDetailActivity)
 
             getAnswerListHistory()
         }
     }
-
     @SuppressLint("NotifyDataSetChanged")
     private fun getAnswerListHistory() {
         binding.apply {

@@ -6,6 +6,7 @@ import id.erela.surveyproduct.objects.CheckInResponse
 import id.erela.surveyproduct.objects.CheckOutResponse
 import id.erela.surveyproduct.objects.IsAlreadyCheckInResponse
 import id.erela.surveyproduct.objects.InsertAnswerResponse
+import id.erela.surveyproduct.objects.IsAlready15MinutesResponse
 import id.erela.surveyproduct.objects.OutletCategoryResponse
 import id.erela.surveyproduct.objects.OutletCreationResponse
 import id.erela.surveyproduct.objects.OutletEditResponse
@@ -133,6 +134,12 @@ interface SuperEndpoint {
         @Field("UserID") userID: Int,
         @Field("OutletID") outletID: Int
     ): Call<IsAlreadyCheckInResponse>
+
+    @FormUrlEncoded
+    @POST("check/check-15min-passed")
+    fun isAlready15Minutes(
+        @Field("ID") id: Int,
+    ): Call<IsAlready15MinutesResponse>
 
     @Multipart
     @POST("check/in")
