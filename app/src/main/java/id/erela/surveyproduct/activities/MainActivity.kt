@@ -72,6 +72,16 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
 
     override fun onResume() {
         super.onResume()
+        binding.apply {
+            if (fragmentsContainer.currentItem == 2) {
+                val isCheckInUploaded =
+                    sharedPreferences.getBoolean(CHECK_IN_UPLOADED, false)
+                addButton.text = getString(
+                    if (!isCheckInUploaded) R.string.start_survey_now
+                    else R.string.continue_survey
+                )
+            }
+        }
         val startSurveyFragment = supportFragmentManager.fragments.find { fragment ->
             fragment is StartSurveyFragment
         } as? StartSurveyFragment
@@ -301,7 +311,12 @@ class MainActivity : AppCompatActivity(), ProfileFragment.OnProfileButtonActionL
                         fragmentsContainer.setCurrentItem(2, false)
                         if (!addButton.isExtended)
                             addButton.extend()
-                        addButton.text = getString(R.string.start_survey_now)
+                        val isCheckInUploaded =
+                            sharedPreferences.getBoolean(CHECK_IN_UPLOADED, false)
+                        addButton.text = getString(
+                            if (!isCheckInUploaded) R.string.start_survey_now
+                            else R.string.continue_survey
+                        )
                         addButton.backgroundTintList = ColorStateList.valueOf(
                             "#5899EF".toColorInt()
                         )

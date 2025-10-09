@@ -1,5 +1,6 @@
 package id.erela.surveyproduct.helpers.api
 
+import id.erela.surveyproduct.objects.AnswerCheckResponse
 import id.erela.surveyproduct.objects.AnswerHistoryResponse
 import id.erela.surveyproduct.objects.CheckInOutHistoryListResponse
 import id.erela.surveyproduct.objects.CheckInResponse
@@ -43,6 +44,12 @@ interface SuperEndpoint {
     fun showAnswerHistory(
         @Field("AnswerGroupID") answerGroupID: Int
     ): Call<AnswerHistoryResponse>
+
+    @FormUrlEncoded
+    @POST("survey/answerCheck")
+    fun checkAnswer(
+        @Field("AnswerGroupID") answerGroupID: Int,
+    ): Call<AnswerCheckResponse>
 
     @Multipart
     @POST("survey/insert")

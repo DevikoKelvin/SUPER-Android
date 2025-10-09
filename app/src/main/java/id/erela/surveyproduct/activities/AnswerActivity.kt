@@ -27,6 +27,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
+import id.erela.surveyproduct.activities.CheckInActivity.Companion.CHECK_IN_UPLOADED
 import id.erela.surveyproduct.adapters.recycler_view.QuestionSurveyAdapter
 import id.erela.surveyproduct.databinding.ActivityAnswerBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
@@ -34,6 +35,7 @@ import id.erela.surveyproduct.helpers.PermissionHelper
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
+import id.erela.surveyproduct.objects.AnswerCheckResponse
 import id.erela.surveyproduct.objects.InsertAnswerResponse
 import id.erela.surveyproduct.objects.SurveyAnswer
 import id.erela.surveyproduct.objects.SurveyListResponse
@@ -178,6 +180,79 @@ class AnswerActivity : AppCompatActivity(),
                     this@AnswerActivity
                 )
                 finish()
+            } else {
+                AppAPI.superEndpoint.checkAnswer(
+                    sharedPreferences.getInt(
+                        CheckInActivity.ANSWER_GROUP_ID,
+                        0
+                )).enqueue(object : Callback<AnswerCheckResponse> {
+                    override fun onResponse(
+                        call: Call<AnswerCheckResponse?>,
+                        response: Response<AnswerCheckResponse?>
+                    ) {
+                        if (response.isSuccessful) {
+                            if (response.body() != null) {
+                                val result = response.body()
+                                when (result?.code) {
+                                    1 -> {
+                                        sharedPreferences.edit {
+                                            putBoolean(
+                                                ANSWER_UPLOADED,
+                                                true
+                                            )
+                                        }
+                                        CheckOutActivity.start(
+                                            this@AnswerActivity
+                                        )
+                                        finish()
+                                    }
+
+                                    0 -> {
+                                        sharedPreferences.edit {
+                                            putBoolean(
+                                                ANSWER_UPLOADED,
+                                                false
+                                            )
+                                        }
+                                    }
+                                }
+                            } else {
+                                sharedPreferences.edit {
+                                    putBoolean(
+                                        ANSWER_UPLOADED,
+                                        false
+                                    )
+                                }
+                                Log.e("ERROR", "Check Answer response body is null")
+                            }
+                        } else {
+                            sharedPreferences.edit {
+                                putBoolean(
+                                    ANSWER_UPLOADED,
+                                    false
+                                )
+                            }
+                            Log.e(
+                                "ERROR",
+                                "Check Answer response is not successful. ${response.code()}: ${response.message()}"
+                            )
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<AnswerCheckResponse?>,
+                        t: Throwable
+                    ) {
+                        sharedPreferences.edit {
+                            putBoolean(
+                                ANSWER_UPLOADED,
+                                false
+                            )
+                        }
+                        t.printStackTrace()
+                        Log.e("ERROR", "Check Answer failure. ${t.message}")
+                    }
+                })
             }
 
             adapter = QuestionSurveyAdapter(
@@ -407,16 +482,6 @@ class AnswerActivity : AppCompatActivity(),
                                 getColor(R.color.custom_toast_font_failed)
                             ).show()
                     }
-                    /*with(intent) {
-                        CheckOutActivity.start(
-                            this@AnswerActivity,
-                            getIntExtra(CheckInActivity.SELECTED_OUTLET, 0),
-                            getStringExtra(CheckInActivity.IMAGE_URI)?.toUri(),
-                            getDoubleExtra(CheckInActivity.LATITUDE, 0.0),
-                            getDoubleExtra(CheckInActivity.LONGITUDE, 0.0),
-                            answers
-                        )
-                    }*/
                 } else {
                     CustomToast.getInstance(applicationContext)
                         .setMessage(

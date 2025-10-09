@@ -458,7 +458,7 @@ class CheckOutActivity : AppCompatActivity() {
                                     CustomToast(applicationContext)
                                         .setMessage(
                                             if (getString(R.string.language) == "en") {
-                                                if (result?.data?.remaining!!.toFloat() > 1) {
+                                                if (result?.data?.remaining!! > 1) {
                                                     "Sorry, you're still ${result.data.timeDiff} minutes away from check in. Please wait another ${result.data.remaining} minutes."
                                                 } else {
                                                     "Sorry, you're still ${result.data.timeDiff} minutes away from check in. Please wait in a minute."
