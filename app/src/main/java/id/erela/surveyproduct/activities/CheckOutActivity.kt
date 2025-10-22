@@ -472,6 +472,7 @@ class CheckOutActivity : AppCompatActivity() {
                                         .setFontColor(
                                             getColor(R.color.custom_toast_font_failed)
                                         ).show()
+                                    throw Exception("15 Minutes Check Response. ${result?.message}")
                                 }
                             }
                         } else {
@@ -487,6 +488,7 @@ class CheckOutActivity : AppCompatActivity() {
                                 .setFontColor(
                                     getColor(R.color.custom_toast_font_failed)
                                 ).show()
+                            throw Exception("15 Minutes Check Response body is null")
                         }
                     } else {
                         Log.e(
@@ -504,6 +506,7 @@ class CheckOutActivity : AppCompatActivity() {
                             .setFontColor(
                                 getColor(R.color.custom_toast_font_failed)
                             ).show()
+                        throw Exception("15 Minutes Check Response is not successful. ${response.code()}: ${response.message()}")
                     }
                 }
 
@@ -525,6 +528,7 @@ class CheckOutActivity : AppCompatActivity() {
                         .setFontColor(
                             getColor(R.color.custom_toast_font_failed)
                         ).show()
+                    throw Exception("15 Minutes Check failure! ${throwable.message}")
                 }
             })
         }
@@ -622,6 +626,7 @@ class CheckOutActivity : AppCompatActivity() {
                                         .setFontColor(
                                             getColor(R.color.custom_toast_font_failed)
                                         ).show()
+                                    throw Exception("Check Out Response. ${result.message}")
                                 }
                             }
                         } else {
@@ -637,6 +642,7 @@ class CheckOutActivity : AppCompatActivity() {
                                 .setFontColor(
                                     getColor(R.color.custom_toast_font_failed)
                                 ).show()
+                            throw Exception("Check Out Response body is null")
                         }
                     } else {
                         Log.e(
@@ -654,6 +660,7 @@ class CheckOutActivity : AppCompatActivity() {
                             .setFontColor(
                                 getColor(R.color.custom_toast_font_failed)
                             ).show()
+                        throw Exception("Check Out Response is not successful. ${response.code()}: ${response.message()}")
                     }
                 }
 
@@ -672,6 +679,7 @@ class CheckOutActivity : AppCompatActivity() {
                         .setFontColor(
                             getColor(R.color.custom_toast_font_failed)
                         ).show()
+                    throw Exception("Check Out failure! ${throwable.message}")
                 }
             })
     }

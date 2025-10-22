@@ -441,6 +441,7 @@ class CheckInActivity : AppCompatActivity() {
                                                         false
                                                     )
                                                 }
+                                                throw Exception("Check In Failed! ${result1.message}")
                                             }
                                         }
                                     } else {
@@ -465,6 +466,7 @@ class CheckInActivity : AppCompatActivity() {
                                             "ERROR",
                                             "Check In Response body is null"
                                         )
+                                        throw Exception("Check In Response body is null")
                                     }
                                 } else {
                                     CustomToast(applicationContext)
@@ -488,6 +490,7 @@ class CheckInActivity : AppCompatActivity() {
                                         "ERROR",
                                         "Check In is not successful. ${response.code()}: ${response.message()}"
                                     )
+                                    throw Exception("Check In is not successful. ${response.code()}: ${response.message()}")
                                 }
                             }
 
@@ -518,6 +521,7 @@ class CheckInActivity : AppCompatActivity() {
                                     "ERROR",
                                     "Check In Failure. ${throwable.message}"
                                 )
+                                throw Exception("Check In Failure. ${throwable.message}")
                             }
                         })
                 }
@@ -656,7 +660,6 @@ class CheckInActivity : AppCompatActivity() {
                                         if (response.isSuccessful) {
                                             if (response.body() != null) {
                                                 val result = response.body()
-                                                Log.e("Result Data", result.toString())
                                                 when (result?.code) {
                                                     1 -> {
                                                         selectedOutletText =
@@ -674,7 +677,6 @@ class CheckInActivity : AppCompatActivity() {
                                                     }
 
                                                     2 -> {
-                                                        Log.e("Data", result.data.toString())
                                                         clearCheckInData(this@CheckInActivity)
                                                         sharedPreferences.edit {
                                                             putInt(

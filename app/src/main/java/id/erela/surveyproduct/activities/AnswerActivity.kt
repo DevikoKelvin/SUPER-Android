@@ -93,6 +93,7 @@ class AnswerActivity : AppCompatActivity(),
             }
         }
     }
+    private var emptiedAnswer: ArrayList<Int> = ArrayList()
 
     companion object {
         const val ANSWER_UPLOADED = "ANSWER_UPLOADED"
@@ -185,7 +186,8 @@ class AnswerActivity : AppCompatActivity(),
                     sharedPreferences.getInt(
                         CheckInActivity.ANSWER_GROUP_ID,
                         0
-                )).enqueue(object : Callback<AnswerCheckResponse> {
+                    )
+                ).enqueue(object : Callback<AnswerCheckResponse> {
                     override fun onResponse(
                         call: Call<AnswerCheckResponse?>,
                         response: Response<AnswerCheckResponse?>
@@ -386,6 +388,7 @@ class AnswerActivity : AppCompatActivity(),
                                                         false
                                                     )
                                                 }
+                                                throw Exception("Survey Answer Submission Failed! ${result.message}")
                                             }
                                         }
                                     } else {
@@ -406,7 +409,11 @@ class AnswerActivity : AppCompatActivity(),
                                                 false
                                             )
                                         }
-                                        Log.e("ERROR", "Survey Answer Submission response body is null")
+                                        Log.e(
+                                            "ERROR",
+                                            "Survey Answer Submission response body is null"
+                                        )
+                                        throw Exception("Survey Answer Submission response body is null")
                                     }
                                 } else {
                                     CustomToast(applicationContext)
@@ -430,6 +437,7 @@ class AnswerActivity : AppCompatActivity(),
                                         "ERROR",
                                         "Survey Answer Submission response is not successful. ${response.code()}: ${response.message()}"
                                     )
+                                    throw Exception("Survey Answer Submission response is not successful. ${response.code()}: ${response.message()}")
                                 }
                             }
 
@@ -445,7 +453,10 @@ class AnswerActivity : AppCompatActivity(),
                                     )
                                 }
                                 throwable.printStackTrace()
-                                Log.e("ERROR", "Survey Answer Submission failure. ${throwable.message}")
+                                Log.e(
+                                    "ERROR",
+                                    "Survey Answer Submission failure. ${throwable.message}"
+                                )
                                 CustomToast(applicationContext)
                                     .setMessage(
                                         if (getString(R.string.language) == "en") "Survey Answer Submission Failed!"
@@ -457,6 +468,7 @@ class AnswerActivity : AppCompatActivity(),
                                     .setFontColor(
                                         getColor(R.color.custom_toast_font_failed)
                                     ).show()
+                                throw Exception("Survey Answer Submission failure. ${throwable.message}")
                             }
 
                         })
@@ -481,12 +493,13 @@ class AnswerActivity : AppCompatActivity(),
                             .setFontColor(
                                 getColor(R.color.custom_toast_font_failed)
                             ).show()
+                        throw Exception("Survey Answer Submission Exception: ${e.message}")
                     }
                 } else {
                     CustomToast.getInstance(applicationContext)
                         .setMessage(
-                            if (getString(R.string.language) == "en") "Please answer all questions"
-                            else "Tolong jawab semua pertanyaan"
+                            if (getString(R.string.language) == "en") "Please answer all questions. Question number ${emptiedAnswer[0]} is empty."
+                            else "Tolong jawab semua pertanyaan. Pertanyaan nomor ${emptiedAnswer[0]} kosong"
                         )
                         .setBackgroundColor(
                             ContextCompat.getColor(
@@ -589,6 +602,7 @@ class AnswerActivity : AppCompatActivity(),
                                             CheckInActivity.clearCheckInData(this@AnswerActivity)
                                             CheckInActivity.clearAnswerData(this@AnswerActivity)
                                             CheckOutActivity.clearCheckOutData(this@AnswerActivity)
+                                            throw Exception("Get Survey List response code 0")
                                         }
                                     }
                                 }
@@ -620,6 +634,7 @@ class AnswerActivity : AppCompatActivity(),
                                 ).show()
                             if (CheckInActivity.activity != null)
                                 CheckInActivity.activity?.finish()
+                            throw Exception(throwable.toString())
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -644,6 +659,7 @@ class AnswerActivity : AppCompatActivity(),
                     ).show()
                 if (CheckInActivity.activity != null)
                     CheckInActivity.activity?.finish()
+                throw Exception(jsonException.toString())
             }
         }
     }
@@ -651,6 +667,7 @@ class AnswerActivity : AppCompatActivity(),
     private fun validateAnswer(context: Context): Boolean {
         val sharedPreferences = SharedPreferencesHelper.getSharedPreferences(context)
         answers.clear()
+        emptiedAnswer.clear()
 
         CheckInActivity.surveyQuestionsList.forEach { question ->
             val questionId = question.iD ?: return false
@@ -665,6 +682,7 @@ class AnswerActivity : AppCompatActivity(),
                         )
                         if (photoUri == null) {
                             Log.e("Photo [$questionId][0]", "Empty")
+                            emptiedAnswer.add(questionId + 1)
                             return false
                         } else {
                             answers.add(
@@ -687,6 +705,7 @@ class AnswerActivity : AppCompatActivity(),
                         )
                         if (text.isNullOrBlank()) {
                             Log.e("Essay [$questionId][0]", "Empty")
+                            emptiedAnswer.add(questionId + 1)
                             return false
                         } else {
                             answers.add(
@@ -709,6 +728,7 @@ class AnswerActivity : AppCompatActivity(),
                         )
                         if (text.isNullOrBlank()) {
                             Log.e("Scale [$questionId][0]", "Empty")
+                            emptiedAnswer.add(questionId + 1)
                             return false
                         } else {
                             answers.add(
@@ -736,6 +756,7 @@ class AnswerActivity : AppCompatActivity(),
                         }
                         if (answeredCount == 0) {
                             Log.e("Checkbox [$questionId][0]", "Empty")
+                            emptiedAnswer.add(questionId + 1)
                             return false
                         } else {
                             for (i in 0 until question.checkboxOptions.size) {
@@ -769,6 +790,7 @@ class AnswerActivity : AppCompatActivity(),
                         }
                         if (answeredCount == 0) {
                             Log.e("Multiple [$questionId][0]", "Empty")
+                            emptiedAnswer.add(questionId + 1)
                             return false
                         } else {
                             for (i in 0 until question.multipleOptions.size) {
@@ -803,6 +825,7 @@ class AnswerActivity : AppCompatActivity(),
                             )
                             if (photoUri == null) {
                                 Log.e("Photo [$questionId][$subQuestionId]", "Empty")
+                                emptiedAnswer.add(questionId + 1)
                                 return false
                             } else {
                                 answers.add(
@@ -825,6 +848,7 @@ class AnswerActivity : AppCompatActivity(),
                             )
                             if (text.isNullOrBlank()) {
                                 Log.e("Essay [$questionId][$subQuestionId]", "Empty")
+                                emptiedAnswer.add(questionId + 1)
                                 return false
                             } else {
                                 answers.add(
@@ -847,6 +871,7 @@ class AnswerActivity : AppCompatActivity(),
                             )
                             if (text.isNullOrBlank()) {
                                 Log.e("Scale [$questionId][$subQuestionId]", "Empty")
+                                emptiedAnswer.add(questionId + 1)
                                 return false
                             } else {
                                 answers.add(
@@ -874,6 +899,7 @@ class AnswerActivity : AppCompatActivity(),
                             }
                             if (answeredCount == 0) {
                                 Log.e("Checkbox [$questionId][$subQuestionId]", "Empty")
+                                emptiedAnswer.add(questionId + 1)
                                 return false
                             } else {
                                 for (i in 0 until question.checkboxOptions.size) {
@@ -907,6 +933,7 @@ class AnswerActivity : AppCompatActivity(),
                             }
                             if (answeredCount == 0) {
                                 Log.e("Multiple [$questionId][$subQuestionId]", "Empty")
+                                emptiedAnswer.add(questionId + 1)
                                 return false
                             } else {
                                 for (i in 0 until question.multipleOptions.size) {

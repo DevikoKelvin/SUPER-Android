@@ -282,6 +282,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                                 R.color.custom_toast_background_failed
                                                             )
                                                         ).show()
+                                                    throw Exception(result.message.toString())
                                                 }
                                             }
                                         } else {
@@ -303,6 +304,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                         R.color.custom_toast_background_failed
                                                     )
                                                 ).show()
+                                            throw Exception("Update Outlet Response body is null")
                                         }
                                     } else {
                                         Log.e("ERROR (Update)", "Response not successful")
@@ -323,6 +325,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                     R.color.custom_toast_background_failed
                                                 )
                                             ).show()
+                                        throw Exception("Update Outlet Response not successful")
                                     }
                                 }
 
@@ -351,6 +354,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
+                                    throw Exception(throwable.toString())
                                 }
                             })
                         } catch (jsonException: JSONException) {
@@ -375,6 +379,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
+                            throw Exception(jsonException.toString())
                         }
                     } else {
                         try {
@@ -439,6 +444,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                                 R.color.custom_toast_background_failed
                                                             )
                                                         ).show()
+                                                    throw Exception(result.message.toString())
                                                 }
                                             }
                                         } else {
@@ -460,10 +466,10 @@ class AddOutletActivity : AppCompatActivity() {
                                                         R.color.custom_toast_background_failed
                                                     )
                                                 ).show()
+                                            throw Exception("Add Outlet Response body is null")
                                         }
                                     } else {
                                         Log.e("ERROR (Creation)", "Response not successful")
-                                        Log.e("ERROR (Creation)", response.toString())
                                         CustomToast.getInstance(applicationContext)
                                             .setMessage(
                                                 if (getString(R.string.language) == "en") "Something went wrong, please try again."
@@ -481,6 +487,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                     R.color.custom_toast_background_failed
                                                 )
                                             ).show()
+                                        throw Exception("Add Outlet Response not successful")
                                     }
                                 }
 
@@ -509,6 +516,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
+                                    throw Exception(throwable.toString())
                                 }
                             })
                         } catch (jsonException: JSONException) {
@@ -533,6 +541,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
+                            throw Exception(jsonException.toString())
                         }
                     }
                 }
@@ -894,6 +903,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                         R.color.custom_toast_background_failed
                                                     )
                                                 ).show()
+                                            throw Exception(result.message)
                                         }
                                     }
                                 } else {
@@ -917,6 +927,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
+                                    throw Exception("Get Category Response body is null")
                                 }
                             } else {
                                 Log.e("ERROR (Category)", "Response not successful")
@@ -939,6 +950,7 @@ class AddOutletActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
+                                throw Exception("Get Category Response not successful")
                             }
                         }
 
@@ -967,6 +979,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
+                            throw Exception(throwable.toString())
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -991,6 +1004,7 @@ class AddOutletActivity : AppCompatActivity() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
+                throw Exception(jsonException.toString())
             }
         }
     }
@@ -1143,6 +1157,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
+                                    throw Exception("Get Province Response body is null")
                                 }
                             } else {
                                 Log.e("ERROR (Province)", "Response not successful")
@@ -1165,6 +1180,7 @@ class AddOutletActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
+                                throw Exception("Get Province Response not successful")
                             }
                         }
 
@@ -1193,6 +1209,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
+                            throw Exception(throwable.toString())
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -1217,6 +1234,7 @@ class AddOutletActivity : AppCompatActivity() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
+                throw Exception(jsonException.toString())
             }
         }
     }
@@ -1469,6 +1487,7 @@ class AddOutletActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
+                                throw Exception("Get Region Response body is null")
                             }
                         } else {
                             Log.e("ERROR (Region)", "Response not successful")
@@ -1491,6 +1510,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
+                            throw Exception("Get Region Response not successful")
                         }
                     }
 
@@ -1519,6 +1539,7 @@ class AddOutletActivity : AppCompatActivity() {
                                     R.color.custom_toast_background_failed
                                 )
                             ).show()
+                        throw Exception(throwable.toString())
                     }
                 })
             } catch (jsonException: JSONException) {
@@ -1543,6 +1564,7 @@ class AddOutletActivity : AppCompatActivity() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
+                throw Exception(jsonException.toString())
             }
         }
     }

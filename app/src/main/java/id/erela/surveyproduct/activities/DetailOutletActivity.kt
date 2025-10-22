@@ -172,6 +172,7 @@ class DetailOutletActivity : AppCompatActivity() {
                                                     R.color.custom_toast_background_failed
                                                 )
                                             ).show()
+                                        throw Exception("Detail Outlet Error: ${result.message}")
                                     }
                                 }
                             } else {
@@ -197,6 +198,7 @@ class DetailOutletActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
+                                throw Exception("Detail Outlet Response body is null")
                             }
                         } else {
                             Log.e(
@@ -221,11 +223,15 @@ class DetailOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
+                            throw Exception("Detail Outlet Response not successful: ${response.code()} - ${response.message()}")
                         }
                     }
 
                     override fun onFailure(call: Call<OutletResponse>, throwable: Throwable) {
                         dialog.dismiss()
+                        throwable.printStackTrace()
+                        Log.e("ERROR (Outlet Detail)", throwable.toString())
+                        throw Exception("Detail Outlet Error: ${throwable.message}")
                     }
 
                 })
@@ -251,6 +257,7 @@ class DetailOutletActivity : AppCompatActivity() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
+                throw Exception("Detail Outlet Error: ${jsonException.message}")
             }
         }
     }

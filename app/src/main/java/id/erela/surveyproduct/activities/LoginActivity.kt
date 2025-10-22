@@ -139,6 +139,7 @@ class LoginActivity : AppCompatActivity() {
                                                         R.color.custom_toast_background_failed
                                                     )
                                                 ).show()
+                                            throw Exception("Login Error: ${result.message}")
                                         }
 
                                         0 -> {
@@ -222,6 +223,7 @@ class LoginActivity : AppCompatActivity() {
                                                                                 R.color.custom_toast_background_failed
                                                                             )
                                                                         ).show()
+                                                                    throw Exception("Super API Error Get User Detail Error: ${result1.message}")
                                                                 }
                                                             }
                                                         } else {
@@ -245,6 +247,7 @@ class LoginActivity : AppCompatActivity() {
                                                                         R.color.custom_toast_background_failed
                                                                     )
                                                                 ).show()
+                                                            throw Exception("Super API Error Get User Detail Response body is null")
                                                         }
                                                     } else {
                                                         Log.e("ERROR", "Response not successful")
@@ -265,6 +268,7 @@ class LoginActivity : AppCompatActivity() {
                                                                     R.color.custom_toast_background_failed
                                                                 )
                                                             ).show()
+                                                        throw Exception("Super API Error Get User Detail Response not successful")
                                                     }
                                                 }
 
@@ -291,13 +295,13 @@ class LoginActivity : AppCompatActivity() {
                                                             }
                                                         }
                                                     }.show()
+                                                    throw Exception("Super API Error Get User Detail: ${throwable.message}")
                                                 }
                                             })
                                         }
                                     }
                                 } else {
                                     Log.e("ERROR", "Response body is null")
-                                    Log.e("Response", response.toString())
                                     CustomToast.getInstance(applicationContext)
                                         .setMessage(
                                             if (getString(R.string.language) == "en") "Something went wrong, please try again later"
@@ -315,10 +319,10 @@ class LoginActivity : AppCompatActivity() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
+                                    throw Exception("Login Response body is null")
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
-                                Log.e("Response", response.toString())
                                 CustomToast.getInstance(applicationContext)
                                     .setMessage(
                                         if (getString(R.string.language) == "en") "Something went wrong, please try again later"
@@ -336,6 +340,7 @@ class LoginActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
+                                throw Exception("Login Response not successful")
                             }
                         }
 
@@ -355,6 +360,7 @@ class LoginActivity : AppCompatActivity() {
                                     }
                                 }
                             }.show()
+                            throw Exception("Login: ${throwable.message}")
                         }
                     })
             } catch (exception: Exception) {
@@ -373,6 +379,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }.show()
                 exception.printStackTrace()
+                throw Exception("Login: ${exception.message}")
             }
         }
     }

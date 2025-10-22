@@ -159,6 +159,8 @@ class SurveyDetailActivity : AppCompatActivity() {
 
                                     0 -> {
                                         answeredQuestionRv.visibility = View.GONE
+                                        Log.e("onFailure", result.message.toString())
+                                        throw Exception("Get Answer History Failed: ${result.message}")
                                     }
                                 }
                             }
@@ -171,6 +173,7 @@ class SurveyDetailActivity : AppCompatActivity() {
                         Log.e("onFailure", throwable.message.toString())
                         answeredQuestionRv.visibility = View.GONE
                         throwable.printStackTrace()
+                        throw Exception("Get Answer History Failed: ${throwable.message}")
                     }
                 })
             } catch (jsonException: JSONException) {

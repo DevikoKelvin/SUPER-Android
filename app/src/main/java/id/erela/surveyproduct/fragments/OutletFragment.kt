@@ -246,6 +246,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                                                 ).show()
                                             emptyAnimation.visibility = View.VISIBLE
                                             outletListRv.visibility = View.GONE
+                                            throw Exception("Show all outlet failed: ${result.message}")
                                         }
                                     }
                                 } else {
@@ -269,6 +270,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                                         ).show()
                                     emptyAnimation.visibility = View.VISIBLE
                                     outletListRv.visibility = View.GONE
+                                    throw Exception("Show all outlet failed: Response body is null")
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
@@ -291,6 +293,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                                     ).show()
                                 emptyAnimation.visibility = View.VISIBLE
                                 outletListRv.visibility = View.GONE
+                                throw Exception("Show all outlet failed: Response not successful")
                             }
                         }
 
@@ -321,6 +324,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                                 ).show()
                             emptyAnimation.visibility = View.VISIBLE
                             outletListRv.visibility = View.GONE
+                            throw Exception("Show all outlet failed: ${throwable.message}")
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -347,6 +351,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                     ).show()
                 emptyAnimation.visibility = View.VISIBLE
                 outletListRv.visibility = View.GONE
+                throw Exception("Show all outlet failed: ${jsonException.message}")
             }
         }
     }

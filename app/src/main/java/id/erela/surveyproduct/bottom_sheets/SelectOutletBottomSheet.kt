@@ -193,6 +193,7 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                                     )
                                                 ).show()
                                             outletListRv.visibility = View.GONE
+                                            throw Exception("Show all outlet failed: ${result.message}")
                                         }
                                     }
                                 } else {
@@ -215,6 +216,7 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                             )
                                         ).show()
                                     outletListRv.visibility = View.GONE
+                                    throw Exception("Show all outlet failed: Response body is null")
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
@@ -236,6 +238,7 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                         )
                                     ).show()
                                 outletListRv.visibility = View.GONE
+                                throw Exception("Show all outlet failed: Response not successful")
                             }
                         }
 
@@ -264,6 +267,7 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                                     )
                                 ).show()
                             outletListRv.visibility = View.GONE
+                            throw Exception("Show all outlet failed: ${throwable.message}")
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -288,6 +292,7 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
                         )
                     ).show()
                 outletListRv.visibility = View.GONE
+                throw Exception("Show all outlet failed: ${jsonException.message}")
             }
         }
     }

@@ -63,7 +63,6 @@ class FilterHistoryBottomSheet(
                     startCalendar.timeInMillis = selection
                     startDate.text = dateFormat.format(startCalendar.time)
                     start = serverDateFormat.format(startCalendar.time)
-                    Log.e("START", start)
                 }
                 datePicker.show(fragmentManager, "START")
             }
@@ -89,7 +88,6 @@ class FilterHistoryBottomSheet(
                     nowCalendar.timeInMillis = selection
                     endDate.text = dateFormat.format(nowCalendar.time)
                     end = serverDateFormat.format(nowCalendar.time)
-                    Log.e("END", end)
                 }
                 datePicker.show(fragmentManager, "END")
             }

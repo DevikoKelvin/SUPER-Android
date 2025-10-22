@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "635268079925",
+    "project_id": "erela-super-f8f07",
+    "storage_bucket": "erela-super-f8f07.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635268079925:android:607c4eb1be04f1fb68ec7c",
+        "android_client_info": {
+          "package_name": "id.erela.surveyproduct"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE7ttVL5KZLwLLCvVAuZVY105GWNPMwug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -80,7 +80,6 @@ class HistoryFragment(private val context: Context) : Fragment() {
 
         prepareView()
     }
-
     @Deprecated(
         "Deprecated in Java", ReplaceWith(
             "super.setUserVisibleHint(isVisibleToUser)",
@@ -217,19 +216,21 @@ class HistoryFragment(private val context: Context) : Fragment() {
                                         0 -> {
                                             emptyAnimation.visibility = View.VISIBLE
                                             checkInOutListRv.visibility = View.GONE
+                                            Log.e("ERROR", result.message.toString())
+                                            throw Exception("Show all check in history failed. Message: ${result.message}")
                                         }
                                     }
                                 } else {
                                     Log.e("ERROR", "Response body is null")
-                                    Log.e("Response", response.toString())
                                     emptyAnimation.visibility = View.VISIBLE
                                     checkInOutListRv.visibility = View.GONE
+                                    throw Exception("Show all check in history failed. Response body is null")
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
-                                Log.e("Response", response.toString())
                                 emptyAnimation.visibility = View.VISIBLE
                                 checkInOutListRv.visibility = View.GONE
+                                throw Exception("Show all check in history failed. Response not successful")
                             }
                         }
 
@@ -243,6 +244,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
                             throwable.printStackTrace()
                             emptyAnimation.visibility = View.VISIBLE
                             checkInOutListRv.visibility = View.GONE
+                            throw Exception("Show all check in history failed. ${throwable.message}")
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -252,6 +254,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
                 jsonException.printStackTrace()
                 emptyAnimation.visibility = View.VISIBLE
                 checkInOutListRv.visibility = View.GONE
+                throw Exception("Show all check in history failed. ${jsonException.message}")
             }
         }
     }
