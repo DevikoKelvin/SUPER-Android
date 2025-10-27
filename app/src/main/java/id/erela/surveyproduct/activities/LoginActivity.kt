@@ -223,7 +223,6 @@ class LoginActivity : AppCompatActivity() {
                                                                                 R.color.custom_toast_background_failed
                                                                             )
                                                                         ).show()
-                                                                    throw Exception("Super API Error Get User Detail Error: ${result1.message}")
                                                                 }
                                                             }
                                                         } else {
@@ -247,7 +246,6 @@ class LoginActivity : AppCompatActivity() {
                                                                         R.color.custom_toast_background_failed
                                                                     )
                                                                 ).show()
-                                                            throw Exception("Super API Error Get User Detail Response body is null")
                                                         }
                                                     } else {
                                                         Log.e("ERROR", "Response not successful")
@@ -268,7 +266,6 @@ class LoginActivity : AppCompatActivity() {
                                                                     R.color.custom_toast_background_failed
                                                                 )
                                                             ).show()
-                                                        throw Exception("Super API Error Get User Detail Response not successful")
                                                     }
                                                 }
 
@@ -295,7 +292,6 @@ class LoginActivity : AppCompatActivity() {
                                                             }
                                                         }
                                                     }.show()
-                                                    throw Exception("Super API Error Get User Detail: ${throwable.message}")
                                                 }
                                             })
                                         }
@@ -319,7 +315,6 @@ class LoginActivity : AppCompatActivity() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
-                                    throw Exception("Login Response body is null")
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
@@ -340,7 +335,6 @@ class LoginActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
-                                throw Exception("Login Response not successful")
                             }
                         }
 
@@ -360,7 +354,6 @@ class LoginActivity : AppCompatActivity() {
                                     }
                                 }
                             }.show()
-                            throw Exception("Login: ${throwable.message}")
                         }
                     })
             } catch (exception: Exception) {
@@ -379,7 +372,6 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }.show()
                 exception.printStackTrace()
-                throw Exception("Login: ${exception.message}")
             }
         }
     }
