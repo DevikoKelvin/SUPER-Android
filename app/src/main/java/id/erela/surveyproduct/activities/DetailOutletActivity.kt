@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -82,6 +83,10 @@ class DetailOutletActivity : AppCompatActivity() {
         }
 
         init()
+    }
+
+    private fun crashReport(throwable: Throwable) {
+        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     private fun init() {
@@ -172,7 +177,7 @@ class DetailOutletActivity : AppCompatActivity() {
                                                     R.color.custom_toast_background_failed
                                                 )
                                             ).show()
-                                        throw Exception("Detail Outlet Error: ${result.message}")
+                                        crashReport(Exception("Detail Outlet Error: ${result.message}"))
                                     }
                                 }
                             } else {
@@ -198,7 +203,7 @@ class DetailOutletActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
-                                throw Exception("Detail Outlet Response body is null")
+                                crashReport(Exception("Detail Outlet Response body is null"))
                             }
                         } else {
                             Log.e(
@@ -223,7 +228,7 @@ class DetailOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
-                            throw Exception("Detail Outlet Response not successful: ${response.code()} - ${response.message()}")
+                            crashReport(Exception("Detail Outlet Response not successful: ${response.code()} - ${response.message()}"))
                         }
                     }
 
@@ -231,7 +236,7 @@ class DetailOutletActivity : AppCompatActivity() {
                         dialog.dismiss()
                         throwable.printStackTrace()
                         Log.e("ERROR (Outlet Detail)", throwable.toString())
-                        throw Exception("Detail Outlet Error: ${throwable.message}")
+                        crashReport(Exception("Detail Outlet Error: ${throwable.message}"))
                     }
 
                 })
@@ -257,7 +262,7 @@ class DetailOutletActivity : AppCompatActivity() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
-                throw Exception("Detail Outlet Error: ${jsonException.message}")
+                crashReport(Exception("Detail Outlet Error: ${jsonException.message}"))
             }
         }
     }

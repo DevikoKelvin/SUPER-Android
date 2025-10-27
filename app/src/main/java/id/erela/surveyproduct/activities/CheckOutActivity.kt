@@ -28,6 +28,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.geometry.LatLng
 import id.erela.surveyproduct.BuildConfig
@@ -230,6 +231,10 @@ class CheckOutActivity : AppCompatActivity() {
                 getLastKnownLocation()
             }
         }
+    }
+
+    private fun crashReport(throwable: Throwable) {
+        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     private fun init() {
@@ -459,9 +464,9 @@ class CheckOutActivity : AppCompatActivity() {
                                         .setMessage(
                                             if (getString(R.string.language) == "en") {
                                                 if (result?.data?.remaining!! > 1) {
-                                                    "Sorry, you're still ${result.data.timeDiff} minutes away from check in. Please wait another ${result.data.remaining} minutes."
+                                                    "Sorry, you\'re still ${result.data.timeDiff} minutes away from check in. Please wait another ${result.data.remaining} minutes."
                                                 } else {
-                                                    "Sorry, you're still ${result.data.timeDiff} minutes away from check in. Please wait in a minute."
+                                                    "Sorry, you\'re still ${result.data.timeDiff} minutes away from check in. Please wait in a minute."
                                                 }
                                             } else
                                                 "Maaf, Anda masih ${result?.data?.timeDiff} menit semenjak check in. Mohon tunggu ${result?.data?.remaining} menit lagi."
@@ -472,7 +477,7 @@ class CheckOutActivity : AppCompatActivity() {
                                         .setFontColor(
                                             getColor(R.color.custom_toast_font_failed)
                                         ).show()
-                                    throw Exception("15 Minutes Check Response. ${result?.message}")
+                                    crashReport(Exception("15 Minutes Check Response. ${result?.message}"))
                                 }
                             }
                         } else {
@@ -488,7 +493,7 @@ class CheckOutActivity : AppCompatActivity() {
                                 .setFontColor(
                                     getColor(R.color.custom_toast_font_failed)
                                 ).show()
-                            throw Exception("15 Minutes Check Response body is null")
+                            crashReport(Exception("15 Minutes Check Response body is null"))
                         }
                     } else {
                         Log.e(
@@ -506,7 +511,7 @@ class CheckOutActivity : AppCompatActivity() {
                             .setFontColor(
                                 getColor(R.color.custom_toast_font_failed)
                             ).show()
-                        throw Exception("15 Minutes Check Response is not successful. ${response.code()}: ${response.message()}")
+                        crashReport(Exception("15 Minutes Check Response is not successful. ${response.code()}: ${response.message()}"))
                     }
                 }
 
@@ -528,7 +533,7 @@ class CheckOutActivity : AppCompatActivity() {
                         .setFontColor(
                             getColor(R.color.custom_toast_font_failed)
                         ).show()
-                    throw Exception("15 Minutes Check failure! ${throwable.message}")
+                    crashReport(Exception("15 Minutes Check failure! ${throwable.message}"))
                 }
             })
         }
@@ -626,7 +631,7 @@ class CheckOutActivity : AppCompatActivity() {
                                         .setFontColor(
                                             getColor(R.color.custom_toast_font_failed)
                                         ).show()
-                                    throw Exception("Check Out Response. ${result.message}")
+                                    crashReport(Exception("Check Out Response. ${result.message}"))
                                 }
                             }
                         } else {
@@ -642,7 +647,7 @@ class CheckOutActivity : AppCompatActivity() {
                                 .setFontColor(
                                     getColor(R.color.custom_toast_font_failed)
                                 ).show()
-                            throw Exception("Check Out Response body is null")
+                            crashReport(Exception("Check Out Response body is null"))
                         }
                     } else {
                         Log.e(
@@ -660,7 +665,7 @@ class CheckOutActivity : AppCompatActivity() {
                             .setFontColor(
                                 getColor(R.color.custom_toast_font_failed)
                             ).show()
-                        throw Exception("Check Out Response is not successful. ${response.code()}: ${response.message()}")
+                        crashReport(Exception("Check Out Response is not successful. ${response.code()}: ${response.message()}"))
                     }
                 }
 
@@ -679,7 +684,7 @@ class CheckOutActivity : AppCompatActivity() {
                         .setFontColor(
                             getColor(R.color.custom_toast_font_failed)
                         ).show()
-                    throw Exception("Check Out failure! ${throwable.message}")
+                    crashReport(Exception("Check Out failure! ${throwable.message}"))
                 }
             })
     }

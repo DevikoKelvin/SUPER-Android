@@ -26,6 +26,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.activities.CheckInActivity.Companion.CHECK_IN_UPLOADED
 import id.erela.surveyproduct.adapters.recycler_view.QuestionSurveyAdapter
@@ -168,6 +169,10 @@ class AnswerActivity : AppCompatActivity(),
         }
     }
 
+    private fun crashReport(throwable: Throwable) {
+        FirebaseCrashlytics.getInstance().recordException(throwable)
+    }
+
     private fun init() {
         binding.apply {
             dialog = LoadingDialog(this@AnswerActivity)
@@ -282,35 +287,35 @@ class AnswerActivity : AppCompatActivity(),
                             for (i in 0 until answers.size) {
                                 add(
                                     MultipartBody.Part.createFormData(
-                                        "Answers[$i][QuestionID]",
+                                        "Answers[${'$'}i][QuestionID]",
                                         answers[i].QuestionID.toString()
                                     )
                                 )
                                 if (answers[i].Answer != null)
                                     add(
                                         MultipartBody.Part.createFormData(
-                                            "Answers[$i][Answer]",
+                                            "Answers[${'$'}i][Answer]",
                                             answers[i].Answer!!
                                         )
                                     )
                                 if (answers[i].CheckboxID != null)
                                     add(
                                         MultipartBody.Part.createFormData(
-                                            "Answers[$i][CheckboxID]",
+                                            "Answers[${'$'}i][CheckboxID]",
                                             answers[i].CheckboxID.toString()
                                         )
                                     )
                                 if (answers[i].MultipleID != null)
                                     add(
                                         MultipartBody.Part.createFormData(
-                                            "Answers[$i][MultipleID]",
+                                            "Answers[${'$'}i][MultipleID]",
                                             answers[i].MultipleID.toString()
                                         )
                                     )
                                 if (answers[i].SubQuestionID != null)
                                     add(
                                         MultipartBody.Part.createFormData(
-                                            "Answers[$i][SubQuestionID]",
+                                            "Answers[${'$'}i][SubQuestionID]",
                                             answers[i].SubQuestionID.toString()
                                         )
                                     )
@@ -318,7 +323,7 @@ class AnswerActivity : AppCompatActivity(),
                                     add(
                                         createMultipartBody(
                                             answers[i].Photo!!.toUri(),
-                                            "Answers[$i][Photo]"
+                                            "Answers[${'$'}i][Photo]"
                                         )!!
                                     )
                                 }
@@ -373,8 +378,8 @@ class AnswerActivity : AppCompatActivity(),
                                             0 -> {
                                                 CustomToast(applicationContext)
                                                     .setMessage(
-                                                        if (getString(R.string.language) == "en") "Survey Answer Submission Failed! ${result.message}"
-                                                        else "Pengiriman Jawaban Survei Gagal! ${result.message}"
+                                                        if (getString(R.string.language) == "en") "Survey Answer Submission Failed! ${'$'}{result.message}"
+                                                        else "Pengiriman Jawaban Survei Gagal! ${'$'}{result.message}"
                                                     )
                                                     .setBackgroundColor(
                                                         getColor(R.color.custom_toast_background_failed)
@@ -388,7 +393,7 @@ class AnswerActivity : AppCompatActivity(),
                                                         false
                                                     )
                                                 }
-                                                throw Exception("Survey Answer Submission Failed! ${result.message}")
+                                                crashReport(Exception("Survey Answer Submission Failed! ${'$'}{result.message}"))
                                             }
                                         }
                                     } else {
@@ -413,7 +418,7 @@ class AnswerActivity : AppCompatActivity(),
                                             "ERROR",
                                             "Survey Answer Submission response body is null"
                                         )
-                                        throw Exception("Survey Answer Submission response body is null")
+                                        crashReport(Exception("Survey Answer Submission response body is null"))
                                     }
                                 } else {
                                     CustomToast(applicationContext)
@@ -435,9 +440,9 @@ class AnswerActivity : AppCompatActivity(),
                                     }
                                     Log.e(
                                         "ERROR",
-                                        "Survey Answer Submission response is not successful. ${response.code()}: ${response.message()}"
+                                        "Survey Answer Submission response is not successful. ${'$'}{response.code()}: ${'$'}{response.message()}"
                                     )
-                                    throw Exception("Survey Answer Submission response is not successful. ${response.code()}: ${response.message()}")
+                                    crashReport(Exception("Survey Answer Submission response is not successful. ${'$'}{response.code()}: ${'$'}{response.message()}"))
                                 }
                             }
 
@@ -455,7 +460,7 @@ class AnswerActivity : AppCompatActivity(),
                                 throwable.printStackTrace()
                                 Log.e(
                                     "ERROR",
-                                    "Survey Answer Submission failure. ${throwable.message}"
+                                    "Survey Answer Submission failure. ${'$'}{throwable.message}"
                                 )
                                 CustomToast(applicationContext)
                                     .setMessage(
@@ -468,7 +473,7 @@ class AnswerActivity : AppCompatActivity(),
                                     .setFontColor(
                                         getColor(R.color.custom_toast_font_failed)
                                     ).show()
-                                throw Exception("Survey Answer Submission failure. ${throwable.message}")
+                                crashReport(Exception("Survey Answer Submission failure. ${'$'}{throwable.message}"))
                             }
 
                         })
@@ -481,7 +486,7 @@ class AnswerActivity : AppCompatActivity(),
                             )
                         }
                         e.printStackTrace()
-                        Log.e("ERROR", "Survey Answer Submission Exception: ${e.message}")
+                        Log.e("ERROR", "Survey Answer Submission Exception: ${'$'}{e.message}")
                         CustomToast(applicationContext)
                             .setMessage(
                                 if (getString(R.string.language) == "en") "Survey Answer Submission Failed!"
@@ -493,13 +498,13 @@ class AnswerActivity : AppCompatActivity(),
                             .setFontColor(
                                 getColor(R.color.custom_toast_font_failed)
                             ).show()
-                        throw Exception("Survey Answer Submission Exception: ${e.message}")
+                        crashReport(Exception("Survey Answer Submission Exception: ${'$'}{e.message}"))
                     }
                 } else {
                     CustomToast.getInstance(applicationContext)
                         .setMessage(
-                            if (getString(R.string.language) == "en") "Please answer all questions. Question number ${emptiedAnswer[0]} is empty."
-                            else "Tolong jawab semua pertanyaan. Pertanyaan nomor ${emptiedAnswer[0]} kosong"
+                            if (getString(R.string.language) == "en") "Please answer all questions. Question number ${'$'}{emptiedAnswer[0]} is empty."
+                            else "Tolong jawab semua pertanyaan. Pertanyaan nomor ${'$'}{emptiedAnswer[0]} kosong"
                         )
                         .setBackgroundColor(
                             ContextCompat.getColor(
@@ -602,7 +607,7 @@ class AnswerActivity : AppCompatActivity(),
                                             CheckInActivity.clearCheckInData(this@AnswerActivity)
                                             CheckInActivity.clearAnswerData(this@AnswerActivity)
                                             CheckOutActivity.clearCheckOutData(this@AnswerActivity)
-                                            throw Exception("Get Survey List response code 0")
+                                            crashReport(Exception("Get Survey List response code 0"))
                                         }
                                     }
                                 }
@@ -634,7 +639,7 @@ class AnswerActivity : AppCompatActivity(),
                                 ).show()
                             if (CheckInActivity.activity != null)
                                 CheckInActivity.activity?.finish()
-                            throw Exception(throwable.toString())
+                            crashReport(Exception(throwable.toString()))
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -659,7 +664,7 @@ class AnswerActivity : AppCompatActivity(),
                     ).show()
                 if (CheckInActivity.activity != null)
                     CheckInActivity.activity?.finish()
-                throw Exception(jsonException.toString())
+                crashReport(Exception(jsonException.toString()))
             }
         }
     }
@@ -677,11 +682,11 @@ class AnswerActivity : AppCompatActivity(),
                 when (question.questionType) {
                     "photo" -> {
                         val photoUri = sharedPreferences.getString(
-                            "${ANSWER_PHOTO}_${questionId}_0",
+                            "${'$'}{ANSWER_PHOTO}_${'$'}{questionId}_0",
                             null
                         )
                         if (photoUri == null) {
-                            Log.e("Photo [$questionId][0]", "Empty")
+                            Log.e("Photo [${'$'}questionId][0]", "Empty")
                             emptiedAnswer.add(questionId + 1)
                             return false
                         } else {
@@ -700,11 +705,11 @@ class AnswerActivity : AppCompatActivity(),
 
                     "essay" -> {
                         val text = sharedPreferences.getString(
-                            "${ANSWER_TEXT}_${questionId}_0",
+                            "${'$'}{ANSWER_TEXT}_${'$'}{questionId}_0",
                             null
                         )
                         if (text.isNullOrBlank()) {
-                            Log.e("Essay [$questionId][0]", "Empty")
+                            Log.e("Essay [${'$'}questionId][0]", "Empty")
                             emptiedAnswer.add(questionId + 1)
                             return false
                         } else {
@@ -723,11 +728,11 @@ class AnswerActivity : AppCompatActivity(),
 
                     "scale" -> {
                         val text = sharedPreferences.getString(
-                            "${ANSWER_TEXT}_${questionId}_0",
+                            "${'$'}{ANSWER_TEXT}_${'$'}{questionId}_0",
                             null
                         )
                         if (text.isNullOrBlank()) {
-                            Log.e("Scale [$questionId][0]", "Empty")
+                            Log.e("Scale [${'$'}questionId][0]", "Empty")
                             emptiedAnswer.add(questionId + 1)
                             return false
                         } else {
@@ -748,20 +753,20 @@ class AnswerActivity : AppCompatActivity(),
                         var answeredCount = 0
                         for (i in 0 until question.checkboxOptions?.size!!) {
                             val isAnswered = sharedPreferences.getBoolean(
-                                "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                "${'$'}{ANSWER_CHECKBOX_MULTIPLE}_${'$'}{questionId}_0_${'$'}{i}",
                                 false
                             )
                             if (isAnswered)
                                 answeredCount++
                         }
                         if (answeredCount == 0) {
-                            Log.e("Checkbox [$questionId][0]", "Empty")
+                            Log.e("Checkbox [${'$'}questionId][0]", "Empty")
                             emptiedAnswer.add(questionId + 1)
                             return false
                         } else {
                             for (i in 0 until question.checkboxOptions.size) {
                                 val isAnswered = sharedPreferences.getBoolean(
-                                    "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                    "${'$'}{ANSWER_CHECKBOX_MULTIPLE}_${'$'}{questionId}_0_${'$'}{i}",
                                     false
                                 )
                                 answers.add(
@@ -782,20 +787,20 @@ class AnswerActivity : AppCompatActivity(),
                         var answeredCount = 0
                         for (i in 0 until question.multipleOptions?.size!!) {
                             val isAnswered = sharedPreferences.getBoolean(
-                                "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                "${'$'}{ANSWER_CHECKBOX_MULTIPLE}_${'$'}{questionId}_0_${'$'}{i}",
                                 false
                             )
                             if (isAnswered)
                                 answeredCount++
                         }
                         if (answeredCount == 0) {
-                            Log.e("Multiple [$questionId][0]", "Empty")
+                            Log.e("Multiple [${'$'}questionId][0]", "Empty")
                             emptiedAnswer.add(questionId + 1)
                             return false
                         } else {
                             for (i in 0 until question.multipleOptions.size) {
                                 val isAnswered = sharedPreferences.getBoolean(
-                                    "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                    "${'$'}{ANSWER_CHECKBOX_MULTIPLE}_${'$'}{questionId}_0_${'$'}{i}",
                                     false
                                 )
                                 answers.add(
@@ -820,11 +825,11 @@ class AnswerActivity : AppCompatActivity(),
                     when (subQuestion.questionType) {
                         "photo" -> {
                             val photoUri = sharedPreferences.getString(
-                                "${ANSWER_PHOTO}_${questionId}_${subQuestionId}",
+                                "${'$'}{ANSWER_PHOTO}_${'$'}{questionId}_${'$'}{subQuestionId}",
                                 null
                             )
                             if (photoUri == null) {
-                                Log.e("Photo [$questionId][$subQuestionId]", "Empty")
+                                Log.e("Photo [${'$'}questionId][${'$'}subQuestionId]", "Empty")
                                 emptiedAnswer.add(questionId + 1)
                                 return false
                             } else {
@@ -843,11 +848,11 @@ class AnswerActivity : AppCompatActivity(),
 
                         "essay" -> {
                             val text = sharedPreferences.getString(
-                                "${ANSWER_TEXT}_${questionId}_${subQuestionId}",
+                                "${'$'}{ANSWER_TEXT}_${'$'}{questionId}_${'$'}{subQuestionId}",
                                 null
                             )
                             if (text.isNullOrBlank()) {
-                                Log.e("Essay [$questionId][$subQuestionId]", "Empty")
+                                Log.e("Essay [${'$'}questionId][${'$'}subQuestionId]", "Empty")
                                 emptiedAnswer.add(questionId + 1)
                                 return false
                             } else {
@@ -866,11 +871,11 @@ class AnswerActivity : AppCompatActivity(),
 
                         "scale" -> {
                             val text = sharedPreferences.getString(
-                                "${ANSWER_TEXT}_${questionId}_${subQuestionId}",
+                                "${'$'}{ANSWER_TEXT}_${'$'}{questionId}_${'$'}{subQuestionId}",
                                 null
                             )
                             if (text.isNullOrBlank()) {
-                                Log.e("Scale [$questionId][$subQuestionId]", "Empty")
+                                Log.e("Scale [${'$'}questionId][${'$'}subQuestionId]", "Empty")
                                 emptiedAnswer.add(questionId + 1)
                                 return false
                             } else {
@@ -891,20 +896,20 @@ class AnswerActivity : AppCompatActivity(),
                             var answeredCount = 0
                             for (i in 0 until question.checkboxOptions?.size!!) {
                                 val isAnswered = sharedPreferences.getBoolean(
-                                    "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_${subQuestionId}_${i}",
+                                    "${'$'}{ANSWER_CHECKBOX_MULTIPLE}_${'$'}{questionId}_${'$'}{subQuestionId}_${'$'}{i}",
                                     false
                                 )
                                 if (isAnswered)
                                     answeredCount++
                             }
                             if (answeredCount == 0) {
-                                Log.e("Checkbox [$questionId][$subQuestionId]", "Empty")
+                                Log.e("Checkbox [${'$'}questionId][${'$'}subQuestionId]", "Empty")
                                 emptiedAnswer.add(questionId + 1)
                                 return false
                             } else {
                                 for (i in 0 until question.checkboxOptions.size) {
                                     val isAnswered = sharedPreferences.getBoolean(
-                                        "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                        "${'$'}{ANSWER_CHECKBOX_MULTIPLE}_${'$'}{questionId}_0_${'$'}{i}",
                                         false
                                     )
                                     answers.add(
@@ -925,20 +930,20 @@ class AnswerActivity : AppCompatActivity(),
                             var answeredCount = 0
                             for (i in 0 until question.multipleOptions?.size!!) {
                                 val isAnswered = sharedPreferences.getBoolean(
-                                    "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_${subQuestionId}_${i}",
+                                    "${'$'}{ANSWER_CHECKBOX_MULTIPLE}_${'$'}{questionId}_${'$'}{subQuestionId}_${'$'}{i}",
                                     false
                                 )
                                 if (isAnswered)
                                     answeredCount++
                             }
                             if (answeredCount == 0) {
-                                Log.e("Multiple [$questionId][$subQuestionId]", "Empty")
+                                Log.e("Multiple [${'$'}questionId][${'$'}subQuestionId]", "Empty")
                                 emptiedAnswer.add(questionId + 1)
                                 return false
                             } else {
                                 for (i in 0 until question.multipleOptions.size) {
                                     val isAnswered = sharedPreferences.getBoolean(
-                                        "${ANSWER_CHECKBOX_MULTIPLE}_${questionId}_0_${i}",
+                                        "${'$'}{ANSWER_CHECKBOX_MULTIPLE}_${'$'}{questionId}_0_${'$'}{i}",
                                         false
                                     )
                                     answers.add(
@@ -965,7 +970,7 @@ class AnswerActivity : AppCompatActivity(),
     private fun openCamera() {
         val timeStamp =
             SimpleDateFormat("yyyyMMdd_HHmmss", Locale.forLanguageTag("id-ID")).format(Date())
-        cameraCaptureFileName = "Super_Answer_${questionID}-${subQuestionID}_${timeStamp}.jpg"
+        cameraCaptureFileName = "Super_Answer_${'$'}{questionID}-${'$'}{subQuestionID}_${'$'}{timeStamp}.jpg"
         imageUri = contentResolver?.insert(
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             ContentValues().also {
@@ -1054,7 +1059,7 @@ class AnswerActivity : AppCompatActivity(),
 
                 return file.absolutePath
             } catch (e: IOException) {
-                Log.e("getRealPathFromURI", "Error: ${e.message}")
+                Log.e("getRealPathFromURI", "Error: ${'$'}{e.message}")
             }
         }
 

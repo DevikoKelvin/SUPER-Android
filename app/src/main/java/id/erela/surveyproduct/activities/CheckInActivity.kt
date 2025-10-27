@@ -28,6 +28,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.mapbox.mapboxsdk.Mapbox
 import com.mapbox.mapboxsdk.camera.CameraPosition
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -255,6 +256,10 @@ class CheckInActivity : AppCompatActivity() {
         }
     }
 
+    private fun crashReport(throwable: Throwable) {
+        FirebaseCrashlytics.getInstance().recordException(throwable)
+    }
+
     private fun init() {
         binding.apply {
             dialog = LoadingDialog(this@CheckInActivity)
@@ -441,7 +446,7 @@ class CheckInActivity : AppCompatActivity() {
                                                         false
                                                     )
                                                 }
-                                                throw Exception("Check In Failed! ${result1.message}")
+                                                crashReport(Exception("Check In Failed! ${result1.message}"))
                                             }
                                         }
                                     } else {
@@ -466,7 +471,7 @@ class CheckInActivity : AppCompatActivity() {
                                             "ERROR",
                                             "Check In Response body is null"
                                         )
-                                        throw Exception("Check In Response body is null")
+                                        crashReport(Exception("Check In Response body is null"))
                                     }
                                 } else {
                                     CustomToast(applicationContext)
@@ -490,7 +495,7 @@ class CheckInActivity : AppCompatActivity() {
                                         "ERROR",
                                         "Check In is not successful. ${response.code()}: ${response.message()}"
                                     )
-                                    throw Exception("Check In is not successful. ${response.code()}: ${response.message()}")
+                                    crashReport(Exception("Check In is not successful. ${response.code()}: ${response.message()}"))
                                 }
                             }
 
@@ -521,7 +526,7 @@ class CheckInActivity : AppCompatActivity() {
                                     "ERROR",
                                     "Check In Failure. ${throwable.message}"
                                 )
-                                throw Exception("Check In Failure. ${throwable.message}")
+                                crashReport(Exception("Check In Failure. ${throwable.message}"))
                             }
                         })
                 }
