@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.activities.SurveyDetailActivity
 import id.erela.surveyproduct.adapters.recycler_view.CheckInOutAdapter
 import id.erela.surveyproduct.databinding.FragmentStartSurveyBinding
+import id.erela.surveyproduct.helpers.Generic
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.objects.CheckInOutHistoryItem
@@ -140,20 +141,20 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                                         0 -> {
                                             emptyAnimation.visibility = View.VISIBLE
                                             checkInOutListRv.visibility = View.GONE
-                                            throw Exception("Show today check in out failed: ${result.message}")
+                                            Generic.crashReport(Exception("Show today check in out failed: ${result.message}"))
                                         }
                                     }
                                 } else {
                                     Log.e("ERROR", "Response body is null")
                                     emptyAnimation.visibility = View.VISIBLE
                                     checkInOutListRv.visibility = View.GONE
-                                    throw Exception("Show today check in out failed: Response body is null")
+                                    Generic.crashReport(Exception("Show today check in out failed: Response body is null"))
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
                                 emptyAnimation.visibility = View.VISIBLE
                                 checkInOutListRv.visibility = View.GONE
-                                throw Exception("Show today check in out failed: Response not successful")
+                                Generic.crashReport(Exception("Show today check in out failed: Response not successful"))
                             }
                         }
 
@@ -167,7 +168,7 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                             throwable.printStackTrace()
                             emptyAnimation.visibility = View.VISIBLE
                             checkInOutListRv.visibility = View.GONE
-                            throw Exception("Show today check in out failed: ${throwable.message}")
+                            Generic.crashReport(Exception("Show today check in out failed: ${throwable.message}"))
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -177,7 +178,7 @@ class StartSurveyFragment(private val context: Context) : Fragment() {
                 jsonException.printStackTrace()
                 emptyAnimation.visibility = View.VISIBLE
                 checkInOutListRv.visibility = View.GONE
-                throw Exception("Show today check in out failed: ${jsonException.message}")
+                Generic.crashReport(Exception("Show today check in out failed: ${jsonException.message}"))
             }
         }
     }

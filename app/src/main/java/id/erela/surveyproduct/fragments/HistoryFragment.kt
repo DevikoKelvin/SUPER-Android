@@ -15,6 +15,7 @@ import id.erela.surveyproduct.activities.SurveyDetailActivity
 import id.erela.surveyproduct.adapters.recycler_view.CheckInOutAdapter
 import id.erela.surveyproduct.bottom_sheets.FilterHistoryBottomSheet
 import id.erela.surveyproduct.databinding.FragmentHistoryBinding
+import id.erela.surveyproduct.helpers.Generic
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
@@ -217,20 +218,20 @@ class HistoryFragment(private val context: Context) : Fragment() {
                                             emptyAnimation.visibility = View.VISIBLE
                                             checkInOutListRv.visibility = View.GONE
                                             Log.e("ERROR", result.message.toString())
-                                            throw Exception("Show all check in history failed. Message: ${result.message}")
+                                            Generic.crashReport(Exception("Show all check in history failed. Message: ${result.message}"))
                                         }
                                     }
                                 } else {
                                     Log.e("ERROR", "Response body is null")
                                     emptyAnimation.visibility = View.VISIBLE
                                     checkInOutListRv.visibility = View.GONE
-                                    throw Exception("Show all check in history failed. Response body is null")
+                                    Generic.crashReport(Exception("Show all check in history failed. Response body is null"))
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
                                 emptyAnimation.visibility = View.VISIBLE
                                 checkInOutListRv.visibility = View.GONE
-                                throw Exception("Show all check in history failed. Response not successful")
+                                Generic.crashReport(Exception("Show all check in history failed. Response not successful"))
                             }
                         }
 
@@ -244,7 +245,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
                             throwable.printStackTrace()
                             emptyAnimation.visibility = View.VISIBLE
                             checkInOutListRv.visibility = View.GONE
-                            throw Exception("Show all check in history failed. ${throwable.message}")
+                            Generic.crashReport(Exception("Show all check in history failed. ${throwable.message}"))
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -254,7 +255,7 @@ class HistoryFragment(private val context: Context) : Fragment() {
                 jsonException.printStackTrace()
                 emptyAnimation.visibility = View.VISIBLE
                 checkInOutListRv.visibility = View.GONE
-                throw Exception("Show all check in history failed. ${jsonException.message}")
+                Generic.crashReport(Exception("Show all check in history failed. ${jsonException.message}"))
             }
         }
     }

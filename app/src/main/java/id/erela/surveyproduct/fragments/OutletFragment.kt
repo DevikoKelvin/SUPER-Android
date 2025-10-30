@@ -15,6 +15,7 @@ import id.erela.surveyproduct.R
 import id.erela.surveyproduct.activities.DetailOutletActivity
 import id.erela.surveyproduct.adapters.recycler_view.OutletAdapter
 import id.erela.surveyproduct.databinding.FragmentOutletBinding
+import id.erela.surveyproduct.helpers.Generic
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
@@ -56,7 +57,6 @@ class OutletFragment(private val context: Context) : Fragment() {
 
         prepareView()
     }
-
     @Deprecated(
         "Deprecated in Java", ReplaceWith(
             "super.setUserVisibleHint(isVisibleToUser)",
@@ -246,7 +246,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                                                 ).show()
                                             emptyAnimation.visibility = View.VISIBLE
                                             outletListRv.visibility = View.GONE
-                                            throw Exception("Show all outlet failed: ${result.message}")
+                                            Generic.crashReport(Exception("Show all outlet failed: ${result.message}"))
                                         }
                                     }
                                 } else {
@@ -270,7 +270,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                                         ).show()
                                     emptyAnimation.visibility = View.VISIBLE
                                     outletListRv.visibility = View.GONE
-                                    throw Exception("Show all outlet failed: Response body is null")
+                                    Generic.crashReport(Exception("Show all outlet failed: Response body is null"))
                                 }
                             } else {
                                 Log.e("ERROR", "Response not successful")
@@ -293,7 +293,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                                     ).show()
                                 emptyAnimation.visibility = View.VISIBLE
                                 outletListRv.visibility = View.GONE
-                                throw Exception("Show all outlet failed: Response not successful")
+                                Generic.crashReport(Exception("Show all outlet failed: Response not successful"))
                             }
                         }
 
@@ -324,7 +324,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                                 ).show()
                             emptyAnimation.visibility = View.VISIBLE
                             outletListRv.visibility = View.GONE
-                            throw Exception("Show all outlet failed: ${throwable.message}")
+                            Generic.crashReport(Exception("Show all outlet failed: ${throwable.message}"))
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -351,7 +351,7 @@ class OutletFragment(private val context: Context) : Fragment() {
                     ).show()
                 emptyAnimation.visibility = View.VISIBLE
                 outletListRv.visibility = View.GONE
-                throw Exception("Show all outlet failed: ${jsonException.message}")
+                Generic.crashReport(Exception("Show all outlet failed: ${jsonException.message}"))
             }
         }
     }

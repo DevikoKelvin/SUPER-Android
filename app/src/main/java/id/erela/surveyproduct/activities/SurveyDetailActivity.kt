@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.adapters.recycler_view.QuestionsAnswerAdapter
 import id.erela.surveyproduct.databinding.ActivitySurveyDetailBinding
 import id.erela.surveyproduct.dialogs.PhotoPreviewDialog
+import id.erela.surveyproduct.helpers.Generic
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.objects.AnswerHistoryResponse
 import id.erela.surveyproduct.objects.CheckInOutHistoryItem
@@ -160,7 +161,7 @@ class SurveyDetailActivity : AppCompatActivity() {
                                     0 -> {
                                         answeredQuestionRv.visibility = View.GONE
                                         Log.e("onFailure", result.message.toString())
-                                        throw Exception("Get Answer History Failed: ${result.message}")
+                                        Generic.crashReport(Throwable("Get Answer History Failed: ${result.message}"))
                                     }
                                 }
                             }
@@ -173,7 +174,7 @@ class SurveyDetailActivity : AppCompatActivity() {
                         Log.e("onFailure", throwable.message.toString())
                         answeredQuestionRv.visibility = View.GONE
                         throwable.printStackTrace()
-                        throw Exception("Get Answer History Failed: ${throwable.message}")
+                        Generic.crashReport(Throwable("Get Answer History Failed: ${throwable.message}"))
                     }
                 })
             } catch (jsonException: JSONException) {

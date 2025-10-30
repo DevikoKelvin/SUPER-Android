@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityLoginBinding
+import id.erela.surveyproduct.helpers.Generic
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
@@ -139,7 +140,7 @@ class LoginActivity : AppCompatActivity() {
                                                         R.color.custom_toast_background_failed
                                                     )
                                                 ).show()
-                                            throw Exception("Login Error: ${result.message}")
+                                            Generic.crashReport(Exception("Login Error: ${result.message}"))
                                         }
 
                                         0 -> {

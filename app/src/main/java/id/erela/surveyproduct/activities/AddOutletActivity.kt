@@ -30,6 +30,7 @@ import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityAddOutletBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
+import id.erela.surveyproduct.helpers.Generic
 import id.erela.surveyproduct.helpers.PermissionHelper
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
@@ -119,10 +120,6 @@ class AddOutletActivity : AppCompatActivity() {
                 getLastKnownLocation()
             }
         }
-    }
-
-    private fun crashReport(throwable: Throwable) {
-        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     private fun init() {
@@ -287,7 +284,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                                 R.color.custom_toast_background_failed
                                                             )
                                                         ).show()
-                                                    crashReport(
+                                                    Generic.crashReport(
                                                         Exception(result.message.toString())
                                                     )
                                                 }
@@ -311,7 +308,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                         R.color.custom_toast_background_failed
                                                     )
                                                 ).show()
-                                            crashReport(
+                                            Generic.crashReport(
                                                 Exception("Update Outlet Response body is null")
                                             )
                                         }
@@ -334,7 +331,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                     R.color.custom_toast_background_failed
                                                 )
                                             ).show()
-                                        crashReport(
+                                        Generic.crashReport(
                                             Exception("Update Outlet Response not successful")
                                         )
                                     }
@@ -365,7 +362,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
-                                    crashReport(Exception(throwable.toString()))
+                                    Generic.crashReport(Exception(throwable.toString()))
                                 }
                             })
                         } catch (jsonException: JSONException) {
@@ -390,7 +387,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
-                            crashReport(Exception(jsonException.toString()))
+                            Generic.crashReport(Exception(jsonException.toString()))
                         }
                     } else {
                         try {
@@ -455,7 +452,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                                 R.color.custom_toast_background_failed
                                                             )
                                                         ).show()
-                                                    crashReport(Exception(result.message.toString()))
+                                                    Generic.crashReport(Exception(result.message.toString()))
                                                 }
                                             }
                                         } else {
@@ -477,7 +474,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                         R.color.custom_toast_background_failed
                                                     )
                                                 ).show()
-                                            crashReport(Exception("Add Outlet Response body is null"))
+                                            Generic.crashReport(Exception("Add Outlet Response body is null"))
                                         }
                                     } else {
                                         Log.e("ERROR (Creation)", "Response not successful")
@@ -498,7 +495,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                     R.color.custom_toast_background_failed
                                                 )
                                             ).show()
-                                        crashReport(Exception("Add Outlet Response not successful"))
+                                        Generic.crashReport(Exception("Add Outlet Response not successful"))
                                     }
                                 }
 
@@ -527,7 +524,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
-                                    crashReport(Exception(throwable.toString()))
+                                    Generic.crashReport(Exception(throwable.toString()))
                                 }
                             })
                         } catch (jsonException: JSONException) {
@@ -552,7 +549,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
-                            crashReport(Exception(jsonException.toString()))
+                            Generic.crashReport(Exception(jsonException.toString()))
                         }
                     }
                 }
@@ -914,7 +911,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                         R.color.custom_toast_background_failed
                                                     )
                                                 ).show()
-                                            crashReport(Exception(result.message))
+                                            Generic.crashReport(Exception(result.message))
                                         }
                                     }
                                 } else {
@@ -938,7 +935,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
-                                    crashReport(Exception("Get Category Response body is null"))
+                                    Generic.crashReport(Exception("Get Category Response body is null"))
                                 }
                             } else {
                                 Log.e("ERROR (Category)", "Response not successful")
@@ -961,7 +958,7 @@ class AddOutletActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
-                                crashReport(Exception("Get Category Response not successful"))
+                                Generic.crashReport(Exception("Get Category Response not successful"))
                             }
                         }
 
@@ -990,7 +987,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
-                            crashReport(Exception(throwable.toString()))
+                            Generic.crashReport(Exception(throwable.toString()))
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -1015,7 +1012,7 @@ class AddOutletActivity : AppCompatActivity() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
-                crashReport(Exception(jsonException.toString()))
+                Generic.crashReport(Exception(jsonException.toString()))
             }
         }
     }
@@ -1168,7 +1165,7 @@ class AddOutletActivity : AppCompatActivity() {
                                                 R.color.custom_toast_background_failed
                                             )
                                         ).show()
-                                    crashReport(Exception("Get Province Response body is null"))
+                                    Generic.crashReport(Exception("Get Province Response body is null"))
                                 }
                             } else {
                                 Log.e("ERROR (Province)", "Response not successful")
@@ -1191,7 +1188,7 @@ class AddOutletActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
-                                crashReport(Exception("Get Province Response not successful"))
+                                Generic.crashReport(Exception("Get Province Response not successful"))
                             }
                         }
 
@@ -1220,7 +1217,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
-                            crashReport(Exception(throwable.toString()))
+                            Generic.crashReport(Exception(throwable.toString()))
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -1245,7 +1242,7 @@ class AddOutletActivity : AppCompatActivity() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
-                crashReport(Exception(jsonException.toString()))
+                Generic.crashReport(Exception(jsonException.toString()))
             }
         }
     }
@@ -1498,7 +1495,7 @@ class AddOutletActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
-                                crashReport(Exception("Get Region Response body is null"))
+                                Generic.crashReport(Exception("Get Region Response body is null"))
                             }
                         } else {
                             Log.e("ERROR (Region)", "Response not successful")
@@ -1521,7 +1518,7 @@ class AddOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
-                            crashReport(Exception("Get Region Response not successful"))
+                            Generic.crashReport(Exception("Get Region Response not successful"))
                         }
                     }
 
@@ -1550,7 +1547,7 @@ class AddOutletActivity : AppCompatActivity() {
                                     R.color.custom_toast_background_failed
                                 )
                             ).show()
-                        crashReport(Exception(throwable.toString()))
+                        Generic.crashReport(Exception(throwable.toString()))
                     }
                 })
             } catch (jsonException: JSONException) {
@@ -1575,7 +1572,7 @@ class AddOutletActivity : AppCompatActivity() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
-                crashReport(Exception(jsonException.toString()))
+                Generic.crashReport(Exception(jsonException.toString()))
             }
         }
     }

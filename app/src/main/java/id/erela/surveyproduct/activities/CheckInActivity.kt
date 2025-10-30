@@ -40,6 +40,7 @@ import id.erela.surveyproduct.activities.AnswerActivity.Companion.ANSWER_TEXT
 import id.erela.surveyproduct.bottom_sheets.SelectOutletBottomSheet
 import id.erela.surveyproduct.databinding.ActivityCheckInBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
+import id.erela.surveyproduct.helpers.Generic
 import id.erela.surveyproduct.helpers.PermissionHelper
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.UserDataHelper
@@ -256,10 +257,6 @@ class CheckInActivity : AppCompatActivity() {
         }
     }
 
-    private fun crashReport(throwable: Throwable) {
-        FirebaseCrashlytics.getInstance().recordException(throwable)
-    }
-
     private fun init() {
         binding.apply {
             dialog = LoadingDialog(this@CheckInActivity)
@@ -446,7 +443,7 @@ class CheckInActivity : AppCompatActivity() {
                                                         false
                                                     )
                                                 }
-                                                crashReport(Exception("Check In Failed! ${result1.message}"))
+                                                Generic.crashReport(Exception("Check In Failed! ${result1.message}"))
                                             }
                                         }
                                     } else {
@@ -471,7 +468,7 @@ class CheckInActivity : AppCompatActivity() {
                                             "ERROR",
                                             "Check In Response body is null"
                                         )
-                                        crashReport(Exception("Check In Response body is null"))
+                                        Generic.crashReport(Exception("Check In Response body is null"))
                                     }
                                 } else {
                                     CustomToast(applicationContext)
@@ -495,7 +492,7 @@ class CheckInActivity : AppCompatActivity() {
                                         "ERROR",
                                         "Check In is not successful. ${response.code()}: ${response.message()}"
                                     )
-                                    crashReport(Exception("Check In is not successful. ${response.code()}: ${response.message()}"))
+                                    Generic.crashReport(Exception("Check In is not successful. ${response.code()}: ${response.message()}"))
                                 }
                             }
 
@@ -526,7 +523,7 @@ class CheckInActivity : AppCompatActivity() {
                                     "ERROR",
                                     "Check In Failure. ${throwable.message}"
                                 )
-                                crashReport(Exception("Check In Failure. ${throwable.message}"))
+                                Generic.crashReport(Exception("Check In Failure. ${throwable.message}"))
                             }
                         })
                 }

@@ -32,6 +32,7 @@ import id.erela.surveyproduct.activities.CheckInActivity.Companion.CHECK_IN_UPLO
 import id.erela.surveyproduct.adapters.recycler_view.QuestionSurveyAdapter
 import id.erela.surveyproduct.databinding.ActivityAnswerBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
+import id.erela.surveyproduct.helpers.Generic
 import id.erela.surveyproduct.helpers.PermissionHelper
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
@@ -167,10 +168,6 @@ class AnswerActivity : AppCompatActivity(),
                 }
             }
         }
-    }
-
-    private fun crashReport(throwable: Throwable) {
-        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     private fun init() {
@@ -393,7 +390,7 @@ class AnswerActivity : AppCompatActivity(),
                                                         false
                                                     )
                                                 }
-                                                crashReport(Exception("Survey Answer Submission Failed! ${'$'}{result.message}"))
+                                                Generic.crashReport(Exception("Survey Answer Submission Failed! ${'$'}{result.message}"))
                                             }
                                         }
                                     } else {
@@ -418,7 +415,7 @@ class AnswerActivity : AppCompatActivity(),
                                             "ERROR",
                                             "Survey Answer Submission response body is null"
                                         )
-                                        crashReport(Exception("Survey Answer Submission response body is null"))
+                                        Generic.crashReport(Exception("Survey Answer Submission response body is null"))
                                     }
                                 } else {
                                     CustomToast(applicationContext)
@@ -442,7 +439,7 @@ class AnswerActivity : AppCompatActivity(),
                                         "ERROR",
                                         "Survey Answer Submission response is not successful. ${'$'}{response.code()}: ${'$'}{response.message()}"
                                     )
-                                    crashReport(Exception("Survey Answer Submission response is not successful. ${'$'}{response.code()}: ${'$'}{response.message()}"))
+                                    Generic.crashReport(Exception("Survey Answer Submission response is not successful. ${'$'}{response.code()}: ${'$'}{response.message()}"))
                                 }
                             }
 
@@ -473,7 +470,7 @@ class AnswerActivity : AppCompatActivity(),
                                     .setFontColor(
                                         getColor(R.color.custom_toast_font_failed)
                                     ).show()
-                                crashReport(Exception("Survey Answer Submission failure. ${'$'}{throwable.message}"))
+                                Generic.crashReport(Exception("Survey Answer Submission failure. ${'$'}{throwable.message}"))
                             }
 
                         })
@@ -498,7 +495,7 @@ class AnswerActivity : AppCompatActivity(),
                             .setFontColor(
                                 getColor(R.color.custom_toast_font_failed)
                             ).show()
-                        crashReport(Exception("Survey Answer Submission Exception: ${'$'}{e.message}"))
+                        Generic.crashReport(Exception("Survey Answer Submission Exception: ${'$'}{e.message}"))
                     }
                 } else {
                     CustomToast.getInstance(applicationContext)
@@ -607,7 +604,7 @@ class AnswerActivity : AppCompatActivity(),
                                             CheckInActivity.clearCheckInData(this@AnswerActivity)
                                             CheckInActivity.clearAnswerData(this@AnswerActivity)
                                             CheckOutActivity.clearCheckOutData(this@AnswerActivity)
-                                            crashReport(Exception("Get Survey List response code 0"))
+                                            Generic.crashReport(Exception("Get Survey List response code 0"))
                                         }
                                     }
                                 }
@@ -639,7 +636,7 @@ class AnswerActivity : AppCompatActivity(),
                                 ).show()
                             if (CheckInActivity.activity != null)
                                 CheckInActivity.activity?.finish()
-                            crashReport(Exception(throwable.toString()))
+                            Generic.crashReport(Exception(throwable.toString()))
                         }
                     })
             } catch (jsonException: JSONException) {
@@ -664,7 +661,7 @@ class AnswerActivity : AppCompatActivity(),
                     ).show()
                 if (CheckInActivity.activity != null)
                     CheckInActivity.activity?.finish()
-                crashReport(Exception(jsonException.toString()))
+                Generic.crashReport(Exception(jsonException.toString()))
             }
         }
     }

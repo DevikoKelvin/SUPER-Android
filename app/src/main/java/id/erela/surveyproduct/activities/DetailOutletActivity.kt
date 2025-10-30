@@ -22,6 +22,7 @@ import id.erela.surveyproduct.BuildConfig
 import id.erela.surveyproduct.R
 import id.erela.surveyproduct.databinding.ActivityDetailOutletBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
+import id.erela.surveyproduct.helpers.Generic
 import id.erela.surveyproduct.helpers.UserDataHelper
 import id.erela.surveyproduct.helpers.api.AppAPI
 import id.erela.surveyproduct.helpers.customs.CustomToast
@@ -83,10 +84,6 @@ class DetailOutletActivity : AppCompatActivity() {
         }
 
         init()
-    }
-
-    private fun crashReport(throwable: Throwable) {
-        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     private fun init() {
@@ -177,7 +174,7 @@ class DetailOutletActivity : AppCompatActivity() {
                                                     R.color.custom_toast_background_failed
                                                 )
                                             ).show()
-                                        crashReport(Exception("Detail Outlet Error: ${result.message}"))
+                                        Generic.crashReport(Exception("Detail Outlet Error: ${result.message}"))
                                     }
                                 }
                             } else {
@@ -203,7 +200,7 @@ class DetailOutletActivity : AppCompatActivity() {
                                             R.color.custom_toast_background_failed
                                         )
                                     ).show()
-                                crashReport(Exception("Detail Outlet Response body is null"))
+                                Generic.crashReport(Exception("Detail Outlet Response body is null"))
                             }
                         } else {
                             Log.e(
@@ -228,7 +225,7 @@ class DetailOutletActivity : AppCompatActivity() {
                                         R.color.custom_toast_background_failed
                                     )
                                 ).show()
-                            crashReport(Exception("Detail Outlet Response not successful: ${response.code()} - ${response.message()}"))
+                            Generic.crashReport(Exception("Detail Outlet Response not successful: ${response.code()} - ${response.message()}"))
                         }
                     }
 
@@ -236,7 +233,7 @@ class DetailOutletActivity : AppCompatActivity() {
                         dialog.dismiss()
                         throwable.printStackTrace()
                         Log.e("ERROR (Outlet Detail)", throwable.toString())
-                        crashReport(Exception("Detail Outlet Error: ${throwable.message}"))
+                        Generic.crashReport(Exception("Detail Outlet Error: ${throwable.message}"))
                     }
 
                 })
@@ -262,7 +259,7 @@ class DetailOutletActivity : AppCompatActivity() {
                             R.color.custom_toast_background_failed
                         )
                     ).show()
-                crashReport(Exception("Detail Outlet Error: ${jsonException.message}"))
+                Generic.crashReport(Exception("Detail Outlet Error: ${jsonException.message}"))
             }
         }
     }

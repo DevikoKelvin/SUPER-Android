@@ -36,6 +36,7 @@ import id.erela.surveyproduct.R
 import id.erela.surveyproduct.activities.CheckInActivity.Companion.CHECK_IN_UPLOADED
 import id.erela.surveyproduct.databinding.ActivityCheckOutBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog
+import id.erela.surveyproduct.helpers.Generic
 import id.erela.surveyproduct.helpers.PermissionHelper
 import id.erela.surveyproduct.helpers.SharedPreferencesHelper
 import id.erela.surveyproduct.helpers.UserDataHelper
@@ -231,10 +232,6 @@ class CheckOutActivity : AppCompatActivity() {
                 getLastKnownLocation()
             }
         }
-    }
-
-    private fun crashReport(throwable: Throwable) {
-        FirebaseCrashlytics.getInstance().recordException(throwable)
     }
 
     private fun init() {
@@ -477,7 +474,7 @@ class CheckOutActivity : AppCompatActivity() {
                                         .setFontColor(
                                             getColor(R.color.custom_toast_font_failed)
                                         ).show()
-                                    crashReport(Exception("15 Minutes Check Response. ${result?.message}"))
+                                    Generic.crashReport(Exception("15 Minutes Check Response. ${result?.message}"))
                                 }
                             }
                         } else {
@@ -493,7 +490,7 @@ class CheckOutActivity : AppCompatActivity() {
                                 .setFontColor(
                                     getColor(R.color.custom_toast_font_failed)
                                 ).show()
-                            crashReport(Exception("15 Minutes Check Response body is null"))
+                            Generic.crashReport(Exception("15 Minutes Check Response body is null"))
                         }
                     } else {
                         Log.e(
@@ -511,7 +508,7 @@ class CheckOutActivity : AppCompatActivity() {
                             .setFontColor(
                                 getColor(R.color.custom_toast_font_failed)
                             ).show()
-                        crashReport(Exception("15 Minutes Check Response is not successful. ${response.code()}: ${response.message()}"))
+                        Generic.crashReport(Exception("15 Minutes Check Response is not successful. ${response.code()}: ${response.message()}"))
                     }
                 }
 
@@ -533,7 +530,7 @@ class CheckOutActivity : AppCompatActivity() {
                         .setFontColor(
                             getColor(R.color.custom_toast_font_failed)
                         ).show()
-                    crashReport(Exception("15 Minutes Check failure! ${throwable.message}"))
+                    Generic.crashReport(Exception("15 Minutes Check failure! ${throwable.message}"))
                 }
             })
         }
@@ -631,7 +628,7 @@ class CheckOutActivity : AppCompatActivity() {
                                         .setFontColor(
                                             getColor(R.color.custom_toast_font_failed)
                                         ).show()
-                                    crashReport(Exception("Check Out Response. ${result.message}"))
+                                    Generic.crashReport(Exception("Check Out Response. ${result.message}"))
                                 }
                             }
                         } else {
@@ -647,7 +644,7 @@ class CheckOutActivity : AppCompatActivity() {
                                 .setFontColor(
                                     getColor(R.color.custom_toast_font_failed)
                                 ).show()
-                            crashReport(Exception("Check Out Response body is null"))
+                            Generic.crashReport(Exception("Check Out Response body is null"))
                         }
                     } else {
                         Log.e(
@@ -665,7 +662,7 @@ class CheckOutActivity : AppCompatActivity() {
                             .setFontColor(
                                 getColor(R.color.custom_toast_font_failed)
                             ).show()
-                        crashReport(Exception("Check Out Response is not successful. ${response.code()}: ${response.message()}"))
+                        Generic.crashReport(Exception("Check Out Response is not successful. ${response.code()}: ${response.message()}"))
                     }
                 }
 
@@ -684,7 +681,7 @@ class CheckOutActivity : AppCompatActivity() {
                         .setFontColor(
                             getColor(R.color.custom_toast_font_failed)
                         ).show()
-                    crashReport(Exception("Check Out failure! ${throwable.message}"))
+                    Generic.crashReport(Exception("Check Out failure! ${throwable.message}"))
                 }
             })
     }
