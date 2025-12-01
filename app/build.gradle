@@ -30,7 +30,7 @@ android {
         targetSdk 36
 
         versionCode getVerCode(!project.gradle.startParameter.taskNames.any { it.contains('assemble') || it.contains('bundle') })
-        versionName "1.8"
+        versionName "1.9"
 
         buildConfigField "String", "BUILD_TIMESTAMP", "\"${new Date().format('MMddyy-HHmm')}\""
 
@@ -79,7 +79,6 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            debuggable true
         }
         debug {
             buildConfigField 'String', 'ERELA_BASE_URL', "\"https://erela.id/api/super/\""

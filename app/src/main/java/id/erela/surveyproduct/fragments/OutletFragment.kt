@@ -125,13 +125,16 @@ class OutletFragment(private val context: Context) : Fragment() {
                     }
                 }
 
-                adapter = OutletAdapter(filteredList.asReversed(), "survey").also {
+                Log.e("DEBUG", filteredList.toString())
+
+                adapter = OutletAdapter(filteredList.asReversed(), "detail").also {
                     with(it) {
                         setOnOutletItemClickListener(object :
                             OutletAdapter.OnOutletItemClickListener {
                             override fun onOutletForDetailItemClick(
                                 id: Int
                             ) {
+                                Log.e("DEBUG", "Outlet ID: $id")
                                 DetailOutletActivity.start(
                                     context,
                                     id
