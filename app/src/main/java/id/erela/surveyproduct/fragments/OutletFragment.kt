@@ -3,12 +3,14 @@ package id.erela.surveyproduct.fragments
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import id.erela.surveyproduct.R
@@ -49,12 +51,15 @@ class OutletFragment(private val context: Context) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupSearchInput()
         prepareView()
     }
 
     override fun onResume() {
         super.onResume()
 
+        binding?.searchInput?.setText("")
+        setupSearchInput()
         prepareView()
     }
     @Deprecated(
@@ -67,6 +72,8 @@ class OutletFragment(private val context: Context) : Fragment() {
         super.setUserVisibleHint(isVisibleToUser)
         binding?.apply {
             if (isVisibleToUser) {
+                binding?.searchInput?.setText("")
+                setupSearchInput()
                 prepareView()
                 if (!isInitialized)
                     callNetwork()
@@ -78,6 +85,99 @@ class OutletFragment(private val context: Context) : Fragment() {
         super.onDestroy()
         binding = null
         isInitialized = false
+    }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupSearchInput() {
+        binding?.apply {
+            searchInput.setCompoundDrawablesWithIntrinsicBounds(
+                R.drawable.baseline_search_24,
+                0,
+                0,
+                0
+            )
+
+            searchInput.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    val searchText = s.toString()
+                    if (searchText.isNotEmpty()) {
+                        searchInput.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.baseline_search_24,
+                            0,
+                            R.drawable.baseline_close_24,
+                            0
+                        )
+                    } else {
+                        searchInput.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.baseline_search_24,
+                            0,
+                            0,
+                            0
+                        )
+                    }
+                    val filteredList = ArrayList<OutletItem>()
+                    for (i in 0 until outletList.size) {
+                        if (outletList[i].name?.lowercase(Locale.forLanguageTag("id-ID"))
+                                ?.contains(searchText.lowercase(Locale.forLanguageTag("id-ID"))) == true || outletList[i].address?.lowercase(
+                                Locale.forLanguageTag(
+                                    "id-ID"
+                                )
+                            )
+                                ?.contains(searchText.lowercase(Locale.forLanguageTag("id-ID"))) == true
+                            || outletList[i].cityRegencyName?.lowercase(Locale.forLanguageTag("id-ID"))
+                                ?.contains(searchText.lowercase(Locale.forLanguageTag("id-ID"))) == true
+                            || outletList[i].outletID?.lowercase(Locale.forLanguageTag("id-ID"))
+                                ?.contains(searchText.lowercase(Locale.forLanguageTag("id-ID"))) == true
+                        ) {
+                            filteredList.add(outletList[i])
+                        }
+                    }
+
+                    adapter = OutletAdapter(filteredList.asReversed(), "detail").also {
+                        with(it) {
+                            setOnOutletItemClickListener(object :
+                                OutletAdapter.OnOutletItemClickListener {
+                                override fun onOutletForDetailItemClick(
+                                    id: Int
+                                ) {
+                                    DetailOutletActivity.start(
+                                        context,
+                                        id
+                                    )
+                                }
+
+                                override fun onOutletForSurveyItemClick(
+                                    outlet: OutletItem
+                                ) {
+                                }
+                            })
+                        }
+                    }
+                    outletListRv.adapter = adapter
+                }
+            })
+
+            searchInput.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    if (searchInput.compoundDrawables[2] != null) {
+                        if (event.rawX >= (searchInput.right - searchInput.compoundDrawables[2].bounds.width())) {
+                            searchInput.setText("")
+                            return@setOnTouchListener true
+                        }
+                    }
+                }
+                false
+            }
+        }
     }
 
     private fun prepareView() {
@@ -106,51 +206,6 @@ class OutletFragment(private val context: Context) : Fragment() {
     fun callNetwork() {
         loadingManager(true)
         binding?.apply {
-            searchInput.addTextChangedListener { editable ->
-                val searchText = editable.toString().lowercase(Locale.forLanguageTag("id-ID"))
-                val filteredList = ArrayList<OutletItem>()
-                for (i in 0 until outletList.size) {
-                    if (outletList[i].name?.lowercase(Locale.forLanguageTag("id-ID"))
-                            ?.indexOf(searchText) != -1 || outletList[i].address?.lowercase(
-                            Locale.forLanguageTag(
-                                "id-ID"
-                            )
-                        )?.indexOf(searchText) != -1
-                        || outletList[i].cityRegencyName?.lowercase(Locale.forLanguageTag("id-ID"))
-                            ?.indexOf(searchText) != -1
-                        || outletList[i].outletID?.lowercase(Locale.forLanguageTag("id-ID"))
-                            ?.indexOf(searchText) != -1
-                    ) {
-                        filteredList.add(outletList[i])
-                    }
-                }
-
-                Log.e("DEBUG", filteredList.toString())
-
-                adapter = OutletAdapter(filteredList.asReversed(), "detail").also {
-                    with(it) {
-                        setOnOutletItemClickListener(object :
-                            OutletAdapter.OnOutletItemClickListener {
-                            override fun onOutletForDetailItemClick(
-                                id: Int
-                            ) {
-                                Log.e("DEBUG", "Outlet ID: $id")
-                                DetailOutletActivity.start(
-                                    context,
-                                    id
-                                )
-                            }
-
-                            override fun onOutletForSurveyItemClick(
-                                outlet: OutletItem
-                            ) {
-                            }
-                        })
-                    }
-                }
-                outletListRv.adapter = adapter
-            }
-
             try {
                 AppAPI.superEndpoint.showAllOutlets(userData.iD!!)
                     .enqueue(object : Callback<OutletListResponse> {
@@ -304,57 +359,29 @@ class OutletFragment(private val context: Context) : Fragment() {
                             call: Call<OutletListResponse>,
                             throwable: Throwable
                         ) {
-                            isInitialized = false
                             loadingManager(false)
-                            Log.e("ERROR", throwable.toString())
-                            throwable.printStackTrace()
-                            CustomToast.getInstance(context)
-                                .setMessage(
-                                    if (context.getString(R.string.language) == "en") "Something went wrong, please try again later"
-                                    else "Terjadi kesalahan, silakan coba lagi nanti"
-                                )
-                                .setFontColor(
-                                    ContextCompat.getColor(
-                                        context,
-                                        R.color.custom_toast_font_failed
-                                    )
-                                )
-                                .setBackgroundColor(
-                                    ContextCompat.getColor(
-                                        context,
-                                        R.color.custom_toast_background_failed
-                                    )
-                                ).show()
+                            isInitialized = true
+                            Log.e("ERROR", "Failure: ${throwable.message}")
+                            CustomToast.getInstance(context).setMessage(
+                                if (context.getString(R.string.language) == "en") "You are not connected to the internet"
+                                else "Anda tidak terhubung ke internet"
+                            ).show()
                             emptyAnimation.visibility = View.VISIBLE
                             outletListRv.visibility = View.GONE
-                            Generic.crashReport(Exception("Show all outlet failed: ${throwable.message}"))
+                            Generic.crashReport(throwable)
                         }
                     })
-            } catch (jsonException: JSONException) {
-                isInitialized = false
+            } catch (e: JSONException) {
                 loadingManager(false)
-                Log.e("ERROR", jsonException.toString())
-                jsonException.printStackTrace()
-                CustomToast.getInstance(context)
-                    .setMessage(
-                        if (context.getString(R.string.language) == "en") "Something went wrong, please try again later"
-                        else "Terjadi kesalahan, silakan coba lagi nanti"
-                    )
-                    .setFontColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.custom_toast_font_failed
-                        )
-                    )
-                    .setBackgroundColor(
-                        ContextCompat.getColor(
-                            context,
-                            R.color.custom_toast_background_failed
-                        )
-                    ).show()
+                isInitialized = true
+                Log.e("ERROR", "Error: ${e.message}")
+                CustomToast.getInstance(context).setMessage(
+                    if (context.getString(R.string.language) == "en") "Something went wrong, please try again later"
+                    else "Terjadi kesalahan, silakan coba lagi nanti"
+                ).show()
                 emptyAnimation.visibility = View.VISIBLE
                 outletListRv.visibility = View.GONE
-                Generic.crashReport(Exception("Show all outlet failed: ${jsonException.message}"))
+                Generic.crashReport(e)
             }
         }
     }
@@ -362,18 +389,13 @@ class OutletFragment(private val context: Context) : Fragment() {
     private fun loadingManager(isLoading: Boolean) {
         binding?.apply {
             if (isLoading) {
-                emptyAnimation.visibility = View.GONE
+                shimmerLayout.visibility = View.VISIBLE
+                shimmerLayout.startShimmer()
                 outletListRv.visibility = View.GONE
-                shimmerLayout.apply {
-                    visibility = View.VISIBLE
-                    startShimmer()
-                }
             } else {
+                shimmerLayout.visibility = View.GONE
+                shimmerLayout.stopShimmer()
                 outletListRv.visibility = View.VISIBLE
-                shimmerLayout.apply {
-                    stopShimmer()
-                    visibility = View.GONE
-                }
             }
         }
     }

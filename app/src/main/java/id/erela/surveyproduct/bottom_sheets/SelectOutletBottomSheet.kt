@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -46,54 +49,110 @@ class SelectOutletBottomSheet(context: Context) : BottomSheetDialog(context) {
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         setCancelable(true)
 
+        setupSearchInput()
         init()
+    }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupSearchInput() {
+        binding.apply {
+            searchInput.setCompoundDrawablesWithIntrinsicBounds(
+                R.drawable.baseline_search_24,
+                0,
+                0,
+                0
+            )
+
+            searchInput.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {}
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int
+                ) {
+                    val searchText = s.toString()
+                    if (searchText.isNotEmpty()) {
+                        searchInput.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.baseline_search_24,
+                            0,
+                            R.drawable.baseline_close_24,
+                            0
+                        )
+                    } else {
+                        searchInput.setCompoundDrawablesWithIntrinsicBounds(
+                            R.drawable.baseline_search_24,
+                            0,
+                            0,
+                            0
+                        )
+                    }
+                    val filteredList = ArrayList<OutletItem>()
+                    for (i in 0 until outletList.size) {
+                        if (outletList[i].name?.lowercase(Locale.forLanguageTag("id-ID"))
+                                ?.indexOf(searchText) != -1 || outletList[i].address?.lowercase(
+                                Locale.forLanguageTag(
+                                    "id-ID"
+                                )
+                            )?.indexOf(searchText) != -1
+                            || outletList[i].cityRegencyName?.lowercase(Locale.forLanguageTag("id-ID"))
+                                ?.indexOf(searchText) != -1
+                            || outletList[i].outletID?.lowercase(Locale.forLanguageTag("id-ID"))
+                                ?.indexOf(searchText) != -1
+                        ) {
+                            filteredList.add(outletList[i])
+                        }
+                    }
+
+                    adapter = OutletAdapter(filteredList, "survey").also {
+                        with(it) {
+                            setOnOutletItemClickListener(object :
+                                OutletAdapter.OnOutletItemClickListener {
+                                override fun onOutletForDetailItemClick(
+                                    id: Int
+                                ) {
+                                }
+
+                                override fun onOutletForSurveyItemClick(
+                                    outlet: OutletItem
+                                ) {
+                                    onOutletSelectedListener.onOutletSelected(
+                                        outlet
+                                    )
+                                    dismiss()
+                                }
+                            })
+                        }
+                    }
+                    outletListRv.adapter = adapter
+                }
+            })
+
+            searchInput.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    if (searchInput.compoundDrawables[2] != null) {
+                        if (event.rawX >= (searchInput.right - searchInput.compoundDrawables[2].bounds.width())) {
+                            searchInput.setText("")
+                            return@setOnTouchListener true
+                        }
+                    }
+                }
+                false
+            }
+        }
     }
     @SuppressLint("NotifyDataSetChanged")
     private fun init() {
         binding.apply {
             loadingManager(true)
-            searchInput.addTextChangedListener { editable ->
-                val searchText = editable.toString().lowercase(Locale.forLanguageTag("id-ID"))
-                val filteredList = ArrayList<OutletItem>()
-                for (i in 0 until outletList.size) {
-                    if (outletList[i].name?.lowercase(Locale.forLanguageTag("id-ID"))
-                            ?.indexOf(searchText) != -1 || outletList[i].address?.lowercase(
-                            Locale.forLanguageTag(
-                                "id-ID"
-                            )
-                        )?.indexOf(searchText) != -1
-                        || outletList[i].cityRegencyName?.lowercase(Locale.forLanguageTag("id-ID"))
-                            ?.indexOf(searchText) != -1
-                        || outletList[i].outletID?.lowercase(Locale.forLanguageTag("id-ID"))
-                            ?.indexOf(searchText) != -1
-                    ) {
-                        filteredList.add(outletList[i])
-                    }
-                }
-
-                adapter = OutletAdapter(filteredList, "survey").also {
-                    with(it) {
-                        setOnOutletItemClickListener(object :
-                            OutletAdapter.OnOutletItemClickListener {
-                            override fun onOutletForDetailItemClick(
-                                id: Int
-                            ) {
-                            }
-
-                            override fun onOutletForSurveyItemClick(
-                                outlet: OutletItem
-                            ) {
-                                onOutletSelectedListener.onOutletSelected(
-                                    outlet
-                                )
-                                dismiss()
-                            }
-                        })
-                    }
-                }
-                outletListRv.adapter = adapter
-            }
-
             try {
                 AppAPI.superEndpoint.showAllOutlets(userData.iD!!)
                     .enqueue(object : Callback<OutletListResponse> {
