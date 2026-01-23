@@ -26,9 +26,7 @@ import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import id.erela.surveyproduct.R
-import id.erela.surveyproduct.activities.CheckInActivity.Companion.CHECK_IN_UPLOADED
 import id.erela.surveyproduct.adapters.recycler_view.QuestionSurveyAdapter
 import id.erela.surveyproduct.databinding.ActivityAnswerBinding
 import id.erela.surveyproduct.dialogs.LoadingDialog

@@ -3,7 +3,6 @@ package id.erela.surveyproduct.bottom_sheets
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup
 import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.FragmentManager

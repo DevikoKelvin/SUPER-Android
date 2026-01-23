@@ -10,7 +10,6 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         //noinspection JcenterRepositoryObsolete
-        jcenter()
         maven {
             url "https://jitpack.io"
         }
@@ -23,7 +22,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         //noinspection JcenterRepositoryObsolete
-        jcenter()
         maven {
             url "https://jitpack.io"
         }

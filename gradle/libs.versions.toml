@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.2"
+agp = "9.0.0"
 kotlin = "2.2.21"
 gmsService = "4.4.4"
 crashlytics = "3.0.6"
@@ -12,7 +12,7 @@ kotlinxCoroutinesAndroid = "1.10.2"
 lifecycleViewmodelKtx = "2.10.0"
 
 material = "1.13.0"
-activity = "1.12.1"
+activity = "1.12.2"
 constraintlayout = "2.2.1"
 blurview = "version-2.0.6"
 blurkitAndroid = "1.1.1"
